@@ -23,14 +23,8 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
+        app.MapControllers();
         app.UseHttpsRedirection();
-        app.UseRouting();
-
-        app.UseEndpoints(endpoints =>
-        {
-            _ = endpoints.MapControllers();
-        });
 
         app.Run();
     }
