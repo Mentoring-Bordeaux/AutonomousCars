@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { WeatherForecastType } from "~/models/weather-forecast";
+import type { WeatherForecast } from '~/models/weatherForecast';
 
-const { data: forecasts } = await useFetch<WeatherForecastType[]>(
+const { data: forecasts } = await useFetch<WeatherForecast[]>(
   "https://localhost:7238/weatherforecast"
 );
 </script>
