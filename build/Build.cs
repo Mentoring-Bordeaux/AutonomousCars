@@ -6,8 +6,13 @@ using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.Pulumi;
 using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
+using Nuke.Common.CI.GitHubActions;
 
-
+[GitHubActions(
+    "continuous",
+    GitHubActionsImage.UbuntuLatest,
+    On = new[] { GitHubActionsTrigger.Push },
+    InvokedTargets = new[] { nameof(Publish) })]
 class Build : NukeBuild
 {
     /// Support plugins are available for:
@@ -55,6 +60,7 @@ class Build : NukeBuild
         });
 
     Target Publish => _ => _
+        .Produces(ArtifactsDirectory / "*.zip")
         .DependsOn(Clean, Compile)
         .Executes(() =>
         {
