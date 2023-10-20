@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { WeatherForecast } from "~/models/weatherForecast";
-const forecast = defineProps<WeatherForecast>();
+
+defineProps<{forecast: WeatherForecast}>();
 </script>
 
 <template>
@@ -9,4 +10,3 @@ const forecast = defineProps<WeatherForecast>();
     {{ forecast.temperatureF }}°F)
   </p>
 </template>
-x²
