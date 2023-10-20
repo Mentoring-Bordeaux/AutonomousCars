@@ -2,7 +2,7 @@
 import { WeatherForecast } from '~/models/weatherForecast';
 
 const { data: forecasts } = await useFetch<WeatherForecast[]>(
-  "https://localhost:7238/weatherforecast"
+  "api/weatherforecast"
 );
 </script>
 

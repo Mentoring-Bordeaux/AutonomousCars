@@ -5,4 +5,12 @@ export default defineNuxtConfig({
     strict: true,
   },
   ssr: false,
+  nitro: {
+    devProxy: {
+      "/api": {
+        target: "https://localhost:7238/api/",
+        secure: false
+      },
+    }
+  }
 })

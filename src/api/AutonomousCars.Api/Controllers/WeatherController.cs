@@ -4,7 +4,7 @@ using AutonomousCars.Api.Weather.Services;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("weatherforecast")]
+[Route("api/weatherforecast")]
 public class WeatherController : Controller
 {
     private readonly IWeatherService _weatherService;
