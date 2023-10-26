@@ -11,7 +11,8 @@ using Nuke.Common.CI.GitHubActions;
 [GitHubActions(
     "continuous",
     GitHubActionsImage.UbuntuLatest,
-    On = new[] { GitHubActionsTrigger.Push },
+    OnPushBranches = new[] { "main" },
+    OnPullRequestBranches = new[] { "feature/**" },
     InvokedTargets = new[] { nameof(Publish) })]
 class Build : NukeBuild
 {
