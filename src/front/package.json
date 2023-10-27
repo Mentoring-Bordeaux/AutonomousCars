@@ -11,11 +11,10 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@unocss/nuxt": "^0.56.5",
+    "@unocss/preset-wind": "^0.56.5",
     "nuxt": "^3.7.4",
-    "vue": "^3.3.4",
-    "typescript": "latest"
-  },
-  "dependencies": {
-    "@unocss/nuxt": "^0.56.5"
+    "typescript": "latest",
+    "vue": "^3.3.4"
   }
 }

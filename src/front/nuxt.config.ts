@@ -4,6 +4,9 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
   },
+  modules: [
+    '@unocss/nuxt',
+  ],
   ssr: false,
   nitro: {
     devProxy: {
