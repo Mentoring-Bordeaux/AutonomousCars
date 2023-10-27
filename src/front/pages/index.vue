@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { WeatherForecast } from '~/models/weatherForecast';
+import type { WeatherForecast } from '~/models/weatherForecast';
 
 const { data: forecasts } = await useFetch<WeatherForecast[]>(
   "api/weatherforecast"
