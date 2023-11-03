@@ -39,17 +39,27 @@ public class Worker : BackgroundService
 
         string fileName = "position.json";
         string jsonString = File.ReadAllText(fileName);
-        TimePositionList? timePositions = JsonSerializer.Deserialize<TimePositionList>(jsonString);
-
-        if (timePositions != null)
+        TimePositionList? timePositionList= JsonSerializer.Deserialize<TimePositionList>(jsonString);
+        if (timePositionList != null)
         {
-            foreach (TimePosition timePosition in timePositions.timePositions)
+            List<TimePosition> timePositions = timePositionList.timePositions;
+            TimePosition timePosition;
+            int timePositionCount = timePositions.Count;
+            int i;
+            for (i = 0; i < timePositionCount-1; ++i)
             {
+                timePosition = timePositions[i];
                 MqttClientPublishResult pubAck = await telemetryPosition.SendTelemetryAsync(
                     new Point(new Position(timePosition.latitude, timePosition.longitude)), stoppingToken);
                 _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);
-                await Task.Delay(5000, stoppingToken);
-            }   
+                int nextTime = timePositions[i + 1].timestamp - timePosition.timestamp;
+                _logger.LogInformation("Time to wait {time}", nextTime);
+                await Task.Delay(nextTime, stoppingToken);
+            }
+            timePosition = timePositions[i];
+            MqttClientPublishResult pubAckLast = await telemetryPosition.SendTelemetryAsync(
+                new Point(new Position(timePosition.latitude, timePosition.longitude)), stoppingToken);
+            _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAckLast.ReasonCode, pubAckLast.PacketIdentifier);
         }
         else
         {
