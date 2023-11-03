@@ -1,8 +1,12 @@
+using AutonomousCars.Emulator.Model;
+
 namespace AutonomousCars.Emulator;
 using GeoJSON.Text.Geometry;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Extensions;
+using System.Text.Json;
+
 //https://github.com/dotnet/MQTTnet/blob/master/Samples/Client/Client_Publish_Samples.cs
 public class Worker : BackgroundService
 {
@@ -33,13 +37,23 @@ public class Worker : BackgroundService
 
         PositionTelemetryProducer telemetryPosition = new(mqttClient);
 
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            MqttClientPublishResult pubAck = await telemetryPosition.SendTelemetryAsync(
-                new Point(new Position(51.899523, -2.124156)), stoppingToken);
-            _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);
-            await Task.Delay(5000, stoppingToken);
-        }
+        string fileName = "position.json";
+        string jsonString = File.ReadAllText(fileName);
+        TimePositionList? timePositions = JsonSerializer.Deserialize<TimePositionList>(jsonString);
 
+        if (timePositions != null)
+        {
+            foreach (TimePosition timePosition in timePositions.timePositions)
+            {
+                MqttClientPublishResult pubAck = await telemetryPosition.SendTelemetryAsync(
+                    new Point(new Position(timePosition.latitude, timePosition.longitude)), stoppingToken);
+                _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);
+                await Task.Delay(5000, stoppingToken);
+            }   
+        }
+        else
+        {
+            _logger.LogError("Failure of the Deserialization");
+        }
     }
 }
