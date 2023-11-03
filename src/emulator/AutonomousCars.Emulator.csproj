@@ -14,13 +14,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\..\mqttclients\dotnet\MQTTnet.Client.Extensions\MQTTnet.Client.Extensions.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Update=".env">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="mqttclients\MQTTnet.Client.Extensions\obj\MQTTnet.Client.Extensions.csproj.nuget.dgspec.json" />
+	  <_ContentIncludedByDefault Remove="mqttclients\MQTTnet.Client.Extensions\obj\project.assets.json" />
+	  <_ContentIncludedByDefault Remove="mqttclients\MQTTnet.Client.Extensions\obj\project.packagespec.json" />
 	</ItemGroup>
 
 </Project>
