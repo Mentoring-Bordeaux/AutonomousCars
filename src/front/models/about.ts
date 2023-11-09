@@ -1,4 +1,4 @@
-export type technology_component = {
+export type technologyComponent = {
     name: string,
     surname: string,
     img: string,

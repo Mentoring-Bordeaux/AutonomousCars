@@ -1,12 +1,10 @@
 <script setup>
-defineProps(['img', 'website'])
+defineProps(['img'])
 </script>
 
 
 <template>
-    <UContainer class="flex items-center w-40 h-40 m-4 drop-shadow-xl bg-white">
-        <a :href="website" target="_blank">
-            <img :src="img" alt="techno_img" class="w-fit"/>
-        </a>
+    <UContainer class="flex items-center h-40 w-40 drop-shadow-xl bg-white m-5">
+        <img :src="img" alt="techno_img" class="w-fit"/>
     </UContainer>
 </template>

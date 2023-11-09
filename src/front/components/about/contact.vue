@@ -1,7 +1,7 @@
 <script setup lang="ts">
-    import { technology_component } from '~/models/about';
+    import { technologyComponent } from '~/models/about';
 
-    defineProps<technology_component>()
+    defineProps<technologyComponent>()
 </script>
 
 <template>

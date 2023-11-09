@@ -20,8 +20,10 @@ const sites = ["https://nuxt.com/",
     :pause-autoplay-on-hover="true"
     class="ml-60 mr-60">
 
-    <slide v-for="slide in 7" :key="slide">
-        <AboutTechnology :img="technos[slide - 1]" :website="sites[slide - 1]"/>
+    <slide v-for="slide in 7" :key="slide" >
+        <a :href="sites[slide - 1]" target="_blank">
+            <AboutTechnology :img="technos[slide - 1]" />
+        </a>
     </slide>
 
     <template #addons>
