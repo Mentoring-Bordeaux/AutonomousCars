@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@unocss/nuxt',
+    '@unocss/nuxt', '@nuxt/ui', 'vue3-carousel-nuxt'
   ],
 
   ssr: false,
