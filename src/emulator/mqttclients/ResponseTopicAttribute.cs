@@ -1,12 +1,12 @@
-﻿namespace MQTTnet.Client.Extensions
+﻿namespace MQTTnet.Client.Extensions;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class ResponseTopicAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class ResponseTopicAttribute : Attribute
+    public string Topic { get; set; }
+    public ResponseTopicAttribute(string topic)
     {
-        public string Topic { get; set; }
-        public ResponseTopicAttribute(string topic)
-        {
-            Topic = topic;
-        }
+        Topic = topic;
     }
 }
+

@@ -17,6 +17,7 @@
 	  <None Update=".env">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <None Remove="Properties\launchSettingsTEMPLATE.json" />
 	</ItemGroup>
 
 	<ItemGroup>
