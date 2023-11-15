@@ -1,7 +1,5 @@
 import * as resources from "@pulumi/azure-native/resources";
-import * as azure from "@pulumi/azure";
 import * as azure_native from "@pulumi/azure-native";
-
 
 // Create an Azure Resource Group
 const resourceGroup = new resources.ResourceGroup("rg-autonomouscars", {
@@ -16,8 +14,8 @@ const staticWebApp = new azure_native.web.StaticSite("stapp-autonomouscars", {
     repositoryUrl: "https://github.com/Mentoring-Bordeaux/AutonomousCars",
     branch: "main", 
     sku: {
-        name: "Standard",
-        tier: "Standard",
+        name: "Free",
+        tier: "Free",
     }
 });
 
@@ -25,7 +23,7 @@ const staticWebApp = new azure_native.web.StaticSite("stapp-autonomouscars", {
 export const appUrl = staticWebApp.defaultHostname;
 
 // Create an Azure Maps Account
-const account = new azure_native.maps.Account("maps-autonomouscars", {
+const mapsAccount = new azure_native.maps.Account("maps-autonomouscars", {
     accountName: "maps-autonomouscars",
     kind: "Gen2",
     location: resourceGroup.location,
