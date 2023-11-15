@@ -8,43 +8,19 @@ const resourceGroup = new resources.ResourceGroup("rg-autonomouscars", {
     resourceGroupName:"rg-autonomouscars"
 });
 
-
-
-const webApp = new azure_native.web.WebApp("stapp-autonomouscars", {
-    // cloningInfo: {
-    //     appSettingsOverrides: {
-    //         Setting1: "NewValue1",
-    //         Setting3: "NewValue5",
-    //     },
-    //     cloneCustomHostNames: true,
-    //     cloneSourceControl: true,
-    //     configureLoadBalancing: false,
-    //     hostingEnvironment: "/subscriptions/34adfa4f-cedf-4dc0-ba29-b6d1a69ab345/resourceGroups/testrg456/providers/Microsoft.Web/hostingenvironments/aseforsites",
-    //     overwrite: false,
-    //     sourceWebAppId: "/subscriptions/34adfa4f-cedf-4dc0-ba29-b6d1a69ab345/resourceGroups/testrg456/providers/Microsoft.Web/sites/srcsiteg478",
-    //     sourceWebAppLocation: "West Europe",
-    // },
-    // kind: "app",
+// Create a Static Web App
+const staticWebApp = new azure_native.web.StaticSite("stapp-autonomouscars", {
     location: resourceGroup.location,
-    // name: "sitef6141",
-    resourceGroupName: resourceGroup.name
+    resourceGroupName: resourceGroup.name,
+    repositoryUrl: "https://github.com/Mentoring-Bordeaux/AutonomousCars", // Entrez ici votre propre URL
+    branch: "main", // Branche du dépôt à utiliser
+    sku: {
+        name: "Standard",
+        tier: "Standard",
+    }
 });
 
+// Export the URL of the Static Web App
+export const appUrl = staticWebApp.defaultHostname;
 
-// const staticSite = new azure_native.web.StaticSite("stapp-autonomouscars", {
-//     branch: "main",
-//     // buildProperties: {
-//     //     apiLocation: "api",
-//     //     appArtifactLocation: "build",
-//     //     appLocation: "app",
-//     // },
-//     location,
-//     name: "stapp-autonomouscars",
-//     // repositoryToken: "repoToken123",
-//     // repositoryUrl: "https://github.com/username/RepoName",
-//     resourceGroupName: resourceGroup.name,
-//     // sku: {
-//     //     name: "Basic",
-//     //     tier: "Basic",
-//     // },
-// });
+
