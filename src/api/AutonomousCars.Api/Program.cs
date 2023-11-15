@@ -26,7 +26,6 @@ public class Program
             builder.Environment.IsDevelopment()
                 ? new DefaultAzureCredential(new DefaultAzureCredentialOptions()
                 {
-                    TenantId = "",
                     ExcludeInteractiveBrowserCredential = false,
                 })
                 : new ManagedIdentityCredential());
