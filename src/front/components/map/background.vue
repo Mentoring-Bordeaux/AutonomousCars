@@ -4,7 +4,7 @@ import "azure-maps-control/dist/atlas.min.css";
 
 onMounted(() => {
   const config = useRuntimeConfig();
-  const { getToken } = useAzureMaps();
+  const { getMapToken } = useAzureMaps();
 
   const map = new atlas.Map("map", {
     view: "Auto",
@@ -15,7 +15,7 @@ onMounted(() => {
       authType: atlas.AuthenticationType.anonymous,
       clientId: config.public.azureMapsClientId,
       getToken: (resolve, reject) =>
-        getToken()
+        getMapToken()
           .then(({ token }) => resolve(token))
           .catch((error) => reject(error)),
     },
