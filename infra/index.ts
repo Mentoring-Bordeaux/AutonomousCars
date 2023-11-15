@@ -1,6 +1,7 @@
 import * as resources from "@pulumi/azure-native/resources";
-import * as pulumi from "@pulumi/pulumi";
+import * as azure from "@pulumi/azure";
 import * as azure_native from "@pulumi/azure-native";
+
 
 // Create an Azure Resource Group
 const resourceGroup = new resources.ResourceGroup("rg-autonomouscars", {
@@ -27,7 +28,7 @@ export const appUrl = staticWebApp.defaultHostname;
 const account = new azure_native.maps.Account("maps-autonomouscars", {
     accountName: "maps-autonomouscars",
     kind: "Gen2",
-    location: "global",
+    location: resourceGroup.location,
     resourceGroupName: resourceGroup.name,
     sku: {
         name: "G2",
@@ -37,4 +38,9 @@ const account = new azure_native.maps.Account("maps-autonomouscars", {
     },
 });
 
-
+// Create an App Service for the API
+const webApp = new azure_native.web.WebApp("app-autonomouscars", {
+    kind: "app",
+    location: resourceGroup.location,
+    resourceGroupName: resourceGroup.name,
+});
