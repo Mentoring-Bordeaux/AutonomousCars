@@ -11,7 +11,6 @@ const resourceGroup = new resources.ResourceGroup("rg-autonomouscars", {
 const staticWebApp = new azure_native.web.StaticSite("stapp-autonomouscars", {
     location: resourceGroup.location,
     resourceGroupName: resourceGroup.name,
-    repositoryUrl: "https://github.com/Mentoring-Bordeaux/AutonomousCars",
     branch: "main", 
     sku: {
         name: "Free",
