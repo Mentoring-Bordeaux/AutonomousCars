@@ -1,9 +1,18 @@
 import { defineConfig } from 'unocss'
 import presetWind from '@unocss/preset-wind'
+import presetWebFonts from '@unocss/preset-web-fonts'
 
 export default defineConfig({
     presets: [
         presetWind(),
+        presetWebFonts({
+            // use axios with an https proxy
+            provider: 'google',
+            fonts: {
+              sans: 'Inter',
+              mono: ['Fira Code', 'Fira Mono:400,700'],
+            },
+          }),
     ],
     theme: {
         colors: {
