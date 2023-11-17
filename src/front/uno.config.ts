@@ -16,9 +16,9 @@ export default defineConfig({
         }
     },
     rules: [
-        ['title-large', {'font-family': 'Inter Regular', 'font-size': '22px',}],
-        ['title-medium', {'font-family': 'Inter Medium', 'font-size': '16px',}],
-        ['title-small', {'font-family': 'Inter Medium', 'font-size': '14px',}],
+        ['title-large', {'font-family': 'Inter', 'font-size': '22px',}],
+        ['title-medium', {'font-family': 'Inter', 'font-size': '16px',}],
+        ['title-small', {'font-family': 'Inter', 'font-size': '14px',}],
         ['body-large', {'font-family': 'Inter', 'font-size': '16px',}],
         ['body-medium', {'font-family': 'Inter', 'font-size': '14px',}],
         ['body-small', {'font-family': 'Inter', 'font-size': '12px',}],
