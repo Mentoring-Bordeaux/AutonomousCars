@@ -9,6 +9,10 @@ export default defineConfig({
         colors: {
             'primary': '#E36C39',
             'secondary': '#1D192B',
+            'background-color': "#FFFFF",
+            'green': "#068422",
+            'red': "#C51313",
+            'gray': "#5C5C5C",
         }
     },
     rules: [

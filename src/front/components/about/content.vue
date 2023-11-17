@@ -16,7 +16,7 @@
 
         <p class="display-medium">L’équipe est composée de 4 élèves ingénieurs de l’école ENSEIRB-MATMECA qui est encadrée par une équipe de 4 personnes d’Avanade.</p>
 
-        <p class="display-medium">Dépôt Git:
+        <p class="display-medium">Dépôt Git : 
             <UButton
             color="orange"
             variant="solid"
