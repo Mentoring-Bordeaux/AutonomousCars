@@ -13,6 +13,7 @@
     "@nuxt/devtools": "latest",
     "@unocss/nuxt": "^0.57.1",
     "@unocss/preset-wind": "^0.57.1",
+    "@unocss/preset-web-fonts": "^0.57.3",
     "nuxt": "^3.8.0",
     "typescript": "latest",
     "vue": "^3.3.7",
