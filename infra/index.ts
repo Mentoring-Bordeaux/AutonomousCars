@@ -1,6 +1,5 @@
 import * as resources from "@pulumi/azure-native/resources";
 import * as azure_native from "@pulumi/azure-native";
-import * as pulumi from "@pulumi/pulumi";
 import { ManagedServiceIdentityType } from "@pulumi/azure-native/app";
 import { PrincipalType } from "@pulumi/azure-native/authorization";
 
