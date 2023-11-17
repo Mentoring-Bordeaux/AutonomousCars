@@ -2,7 +2,7 @@ namespace AutonomousCars.Emulator.Model;
 
 public class TimePosition
 {
-    public int longitude { get; set; }
-    public int latitude { get; set; }
-    public int timestamp { get; set; }
+    public double Longitude { get; set; }
+    public double Latitude { get; set; }
+    public int Timestamp { get; set; }
 }
