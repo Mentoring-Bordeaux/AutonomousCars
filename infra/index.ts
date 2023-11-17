@@ -53,5 +53,5 @@ const roleAssignment = new azure_native.authorization.RoleAssignment("ra-autonom
     principalId: webApp.identity.apply(x => x?.principalId!),
     roleDefinitionId: "providers/Microsoft.Authorization/roleDefinitions/423170ca-a8f6-4b0f-8487-9e4eb8f49bfa",
     scope: mapsAccount.id,
-    principalType: PrincipalType.ServicePrincipal,
+    principalType: PrincipalType.ServicePrincipal
 }); 
