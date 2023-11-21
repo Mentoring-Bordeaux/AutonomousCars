@@ -1,25 +1,56 @@
-import * as pulumi from "@pulumi/pulumi";
 import * as resources from "@pulumi/azure-native/resources";
-import * as storage from "@pulumi/azure-native/storage";
+import * as azure_native from "@pulumi/azure-native";
+import { ManagedServiceIdentityType } from "@pulumi/azure-native/app";
+import { PrincipalType } from "@pulumi/azure-native/authorization";
 
 // Create an Azure Resource Group
-const resourceGroup = new resources.ResourceGroup("resourceGroup", {
-    tags: { "Type": "demo"}
+const resourceGroup = new resources.ResourceGroup("rg-autonomouscars", {
+    location:"westeurope", 
+    resourceGroupName:"rg-autonomouscars"
 });
 
-// Create an Azure resource (Storage Account)
-const storageAccount = new storage.StorageAccount("sa", {
+// Create a Static Web App
+const staticWebApp = new azure_native.web.StaticSite("stapp-autonomouscars", {
+    location: resourceGroup.location,
+    resourceGroupName: resourceGroup.name,
+    branch: "main", 
+    sku: {
+        name: "Free",
+        tier: "Free",
+    }
+});
+
+// Export the URL of the Static Web App
+export const appUrl = staticWebApp.defaultHostname;
+
+// Create an Azure Maps Account
+const mapsAccount = new azure_native.maps.Account("maps-autonomouscars", {
+    accountName: "maps-autonomouscars",
+    kind: "Gen2",
+    location: resourceGroup.location,
     resourceGroupName: resourceGroup.name,
     sku: {
-        name: storage.SkuName.Standard_LRS,
+        name: "G2",
     },
-    kind: storage.Kind.StorageV2,
+    tags: {
+        test: "true",
+    },
 });
 
-// Export the primary key of the Storage Account
-const storageAccountKeys = storage.listStorageAccountKeysOutput({
+// Create an App Service for the API
+const webApp = new azure_native.web.WebApp("app-autonomouscars", {
+    kind: "app",
+    location: resourceGroup.location,
     resourceGroupName: resourceGroup.name,
-    accountName: storageAccount.name
+    identity: {
+        type: ManagedServiceIdentityType.SystemAssigned
+    }
 });
 
-export const primaryStorageKey = pulumi.secret(storageAccountKeys.keys[0].value);
+// Assign Azure Maps Data Reader role to a Principal
+const roleAssignment = new azure_native.authorization.RoleAssignment("ra-autonomouscars", {
+    principalId: webApp.identity.apply(x => x?.principalId!),
+    roleDefinitionId: "providers/Microsoft.Authorization/roleDefinitions/423170ca-a8f6-4b0f-8487-9e4eb8f49bfa",
+    scope: mapsAccount.id,
+    principalType: PrincipalType.ServicePrincipal
+}); 
