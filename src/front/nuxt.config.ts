@@ -13,8 +13,15 @@ export default defineNuxtConfig({
       cert: join(certificateFolder, `${certificateName}.pem`),
     },
   },
-  devtools: { enabled: true },
-  modules: ["@unocss/nuxt"],
+
+  devtools: {
+    enabled: true,
+    timeline: {
+      enabled: true,
+    },
+  },
+
+  modules: ["@unocss/nuxt", "@nuxt/ui", "vue3-carousel-nuxt"],
   nitro: {
     devProxy: {
       "/api": {
@@ -23,7 +30,15 @@ export default defineNuxtConfig({
       },
     },
   },
+
+  runtimeConfig: {
+    public: {
+      azureMapsClientId: process.env.AZURE_MAPS_CLIENT_ID,
+    },
+  },
+
   ssr: false,
+
   typescript: {
     strict: true,
   },

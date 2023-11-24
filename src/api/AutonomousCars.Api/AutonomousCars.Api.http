@@ -4,3 +4,8 @@ GET {{AutonomousCars.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+GET {{AutonomousCars.Api_HostAddress}}/token/map
+Accept: application/json
+
+###
