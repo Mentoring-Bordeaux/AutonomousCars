@@ -1,5 +1,5 @@
 /**
- * @file Sets up HTTPS for the application using an ASP.NET HTTPS certificate.
+ * @file Sets up HTTPS for the local development using an ASP.NET HTTPS certificate.
  */
 
 import { existsSync } from "fs";
