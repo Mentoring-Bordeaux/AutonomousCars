@@ -4,9 +4,13 @@ export default defineNuxtConfig({
     strict: true,
   },
 
-  modules: [
-    '@unocss/nuxt', '@nuxt/ui', 'vue3-carousel-nuxt'
-  ],
+  runtimeConfig: {
+    public: {
+      azureMapsClientId: process.env.AZURE_MAPS_CLIENT_ID,
+    },
+  },
+
+  modules: ["@unocss/nuxt", "@nuxt/ui", "vue3-carousel-nuxt"],
 
   ssr: false,
 
@@ -14,15 +18,15 @@ export default defineNuxtConfig({
     devProxy: {
       "/api": {
         target: "https://localhost:7238/api/",
-        secure: false
+        secure: false,
       },
-    }
+    },
   },
   devtools: {
     enabled: true,
 
     timeline: {
-      enabled: true
-    }
-  }
-})
+      enabled: true,
+    },
+  },
+});
