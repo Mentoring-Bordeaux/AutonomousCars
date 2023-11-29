@@ -8,26 +8,19 @@ using Microsoft.Extensions.Logging;
 namespace Company.FunctionTelemetry;
 
 public static class EventGridTrigger
-{
+{   
     [Function("EventGridTrigger")]
-    public static void Run([EventGridTrigger] MyEvent input, FunctionContext context)
+    public static void Run([EventGridTrigger] Position position, FunctionContext context)
     {
         var logger = context.GetLogger("EventGridTrigger");
-        logger.LogInformation(input.Data.ToString());
+        logger.LogInformation("New point : {x}, {y}", position.Coordinates[0], position.Coordinates[1]);
     }
 }
 
-public class MyEvent
+public class Position
 {
-    public string Id { get; set; }
+    public string? Type { get; set; }
 
-    public string Topic { get; set; }
-
-    public string Subject { get; set; }
-
-    public string EventType { get; set; }
-
-    public DateTime EventTime { get; set; }
-
-    public object Data { get; set; }
+    public double[]? Coordinates { get; set; }
+    
 }
