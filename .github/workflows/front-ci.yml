@@ -4,9 +4,13 @@ on:
   push: 
     branches: 
       - main
+    paths: 
+      - ./src/front
     pull-request: 
       branches:
         - main
+      paths: 
+      - ./src/front
   
 jobs: 
   build: 
@@ -27,15 +31,15 @@ jobs:
       
       - name: Build Application
         working-directory: ./src/front
-        run: pnpm run build
+        run: pnpm build
 
       - name: Check typing with Typescript
         working-directory: ./src/front
-        run: pnpm run type-check
+        run: pnpm type-check
 
       - name: Run Tests
         working-directory: ./src/front
-        run: pnpm run test
+        run: pnpm test
 
 
 
