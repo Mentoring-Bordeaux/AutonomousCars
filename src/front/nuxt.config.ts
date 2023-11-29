@@ -1,16 +1,45 @@
+import { join } from "path";
+
+const certificateName = process.env.npm_package_name;
+const certificateFolder = process.env.APPDATA
+  ? `${process.env.APPDATA}/ASP.NET/https`
+  : `${process.env.HOME}/.aspnet/https`;
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
-  typescript: {
-    strict: true,
+  devServer: {
+    https: {
+      key: join(certificateFolder, `${certificateName}.key`),
+      cert: join(certificateFolder, `${certificateName}.pem`),
+    },
   },
-  ssr: false,
+
+  devtools: {
+    enabled: true,
+    timeline: {
+      enabled: true,
+    },
+  },
+
+  modules: ["@unocss/nuxt", "@nuxt/ui", "vue3-carousel-nuxt"],
   nitro: {
     devProxy: {
       "/api": {
         target: "https://localhost:7238/api/",
-        secure: false
+        secure: false,
       },
-    }
-  }
-})
+    },
+  },
+
+  runtimeConfig: {
+    public: {
+      azureMapsClientId: process.env.AZURE_MAPS_CLIENT_ID,
+    },
+  },
+
+  ssr: false,
+
+  typescript: {
+    strict: true,
+  },
+});
