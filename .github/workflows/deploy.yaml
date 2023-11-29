@@ -24,6 +24,12 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: 'test secret' # test to have secret value
+      - shell: bash
+        env:
+          SUPER_SECRET: ${{ secrets.SuperSecret }}
+        run: |
+          echo "$SUPER_SECRET"
       - name: 'Checkout repo'
         uses: actions/checkout@v4
       - name: 'Az CLI login'
