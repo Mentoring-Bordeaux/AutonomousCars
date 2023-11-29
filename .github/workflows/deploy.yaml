@@ -24,6 +24,10 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      # test if workflow is accepted
+      - name: Run only if workflow is approved
+        if: github.event.workflow_run.conclusion == 'success'
+        run: echo "Le workflow a été approuvé."
       # test to have secret value
       - shell: bash
         env:
