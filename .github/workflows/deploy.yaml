@@ -24,7 +24,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: 'test secret' # test to have secret value
+      # test to have secret value
       - shell: bash
         env:
           SUPER_SECRET: ${{ secrets.SuperSecret }}
