@@ -32,9 +32,9 @@ jobs:
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
-          client-id: 76e7ba0e-8690-4ec1-9fb5-d71132263856
-          tenant-id: d0cf1ed1-5a50-4a79-8afb-e642a3308fd1
-          subscription-id: be04e777-42ad-46b3-b592-efc468e08696
+          client-id: "76e7ba0e-8690-4ec1-9fb5-d71132263856"
+          tenant-id: "d0cf1ed1-5a50-4a79-8afb-e642a3308fd1"
+          subscription-id: "be04e777-42ad-46b3-b592-efc468e08696"
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
