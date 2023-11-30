@@ -16,6 +16,10 @@ env:
   AZURE_WEBAPP_NAME: app-autonomouscarsec2e9966
   AZURE_WEBAPP_PACKAGE_PATH: './artifacts/api'
   AZURE_STATIC_WEBAPP_PACKAGE_PATH: './build'
+  SUPER_SECRET: ${{ secrets.SuperSecret }}
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   
 permissions:
   id-token: write
@@ -24,14 +28,8 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      # test if workflow is accepted
-      - name: Run only if workflow is approved
-        if: github.event.workflow_run.conclusion == 'success'
-        run: echo "Le workflow a été approuvé."
       # test to have secret value
       - shell: bash
-        env:
-          SUPER_SECRET: ${{ secrets.SuperSecret }}
         run: |
           echo "$SUPER_SECRET"
       - name: 'Checkout repo'
@@ -39,9 +37,9 @@ jobs:
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: $AZURE_CLIENT_ID 
+          tenant-id: $AZURE_TENANT_ID
+          subscription-id: $AZURE_SUBSCRIPTION_ID
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
