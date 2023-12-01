@@ -32,7 +32,7 @@ class Build : NukeBuild
 
     AbsolutePath SourceDirectory => RootDirectory / "src" / "api";
 
-    AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
+    AbsolutePath ArtifactsDirectory => RootDirectory / "backend";
 
     AbsolutePath ApiPackageDirectory => ArtifactsDirectory / "api";
 
