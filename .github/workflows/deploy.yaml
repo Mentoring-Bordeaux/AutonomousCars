@@ -40,6 +40,7 @@ jobs:
           workflow: continuous.yml
           workflow_conclusion: completed
           name: artifacts
+      - name: 'Test'
         run: ls .
       - name: 'Deploy web app'
         id: deploy-to-webapp
