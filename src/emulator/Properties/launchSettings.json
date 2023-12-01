@@ -1,0 +1,17 @@
+{
+  "profiles": {
+    "localhost": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "MQTT_HOST_NAME": "evgns-autonomouscars-mqtt.westeurope-1.ts.eventgrid.azure.net",
+        "MQTT_TCP_PORT": "8883",
+        "MQTT_USE_TLS": "true",
+        "MQTT_CLEAN_SESSION": "true",
+        "MQTT_CLIENT_ID": "car01",
+        "MQTT_USERNAME": "car01",
+        "MQTT_CERT_FILE": "/home/victor/Documents/Cours/3a/projet_gl/cars/car01.pem",
+        "MQTT_KEY_FILE": "/home/victor/Documents/Cours/3a/projet_gl/cars/car01.key"
+      }
+      }
+  }
+}
