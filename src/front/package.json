@@ -9,7 +9,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "type-check": "tsc",
-    "test": "vitest"
+    "test": "vitest",
     "setup:https": "node setup-https.js"
   },
   "devDependencies": {
