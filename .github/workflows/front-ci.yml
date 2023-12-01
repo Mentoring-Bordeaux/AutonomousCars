@@ -48,11 +48,8 @@ jobs:
 
       - name: Run Tests
         run: pnpm test
-      
-      - name: Build Application
-        run: pnpm build
 
-      - name: Generation Application
+      - name: Generate Application
         run: pnpm generate
 
       - name: Upload artifact
