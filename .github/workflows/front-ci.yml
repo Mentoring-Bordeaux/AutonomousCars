@@ -5,7 +5,7 @@ on:
     branches: 
       - main
     paths: 
-       - src/front/**
+      - src/front/**
   pull_request: 
     branches:
       - main
