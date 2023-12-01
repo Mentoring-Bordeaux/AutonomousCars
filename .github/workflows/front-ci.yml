@@ -1,0 +1,46 @@
+name: Frontend CI Pipeline 
+
+on: 
+  push: 
+    branches: 
+      - main
+    paths: 
+      - src/front/**
+  pull_request: 
+    branches:
+      - main
+    paths: 
+      - src/front/**
+  
+jobs: 
+  build: 
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: Checkout Git Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js and pnpm
+        uses: pnpm/action-setup@v2
+        with: 
+          version: 8.9.0
+        
+      - name: Install dependencies 
+        working-directory: ./src/front
+        run: pnpm install
+      
+      - name: Build Application
+        working-directory: ./src/front
+        run: pnpm build
+
+      - name: Check typing with Typescript
+        working-directory: ./src/front
+        run: pnpm type-check
+
+      - name: Run Tests
+        working-directory: ./src/front
+        run: pnpm test
+
+
+
+
