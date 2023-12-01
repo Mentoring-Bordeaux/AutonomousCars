@@ -44,4 +44,4 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          path: src/front/build
+          path: .output #Build folder created by Nuxt
