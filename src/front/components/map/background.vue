@@ -23,7 +23,7 @@ onMounted(() => {
 });
 </script>
 
-<!--Commentaires pour le demo !!!!!!!-->
+<!--Nouveau commentaire-->
 
 <template>
   <div id="map" class="w-screen h-screen p-0 m-0"></div>

@@ -5,12 +5,12 @@ on:
     branches: 
       - front_ci
     paths: 
-      - ./src/front/*
+      - ./src/front/**
     pull-request: 
       branches:
         - main
       paths: 
-        - ./src/front/*
+        - ./src/front/**
   
 jobs: 
   build: 
