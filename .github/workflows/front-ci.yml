@@ -42,17 +42,20 @@ jobs:
         
       - name: Install dependencies 
         run: pnpm install
-      
-      - name: Build Application
-        run: pnpm build
 
       - name: Check typing with Typescript
         run: pnpm type-check
 
       - name: Run Tests
         run: pnpm test
+      
+      - name: Build Application
+        run: pnpm build
+
+      - name: Generation Application
+        run: pnpm generate
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          path: ./src/front/.output #Build folder created by Nuxt
+          path: ./src/front/.output/public
