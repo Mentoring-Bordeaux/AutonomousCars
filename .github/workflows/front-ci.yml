@@ -3,7 +3,7 @@ name: Frontend CI Pipeline
 on: 
   push: 
     branches: 
-      - main
+      - front_ci
     paths: 
       - src/front/**
   pull_request: 
@@ -41,6 +41,7 @@ jobs:
         working-directory: ./src/front
         run: pnpm test
 
-
-
-
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: src/front/build
