@@ -34,8 +34,11 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
         with:
+          workflow: continuous.yml
+          workflow_conclusion: completed
           name: artifacts
       - name: 'Deploy web app'
         id: deploy-to-webapp
