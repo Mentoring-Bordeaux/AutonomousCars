@@ -1,8 +1,5 @@
 name: Run deployment with OIDC
 on:
-  push:
-    branches:
-      - 'feature/set-up-CD' # TODO only for test, need to be erased 
   workflow_run:
     workflows: [continuous]
     types:
