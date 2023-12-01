@@ -11,11 +11,14 @@ on:
       - main
     paths: 
       - src/front/**
-  
+
+defaults:
+  run:
+    working-directory: ./src/front
+
 jobs: 
   build: 
     runs-on: ubuntu-latest
-
     steps: 
       - name: Checkout Git Repository
         uses: actions/checkout@v3
@@ -26,22 +29,18 @@ jobs:
           version: 8.9.0
         
       - name: Install dependencies 
-        working-directory: ./src/front
         run: pnpm install
       
       - name: Build Application
-        working-directory: ./src/front
         run: pnpm build
 
       - name: Check typing with Typescript
-        working-directory: ./src/front
         run: pnpm type-check
 
       - name: Run Tests
-        working-directory: ./src/front
         run: pnpm test
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          path: .output #Build folder created by Nuxt
+          path: ./src/front/.output #Build folder created by Nuxt
