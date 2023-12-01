@@ -4,8 +4,8 @@ on:
   push: 
     branches: 
       - front_ci_artifact
-    paths: 
-      - src/front/**
+    #paths: 
+    #   - src/front/**
   pull_request: 
     branches:
       - main
