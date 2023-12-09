@@ -11,36 +11,42 @@ on:
       - main
     paths: 
       - src/front/**
-  
+
+defaults:
+  run:
+    working-directory: ./src/front
+
 jobs: 
   build: 
     runs-on: ubuntu-latest
-
     steps: 
       - name: Checkout Git Repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js and pnpm
+      - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with: 
           version: 8.9.0
+      
+      - name: Setup pnpm with cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.12.0 #LTS version of node
+          cache: 'pnpm'
         
       - name: Install dependencies 
-        working-directory: ./src/front
         run: pnpm install
-      
-      - name: Build Application
-        working-directory: ./src/front
-        run: pnpm build
 
       - name: Check typing with Typescript
-        working-directory: ./src/front
         run: pnpm type-check
 
       - name: Run Tests
-        working-directory: ./src/front
         run: pnpm test
 
+      - name: Generate Application
+        run: pnpm generate
 
-
-
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: ./src/front/.output/public
