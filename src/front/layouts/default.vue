@@ -1,6 +1,8 @@
 <template>
-    <div class="min-h-screen flex flex-col">
-        <Navbar/>
-        <slot />
-    </div>
+  <Navbar/>
+  <div >
+    <slot />
+  </div>
 </template>
+<script setup lang="ts">
+</script>

@@ -24,5 +24,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="map" class="w-screen h-screen p-0 m-0"></div>
+  <div id="map" class="h-[calc(100vh-4rem-12px)] w-screen"></div>
 </template>
