@@ -36,7 +36,7 @@ jobs:
         with:
           workflow: continuous.yml
           workflow_conclusion: completed
-          name: artifacts
+          name: backend
       - name: 'Deploy web app'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
