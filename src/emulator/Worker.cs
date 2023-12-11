@@ -55,7 +55,7 @@ public class Worker : BackgroundService
                 int nextTime = timePositions[i + 1].Timestamp - timePosition.Timestamp;
                 _logger.LogInformation("Time to wait {time}", nextTime);
                 await Task.Delay(nextTime, stoppingToken);
-            }
+            }   
             timePosition = timePositions[i];
             MqttClientPublishResult pubAckLast = await telemetryPosition.SendTelemetryAsync(
                 new Point(new Position(timePosition.Latitude, timePosition.Longitude)), stoppingToken);
