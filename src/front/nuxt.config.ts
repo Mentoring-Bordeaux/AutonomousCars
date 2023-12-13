@@ -34,6 +34,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       azureMapsClientId: process.env.AZURE_MAPS_CLIENT_ID,
+      azureMapsSubscriptionKey: process.env.AZURE_MAPS_SUBSCRIPTION_KEY
     },
   },
 
