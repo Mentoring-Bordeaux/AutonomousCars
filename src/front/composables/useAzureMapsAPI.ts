@@ -1,21 +1,34 @@
+import { InteractiveBrowserCredential } from "@azure/identity"
+import MapsSearch, { isUnexpected } from "@azure-rest/maps-search"
+
+
 export function useAzureMapsAPI() {
-    async function fetchAdresses(query: String) {
-        const config = useRuntimeConfig();
+
+    const config = useRuntimeConfig();
+    const credential = new InteractiveBrowserCredential({clientId: config.public.azureMapsClientId}); 
+    const client = MapsSearch(credential); 
+
+    async function fetchAdresses(query: string) {
         try {
-            const response = await fetch(`https://atlas.microsoft.com/search/fuzzy/json?&api-version=1.0&subscription-key=${config.public.azureMapsSubscriptionKey}&language=en-US&countrySet=FR&query=${query}`, {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json', // Si nécessaire
-                },
+            const response = await client.path("/search/fuzzy/{format}", "json").get({
+                queryParameters: {
+                    query,
+                    countrySet: ["FR"]
+                }   
               });
-              if (response.ok) {
-                const responseData = await response.json();
-                console.log('Réponse du serveur :', responseData);
-                return responseData
-            }else {
-                console.error('Erreur lors de la requête :', response.statusText);
-                // Gérez les erreurs de la requête
-            }   
+
+            if (isUnexpected(response)) {
+                throw response.body.error;
+            }
+
+            return response.body.results.map(result => ({
+                id: result.id,
+                name: `${result.address.streetNumber || ''} ${result.address.streetName || ''}`,
+                postalCode: `${result.address.postalCode || ''}`,
+                municipality: `${result.address.municipality || ''}`,
+                position: result.position
+              }));
+              
         }catch (error) {
             console.error('Erreur :', error);
             // Gérez les erreurs d'exceptions

@@ -16,8 +16,8 @@
     "@nuxt/devtools": "latest",
     "@nuxt/test-utils": "^3.8.1",
     "@unocss/nuxt": "^0.57.1",
-    "@unocss/preset-wind": "^0.57.1",
     "@unocss/preset-web-fonts": "^0.57.3",
+    "@unocss/preset-wind": "^0.57.1",
     "nuxt": "^3.8.0",
     "typescript": "latest",
     "vitest": "^0.34.6",
@@ -25,6 +25,8 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@azure-rest/maps-search": "1.0.0-beta.3",
+    "@azure/identity": "^4.0.0",
     "@nuxt/ui": "^2.9.0",
     "azure-maps-control": "^3.0.2",
     "vue3-carousel": "^0.3.1",
