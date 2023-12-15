@@ -12,7 +12,7 @@ defineProps<section>();
         </div>
       </div>
       <div class="ml-4" v-if="sideBar">
-        <nuxt-link :to="link" class="text-base text-400 hover:underline">
+        <nuxt-link :to="{ path: '/', query: queryParams }" class="text-base text-400 hover:underline">
           {{ title }}
         </nuxt-link>
       </div>
