@@ -3,9 +3,13 @@ import * as atlas from "azure-maps-control";
 import "azure-maps-control/dist/atlas.min.css";
 import * as signalR from "@microsoft/signalr"
 
-const apiBaseUrl = "http://localhost:7071";
+const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
 const carPath = "/img/car.png"
 
+const initialPosition = [-0.607294, 44.806267]
+
+const carPosition = ref(initialPosition);
+const carRotation = ref(0);
 
 onMounted(() => {
 	const config = useRuntimeConfig();
@@ -15,7 +19,7 @@ onMounted(() => {
 	const map = new atlas.Map("map", {
 		view: "Auto",
 		language: "fr-FR",
-		center: [-0.604945545248392, 44.806516403595744],
+		center: initialPosition,
 		zoom: 10,
 		authOptions: {
 			authType: atlas.AuthenticationType.anonymous,
@@ -30,8 +34,8 @@ onMounted(() => {
 	//Wait until the map resources are ready.
 	map.events.add('ready', function () {
 		var car = new atlas.HtmlMarker({
-			position: [-0.607294, 44.806267],
-			htmlContent: '<img src="' + carPath + '" style="width: 50px; height: 30px;" />'
+			position: initialPosition,
+			htmlContent: '<img id="carImage" src="' + carPath + '" style="width: 50px; height: 30px; transform-origin: center center;" />'
 		})
 		map.markers.add(car)
 
@@ -39,9 +43,25 @@ onMounted(() => {
 		.withUrl(apiBaseUrl + '/api')
 		.configureLogging(signalR.LogLevel.Information)
 		.build();
-		connection.on('newMessage', (message: atlas.data.Position) => {
+		connection.on('newPosition', (message: atlas.data.Position) => {
+			console.log("new value received: " + message);
+
+			const oldPosition = carPosition.value;
+			const newPosition = message.reverse();
+
+			// Calculate the angle between the old and new positions.
+			const angle = Math.atan2(newPosition[1] - oldPosition[1], newPosition[0] - oldPosition[0]) * (180 / Math.PI);
+
+			// Update car rotation and position.
+			carRotation.value = angle;
+			carPosition.value = newPosition;
+
+			// Apply rotation to the car image.
+			const carImage = document.getElementById("carImage") as HTMLImageElement;
+			carImage.style.transform = `rotate(${angle}deg)`;
+
 			car.setOptions({
-				position: message.reverse()
+				position: newPosition
 			})
 		});
 		connection.start()
