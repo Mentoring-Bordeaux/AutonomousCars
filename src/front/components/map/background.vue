@@ -2,6 +2,7 @@
 import * as atlas from "azure-maps-control";
 import "azure-maps-control/dist/atlas.min.css";
 import * as signalR from "@microsoft/signalr"
+import type { VehicleLocation } from "~/models/VehicleLocation";
 
 const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
 const carPath = "/img/car.png"
@@ -43,11 +44,11 @@ onMounted(() => {
 		.withUrl(apiBaseUrl + '/api')
 		.configureLogging(signalR.LogLevel.Information)
 		.build();
-		connection.on('newPosition', (message: atlas.data.Position) => {
-			console.log("new value received: " + message);
+		connection.on('newPosition', (message: VehicleLocation) => {
+			console.log("new value received: " + message.position.coordinates);
 
 			const oldPosition = carPosition.value;
-			const newPosition = message.reverse();
+			const newPosition = message.position.coordinates;
 
 			// Calculate the angle between the old and new positions.
 			const angle = Math.atan2(newPosition[1] - oldPosition[1], newPosition[0] - oldPosition[0]) * (180 / Math.PI);

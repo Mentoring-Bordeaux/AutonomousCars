@@ -19,7 +19,7 @@ public class Worker : BackgroundService
         _configuration = configuration;
 
     }
-    
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         MqttConnectionSettings cs = MqttConnectionSettings.CreateFromEnvVars(_configuration.GetValue<string>("envFile"));
@@ -45,19 +45,19 @@ public class Worker : BackgroundService
         {
             var timePositions = timePositionList.timePositions;
             var lastTimePosition = timePositions.Last();
+            var speed = 250;
             foreach (var timePosition in timePositions)
             {
                 MqttClientPublishResult pubAck = await telemetryPosition.SendTelemetryAsync(
-                    new Point(new Position(timePosition.Latitude, timePosition.Longitude)), stoppingToken);
-                
+                    new Point(new Position(timePosition.latitude, timePosition.longitude)), stoppingToken);
+
                 _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);
 
                 if (timePosition != lastTimePosition)
                 {
                     int nextPosition = timePositionList.timePositions.IndexOf(timePosition) + 1;
-                    int timeToWait = timePositionList.timePositions[nextPosition].Timestamp - timePosition.Timestamp;
-                    _logger.LogInformation("Time to wait {time}", timeToWait);
-                    await Task.Delay(timeToWait, stoppingToken);
+                    _logger.LogInformation("Time to wait {time}", speed);
+                    await Task.Delay(speed, stoppingToken);
                 }
             }
         }
