@@ -1,4 +1,4 @@
 export type AccessToken = {
-  expiresOn: string;
+  expiresOn: number;
   token: string;
 };
