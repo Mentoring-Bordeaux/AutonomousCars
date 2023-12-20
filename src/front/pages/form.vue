@@ -5,40 +5,28 @@ const { fetchAdresses } = useAzureMapsAPI()
 
 const departure = ref('')
 const searchResults = ref<Address[]>([])
-const position = ref({})
-
-function handleInput() {
-      debounceRequest();
-}
-    
-async function debounceRequest() {
-      if (departure.value === '') {
-        searchResults.value = [];
-        return; // Vérification si le champ est vide
-      }
-
-      if(timer !== null)
-        clearTimeout(timer);
-      timer = setTimeout(sendRequest, 500); // Attendre 500ms avant d'envoyer la requête
-    }
+const startPosition = ref({})
 
 async function sendRequest() {
   searchResults.value = (await fetchAdresses(departure.value)) ?? [];
+  console.log(searchResults.value)
 }
 
 function selectResult(result: Address) {
   // Gérer la sélection d'un résultat, par exemple remplir le champ avec le résultat sélectionné
   departure.value = result.name + ', ' + result.postalCode + ', ' +  result.municipality;
-  position.value = result.position
+  startPosition.value = result.position
   searchResults.value = []; // Vider la liste des résultats après la sélection
-  console.log("Position sauvegardé : ", position)
+  console.log("Position sauvegardé : ", startPosition.value)
 }
+
 
 </script>
 
 <template>
   <form 
     class="max-w-lg mx-auto mt-8 p-6 bg-white shadow-md rounded">
+
     <div>
       <label for="departure" 
         class="block text-gray-700 font-semibold mb-2">
@@ -50,7 +38,7 @@ function selectResult(result: Address) {
                   leading-tight focus:outline-none focus:shadow-outline" required>
     </div>
 
-    <div v-if="searchResults.length" class="border rounded-md">
+    <div v-if="searchResults.length > 0" class="border rounded-md">
       <div class="overflow-hidden h-[200px]">
         <div class="flex flex-col overflow-y-scroll h-[200px]">
           <div v-for="result in searchResults" :key="result.id" 

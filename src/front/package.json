@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@azure-rest/maps-search": "1.0.0-beta.3",
+    "@azure/core-auth": "^1.5.0",
     "@azure/identity": "^4.0.0",
     "@nuxt/ui": "^2.9.0",
     "azure-maps-control": "^3.0.2",

@@ -1,11 +1,12 @@
-import { InteractiveBrowserCredential } from "@azure/identity"
+import { AzureKeyCredential } from "@azure/core-auth"
 import MapsSearch, { isUnexpected } from "@azure-rest/maps-search"
 
 
 export function useAzureMapsAPI() {
 
     const config = useRuntimeConfig();
-    const credential = new InteractiveBrowserCredential({clientId: config.public.azureMapsClientId}); 
+    const credential = new AzureKeyCredential(config.public.azureMapsSubscriptionKey)
+    //const credential = new InteractiveBrowserCredential({clientId: config.public.azureMapsClientId}); 
     const client = MapsSearch(credential); 
 
     async function fetchAdresses(query: string) {
