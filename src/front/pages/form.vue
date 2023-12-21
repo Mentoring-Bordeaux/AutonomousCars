@@ -9,28 +9,34 @@ var hour = now.getHours();
 var minute = now.getMinutes();
 var localDate = year + '-' + (month < 10 ? '0' + month.toString() : month) + '-' + (day < 10 ? '0' + day.toString() : day) 
 var localTime = (hour < 10 ? '0' + hour.toString() : hour) + ':' + (minute < 10 ? '0' + minute.toString() : minute);
-const departure = ref('')
-const arrival = ref('')
 const departureTime = ref(localTime)
 const departureDate = ref(localDate)
+const departure = ref('')
+const arrival = ref('')
 const startPosition = ref({})
 const endPosition = ref({})
 
-const position = reactive({
-    start: {}, 
-    stop: {}
-})
-
 function handleSubmit() {
-  console.log("Position de départ : ", startPosition);
-  console.log("Position d'arrivée : ", endPosition);
+  console.log("Position de départ : ", startPosition.value);
+  console.log("Position d'arrivée : ", endPosition.value);
   console.log("Date de départ : ", departureDate.value);
   console.log("Heure de départ : ", departureTime.value);
+  sendPosition();
 }
 
-function handlePositionUpdate(newPosition: {lat: number, lon: number}) {
-    console.log('Position updated: ', newPosition);
-  }
+async function sendPosition() {
+  fetch('api/Position/position', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(startPosition.value),
+})
+.then(response => response)
+.then(data => console.log(data))
+.catch((error) => console.error('Error:', error));
+}
+
 
 
 </script>
@@ -56,7 +62,7 @@ function handlePositionUpdate(newPosition: {lat: number, lon: number}) {
 
     <div class="grid gap-2">
       <label :for="arrival" class="text-sm">Arriver à :</label>
-      <SearchInput v-model="departure" :position.sync="endPosition" @update:position="startPosition = $event" placeholder="Saisir une adresse..." />
+      <SearchInput v-model="departure" :position.sync="endPosition" @update:position="endPosition = $event" placeholder="Saisir une adresse..." />
     </div>
 
     <div class="grid gap-2 grid-cols-2">

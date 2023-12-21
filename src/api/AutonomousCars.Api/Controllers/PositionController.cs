@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 public class PositionController: Controller
 {
     [HttpPost("position")]
-    public async Task<ActionResult> PostPosition(Models.Position pos)
+    public IActionResult PostPosition([FromBody] Models.Position pos)
     {
-        Console.WriteLine("Longitude : " + pos.latitude + "Latitude : " + pos.longitude);
+        Console.WriteLine("Longitude : " + pos.lon + ' ' + "Latitude : " + pos.lat);
         return Ok("Value received");
     }
 }
