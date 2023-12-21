@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "autonomous-cars",
   "private": true,
   "type": "module",
   "scripts": {
@@ -7,15 +7,27 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "type-check": "tsc",
+    "test": "vitest",
+    "setup:https": "node setup-https.js"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "nuxt": "^3.7.4",
-    "vue": "^3.3.4",
-    "typescript": "latest"
+    "@nuxt/test-utils": "^3.8.1",
+    "@unocss/nuxt": "^0.57.1",
+    "@unocss/preset-wind": "^0.57.1",
+    "@unocss/preset-web-fonts": "^0.57.3",
+    "nuxt": "^3.8.0",
+    "typescript": "latest",
+    "vitest": "^0.34.6",
+    "vue": "^3.3.7",
+    "vue-router": "^4.2.5"
   },
   "dependencies": {
-    "@unocss/nuxt": "^0.56.5"
+    "@nuxt/ui": "^2.9.0",
+    "azure-maps-control": "^3.0.2",
+    "vue3-carousel": "^0.3.1",
+    "vue3-carousel-nuxt": "^1.1.0"
   }
 }

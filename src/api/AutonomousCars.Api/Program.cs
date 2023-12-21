@@ -1,4 +1,9 @@
+namespace AutonomousCars.Api;
+
 using AutonomousCars.Api.Weather.Services;
+
+using Azure.Core;
+using Azure.Identity;
 
 public class Program
 {
@@ -15,9 +20,17 @@ public class Program
 
         builder.Services.AddTransient<IWeatherService, WeatherService>();
 
+        // Token credential
+        builder.Services.AddSingleton<TokenCredential>((serviceProvider) =>
+            builder.Environment.IsDevelopment()
+                ? new DefaultAzureCredential(new DefaultAzureCredentialOptions()
+                {
+                    ExcludeInteractiveBrowserCredential = false,
+                })
+                : new ManagedIdentityCredential());
+
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();

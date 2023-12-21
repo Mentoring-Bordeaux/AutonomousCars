@@ -1,4 +1,5 @@
 using AutonomousCars.Emulator.Model;
+using System.ComponentModel.DataAnnotations;
 
 namespace AutonomousCars.Emulator;
 using GeoJSON.Text.Geometry;
@@ -43,23 +44,22 @@ public class Worker : BackgroundService
         if (timePositionList != null)
         {
             var timePositions = timePositionList.timePositions;
-            TimePosition timePosition;
-            int timePositionCount = timePositions.Count;
-            int i;
-            for (i = 0; i < timePositionCount-1; ++i)
+            var lastTimePosition = timePositions.Last();
+            foreach (var timePosition in timePositions)
             {
-                timePosition = timePositions[i];
                 MqttClientPublishResult pubAck = await telemetryPosition.SendTelemetryAsync(
                     new Point(new Position(timePosition.Latitude, timePosition.Longitude)), stoppingToken);
+                
                 _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);
-                int nextTime = timePositions[i + 1].Timestamp - timePosition.Timestamp;
-                _logger.LogInformation("Time to wait {time}", nextTime);
-                await Task.Delay(nextTime, stoppingToken);
-            }   
-            timePosition = timePositions[i];
-            MqttClientPublishResult pubAckLast = await telemetryPosition.SendTelemetryAsync(
-                new Point(new Position(timePosition.Latitude, timePosition.Longitude)), stoppingToken);
-            _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAckLast.ReasonCode, pubAckLast.PacketIdentifier);
+
+                if (timePosition != lastTimePosition)
+                {
+                    int nextPosition = timePositionList.timePositions.IndexOf(timePosition) + 1;
+                    int timeToWait = timePositionList.timePositions[nextPosition].Timestamp - timePosition.Timestamp;
+                    _logger.LogInformation("Time to wait {time}", timeToWait);
+                    await Task.Delay(timeToWait, stoppingToken);
+                }
+            }
         }
         else
         {
