@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.FunctionTelemetry", "Company.FunctionTelemetry\Company.FunctionTelemetry.csproj", "{B2F28263-D2B6-4DEE-B5ED-F61E220C1CD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.Test", "Company.Test\Company.Test.csproj", "{FEE3B561-69BA-4662-A5A0-D9C6FB19BF1C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,9 +12,5 @@ Global
 		{B2F28263-D2B6-4DEE-B5ED-F61E220C1CD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2F28263-D2B6-4DEE-B5ED-F61E220C1CD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2F28263-D2B6-4DEE-B5ED-F61E220C1CD2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FEE3B561-69BA-4662-A5A0-D9C6FB19BF1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FEE3B561-69BA-4662-A5A0-D9C6FB19BF1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FEE3B561-69BA-4662-A5A0-D9C6FB19BF1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FEE3B561-69BA-4662-A5A0-D9C6FB19BF1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
