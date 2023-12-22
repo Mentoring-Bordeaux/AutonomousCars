@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 const tabs = ref(['Tous', 'Disponible', 'Indisponible']);
 // TODO: tabContents get all cars 
-const tabContents = ref(['Contenu de l\'onglet All', 'Contenu de l\'onglet Disponible', 'Contenu de l\'onglet Indisponible']);
+const tabContents = ref(['1', '2', '3']);
 const activeTab = ref(0);
 
 function changeTab(index: number) {

@@ -24,5 +24,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="map" class="h-[calc(100vh-4rem-12px)] w-9/10"></div>
+  <div id="map" class="h-[calc(100vh-4rem-12px)]"></div>
   </template>
