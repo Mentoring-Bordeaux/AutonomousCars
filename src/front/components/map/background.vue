@@ -2,9 +2,12 @@
 import * as atlas from "azure-maps-control";
 import "azure-maps-control/dist/atlas.min.css";
 
-onMounted(() => {
-  const config = useRuntimeConfig();
-  const { getMapToken } = useAzureMaps();
+onMounted(async () => {
+  const { getMapCredential } = useAzureMaps();
+  const {
+    clientId,
+    accessToken: { token },
+  } = await getMapCredential();
 
   const map = new atlas.Map("map", {
     view: "Auto",
@@ -13,11 +16,8 @@ onMounted(() => {
     zoom: 10,
     authOptions: {
       authType: atlas.AuthenticationType.anonymous,
-      clientId: config.public.azureMapsClientId,
-      getToken: (resolve, reject) =>
-        getMapToken()
-          .then(({ token }) => resolve(token))
-          .catch((error) => reject(error)),
+      clientId,
+      getToken: (resolve) => resolve(token),
     },
   });
 });
