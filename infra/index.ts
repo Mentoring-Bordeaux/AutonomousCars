@@ -56,13 +56,9 @@ const webApp = new azure_native.web.WebApp("app-autonomouscars", {
 });
 
 // Assign Azure Maps Data Reader role to API managed identity
-const roleAssignment = new azure_native.authorization.RoleAssignment(
-    "ra-autonomouscars",
-    {
-        principalId: webApp.identity.apply((x) => x?.principalId!),
-        roleDefinitionId:
-            "providers/Microsoft.Authorization/roleDefinitions/423170ca-a8f6-4b0f-8487-9e4eb8f49bfa",
-        scope: mapsAccount.id,
-        principalType: PrincipalType.ServicePrincipal,
-    }
-);
+const roleAssignment = new azure_native.authorization.RoleAssignment("ra-autonomouscars", {
+    principalId: webApp.identity.apply((x) => x?.principalId!),
+    roleDefinitionId: "providers/Microsoft.Authorization/roleDefinitions/423170ca-a8f6-4b0f-8487-9e4eb8f49bfa",
+    scope: mapsAccount.id,
+    principalType: PrincipalType.ServicePrincipal,
+});

@@ -1,4 +1,4 @@
-import { AccessToken } from "./accessToken";
+import type { AccessToken } from "./accessToken";
 
 export type ResourceCredential = {
   clientId: string;

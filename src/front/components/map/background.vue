@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import * as atlas from "azure-maps-control";
 import * as signalR from "@microsoft/signalr";
+
 import type { VehicleLocation } from "~/models/VehicleLocation";
+
 import "azure-maps-control/dist/atlas.min.css";
 
 const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
