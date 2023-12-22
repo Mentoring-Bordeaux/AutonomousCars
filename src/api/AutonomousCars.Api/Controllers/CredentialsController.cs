@@ -11,9 +11,9 @@ using Microsoft.Extensions.Options;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CredentialsController(IOptions<AzureMapsOptions> options, TokenCredential tokenCredential) : Controller
+public class CredentialsController(IOptions<AzureMapsOptions> azureMapsOptions, TokenCredential tokenCredential) : Controller
 {
-    private readonly AzureMapsOptions _azureMapsOptions = options.Value;
+    private readonly AzureMapsOptions _azureMapsOptions = azureMapsOptions.Value;
 
     private readonly TokenCredential _tokenCredential = tokenCredential;
 
