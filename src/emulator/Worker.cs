@@ -1,7 +1,6 @@
-using AutonomousCars.Emulator.Model;
-using System.ComponentModel.DataAnnotations;
+using Emulator.Model;
 
-namespace AutonomousCars.Emulator;
+namespace Emulator;
 using GeoJSON.Text.Geometry;
 using MQTTnet;
 using MQTTnet.Client;
@@ -43,19 +42,19 @@ public class Worker : BackgroundService
         TimePositionList? timePositionList= JsonSerializer.Deserialize<TimePositionList>(jsonString);
         if (timePositionList != null)
         {
-            var timePositions = timePositionList.timePositions;
+            var timePositions = timePositionList.TimePositions;
             var lastTimePosition = timePositions.Last();
             var speed = 250;
             foreach (var timePosition in timePositions)
             {
                 MqttClientPublishResult pubAck = await telemetryPosition.SendTelemetryAsync(
-                    new Point(new Position(timePosition.latitude, timePosition.longitude)), stoppingToken);
+                    new Point(new Position(timePosition.Latitude, timePosition.Longitude)), stoppingToken);
 
                 _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);
 
                 if (timePosition != lastTimePosition)
                 {
-                    int nextPosition = timePositionList.timePositions.IndexOf(timePosition) + 1;
+                    int nextPosition = timePositionList.TimePositions.IndexOf(timePosition) + 1;
                     _logger.LogInformation("Time to wait {time}", speed);
                     await Task.Delay(speed, stoppingToken);
                 }
