@@ -27,8 +27,8 @@ watch(showSidebar, () => {
     <div :class="{ 'w-9/10': showSidebar, 'w-full': !showSidebar }">
       <MapBackground :key="key" />
     </div>
-    <div :class="[showSidebar ? 'w-4/10' : 'ml-auto', 'bg-white p-4', showSidebar ? 'shadow-2xl' : 'shadow-2xl']">
-      <button class="btn" @click.stop="toggleSidebar">
+    <div :class="[showSidebar ? 'w-4/10' : 'ml-auto', 'bg-white', showSidebar ? 'shadow-2xl' : 'shadow-2xl']">
+      <button v-if="!isTab" class="btn ml-5 pt-4" @click.stop="toggleSidebar" >
         <i :class="showSidebar ? 'i-heroicons-chevron-right' : 'i-heroicons-chevron-left'"></i>
       </button>
       <div v-if="!isTab">
@@ -38,11 +38,5 @@ watch(showSidebar, () => {
       </div>
       <component v-else :is="tabs[tab]"></component>
     </div>
-  </div>
-  <!-- Bouton de retour en bas de la page -->
-  <div class="fixed bottom-4 right-4" v-if="isTab">
-    <nuxt-link :to="{ path: '/'}" class="text-base text-400 hover:underline">
-      <i class="i-heroicons-chevron-left"></i>Retour
-    </nuxt-link>
   </div>
 </template>

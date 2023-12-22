@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 const tabs = ref(['Tous', 'Disponible', 'Indisponible']);
 // TODO: tabContents get all cars 
-const tabContents = ref(['1', '2', '3']);
+const tabContents = ref(['', '', '']);
 const activeTab = ref(0);
 
 function changeTab(index: number) {
@@ -11,6 +11,15 @@ function changeTab(index: number) {
 }
 </script>
 <template>
+    <div class="bg-gray-100 p-4">
+      <div class="flex items-center">
+        <nuxt-link :to="{ path: '/'}" class="text-gray-600 hover:text-gray-800 focus:outline-none">
+          <i class="i-heroicons-chevron-left"></i>
+        </nuxt-link>
+        <h1 class="text-xl text-[#E36C39] font-400 ml-4">Les véhicules</h1>
+      </div>
+    </div>
+
     <div class="py-3">
       <ul class="hidden text-xs font-medium text-center text-gray-500 rounded-xl shadow sm:flex dark:divide-gray-700 dark:text-gray-400">
         <li v-for="(tab, index) in tabs" :key="index" class="w-full">
