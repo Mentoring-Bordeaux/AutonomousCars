@@ -22,7 +22,7 @@ export default defineComponent({
     async function sendRequest() {
       if(input.value != undefined)  {
         searchResults.value = (await fetchAdresses(input.value)) ?? [];
-        console.log(searchResults.value)
+        //console.log(searchResults.value)
         }
     }
 
@@ -30,7 +30,7 @@ export default defineComponent({
       input.value = result.name + ', ' + result.postalCode + ', ' +  result.municipality;
       addressPosition.value = result.position;
       searchResults.value = []; // Vide la liste des résultats après la sélection
-      console.log("Position sauvegardé : ", addressPosition.value);
+      //console.log("Position sauvegardé : ", addressPosition.value);
       emit('update:modelValue', input.value);
       emit('update:position', addressPosition.value)
       shouldSendRequest = false;
