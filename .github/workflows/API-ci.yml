@@ -1,0 +1,39 @@
+name: API CI Pipeline 
+
+on: 
+  push: 
+    branches: 
+      - main
+    paths: 
+      - src/api/AutonomousCars.Api/**
+  pull_request: 
+    branches:
+      - main
+    paths: 
+      - src/api/AutonomousCars.Api/**
+
+defaults:
+  run:
+    working-directory: ./src/api/AutonomousCars.Api
+
+jobs: 
+  build: 
+    runs-on: ubuntu-latest
+    steps: 
+        - name: Checkout Git Repository
+          uses: actions/checkout@v3
+
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: 8.0.x
+        
+        - name: Restore dependencies
+          run: dotnet restore
+        - name: Build
+          run: dotnet build --no-restore -c Release
+
+        - name: Upload artifact
+          uses: actions/upload-artifact@v3
+          with:
+            path: ./src/api/AutonomousCars.Api/bin/Release/net8.0
