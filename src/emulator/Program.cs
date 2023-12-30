@@ -1,4 +1,4 @@
-namespace AutonomousCars.Emulator;
+namespace Emulator;
 
 public class Program
 {

@@ -1,4 +1,4 @@
-﻿namespace AutonomousCars.Emulator;
+﻿namespace Emulator;
 
 using GeoJSON.Text.Geometry;
 using MQTTnet.Client;
