@@ -1,8 +1,9 @@
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
-import { Address } from "~/models/address"
+import { defineComponent, defineProps, ref, watch } from 'vue'
+import type { Address } from "~/models/address";
 import { useAzureMapsAPI } from "~/composables/useAzureMapsAPI"
 
+defineProps<Address>()
 
 export default defineComponent({
   props: {
@@ -49,7 +50,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <input @input="sendRequest" :id="label" v-model="input" type="text" :placeholder="placeholder" class="p-2 border rounded bg-white">
+    <input @input="sendRequest" :id="label" v-model="input" type="text" :placeholder="placeholder" class="p-2 border text-sm rounded bg-white">
 
     <div v-if="searchResults.length > 0" class="border rounded-md bg-white">
             <div v-if="searchResults.length > 0" class="border rounded-md bg-white">
