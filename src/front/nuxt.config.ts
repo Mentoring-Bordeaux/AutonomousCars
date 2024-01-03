@@ -31,12 +31,6 @@ export default defineNuxtConfig({
     },
   },
 
-  runtimeConfig: {
-    public: {
-      azureMapsClientId: process.env.AZURE_MAPS_CLIENT_ID,
-    },
-  },
-
   ssr: false,
 
   typescript: {

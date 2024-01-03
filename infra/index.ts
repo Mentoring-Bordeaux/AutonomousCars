@@ -5,19 +5,19 @@ import { PrincipalType } from "@pulumi/azure-native/authorization";
 
 // Create an Azure Resource Group
 const resourceGroup = new resources.ResourceGroup("rg-autonomouscars", {
-    location:"westeurope", 
-    resourceGroupName:"rg-autonomouscars"
+    location: "westeurope",
+    resourceGroupName: "rg-autonomouscars",
 });
 
 // Create a Static Web App
 const staticWebApp = new azure_native.web.StaticSite("stapp-autonomouscars", {
     location: resourceGroup.location,
     resourceGroupName: resourceGroup.name,
-    branch: "main", 
+    branch: "main",
     sku: {
         name: "Free",
         tier: "Free",
-    }
+    },
 });
 
 // Export the URL of the Static Web App
@@ -43,14 +43,22 @@ const webApp = new azure_native.web.WebApp("app-autonomouscars", {
     location: resourceGroup.location,
     resourceGroupName: resourceGroup.name,
     identity: {
-        type: ManagedServiceIdentityType.SystemAssigned
-    }
+        type: ManagedServiceIdentityType.SystemAssigned,
+    },
+    siteConfig: {
+        appSettings: [
+            {
+                name: "AzureMaps:ClientId",
+                value: mapsAccount.properties.uniqueId,
+            },
+        ],
+    },
 });
 
-// Assign Azure Maps Data Reader role to a Principal
+// Assign Azure Maps Data Reader role to API managed identity
 const roleAssignment = new azure_native.authorization.RoleAssignment("ra-autonomouscars", {
-    principalId: webApp.identity.apply(x => x?.principalId!),
+    principalId: webApp.identity.apply((x) => x?.principalId!),
     roleDefinitionId: "providers/Microsoft.Authorization/roleDefinitions/423170ca-a8f6-4b0f-8487-9e4eb8f49bfa",
     scope: mapsAccount.id,
-    principalType: PrincipalType.ServicePrincipal
-}); 
+    principalType: PrincipalType.ServicePrincipal,
+});
