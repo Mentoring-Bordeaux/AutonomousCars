@@ -1,20 +1,22 @@
 <script setup lang="ts">
 import * as atlas from "azure-maps-control";
-import "azure-maps-control/dist/atlas.min.css";
-import * as signalR from "@microsoft/signalr"
+import * as signalR from "@microsoft/signalr";
+
 import type { VehicleLocation } from "~/models/VehicleLocation";
 
-const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
-const carPath = "/img/car.png"
+import "azure-maps-control/dist/atlas.min.css";
 
-const initialPosition = [-0.607294, 44.806267]
+const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
+const carPath = "/img/car.png";
+
+const initialPosition = [-0.607294, 44.806267];
 
 const carPosition = ref(initialPosition);
 const carRotation = ref(0);
 
-onMounted(() => {
-	const config = useRuntimeConfig();
-	const { getMapToken } = useAzureMaps();
+onMounted(async () => {
+	const { getMapCredential } = useAzureMaps();
+	const { clientId, accessToken: { token } } = await getMapCredential();
 
 
 	const map = new atlas.Map("map", {
@@ -24,11 +26,8 @@ onMounted(() => {
 		zoom: 10,
 		authOptions: {
 			authType: atlas.AuthenticationType.anonymous,
-			clientId: config.public.azureMapsClientId,
-			getToken: (resolve, reject) =>
-			getMapToken()
-			.then(({ token }) => resolve(token))
-			.catch((error) => reject(error)),
+			clientId,
+			getToken: (resolve) => resolve(token),
 		},
 	});
 

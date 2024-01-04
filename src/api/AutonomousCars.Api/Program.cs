@@ -1,5 +1,6 @@
 namespace AutonomousCars.Api;
 
+using AutonomousCars.Api.Models.Options;
 using AutonomousCars.Api.Weather.Services;
 
 using Azure.Core;
@@ -19,6 +20,9 @@ public class Program
         builder.Services.AddControllers();
 
         builder.Services.AddTransient<IWeatherService, WeatherService>();
+
+        // Options
+        builder.Services.Configure<AzureMapsOptions>(builder.Configuration.GetSection("AzureMaps"));
 
         // Token credential
         builder.Services.AddSingleton<TokenCredential>((serviceProvider) =>
