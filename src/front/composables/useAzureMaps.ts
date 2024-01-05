@@ -1,15 +1,15 @@
-import type { AccessToken } from "~/models/accessToken";
+import type { ResourceCredential } from "~/models/resourceCredential";
 
 export function useAzureMaps() {
-  async function getMapToken() {
-    const { data } = await useFetch<AccessToken>("api/token/map");
+  async function getMapCredential() {
+    const { data } = await useFetch<ResourceCredential>("api/credentials/map");
 
     if (!data.value) {
-      throw new Error("Error while retrieving azure maps token");
+      throw new Error("Error while retrieving azure maps credentials");
     }
 
     return data.value;
   }
 
-  return { getMapToken };
+  return { getMapCredential };
 }
