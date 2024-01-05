@@ -1,6 +1,6 @@
-using System.Text.Json.Serialization;
-
 namespace Emulator.Model;
+
+using System.Text.Json.Serialization;
 
 public class TimePosition
 {
