@@ -1,3 +1,5 @@
+using AutonomousCars.Api.Itinerary.Services;
+
 namespace AutonomousCars.Api;
 
 using AutonomousCars.Api.Models.Options;
@@ -20,6 +22,7 @@ public class Program
         builder.Services.AddControllers();
 
         builder.Services.AddTransient<IWeatherService, WeatherService>();
+        builder.Services.AddTransient<IWorker, Worker>();
 
         // Options
         builder.Services.Configure<AzureMapsOptions>(builder.Configuration.GetSection("AzureMaps"));
