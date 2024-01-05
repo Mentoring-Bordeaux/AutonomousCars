@@ -1,6 +1,10 @@
-namespace AutonomousCars.Emulator.Model;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace Emulator.Model;
 
 public class TimePositionList
 {
-    public List<TimePosition> timePositions { get; set; } = new();
+    [JsonPropertyName("timePositions")]
+    public List<TimePosition> TimePositions { get; set; } = new();
 }

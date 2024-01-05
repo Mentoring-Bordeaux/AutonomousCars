@@ -1,0 +1,9 @@
+xœx {
+  "profiles": {
+    "Company.FunctionTelemetry": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7023",
+      "launchBrowser": false
+    }
+  }
+}

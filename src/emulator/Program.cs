@@ -1,4 +1,4 @@
-namespace AutonomousCars.Emulator;
+namespace Emulator;
 
 public class Program
 {
@@ -14,4 +14,5 @@ public class Program
         host.Run();   
     }
 }
+
 
