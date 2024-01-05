@@ -7,12 +7,32 @@
     <InvariantGlobalization>true</InvariantGlobalization>
     <UserSecretsId>a85b90dd-47aa-4542-9f93-acfbdbff43a9</UserSecretsId>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="GeoJSON.Text" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="MQTTnet" Version="4.3.1.873" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.Core" Version="1.36.0" />
     <PackageReference Include="Azure.Identity" Version="1.10.3" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0-rc.1.23421.29" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\mqttclients\MQTTnet.Client.Extensions.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="Controllers\ItineraryController.cs">
+      <Link>config\ItineraryController.cs</Link>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Model\" />
   </ItemGroup>
 
 </Project>
