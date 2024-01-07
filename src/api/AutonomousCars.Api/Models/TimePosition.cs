@@ -10,4 +10,4 @@ public class TimePosition
     [JsonPropertyName("longitude")]
     public double Longitude { get; set; }
     public int Timestamp { get; set; }
-}
+}   

@@ -12,6 +12,8 @@ public class Worker : BackgroundService, IWorker
 {
     private readonly ILogger<Worker> _logger;
     private readonly IConfiguration _configuration;
+
+    private String CAR_ID = "car01";
     public Worker(ILogger<Worker> logger, IConfiguration configuration)
     {
         _logger = logger;
@@ -39,30 +41,17 @@ public class Worker : BackgroundService, IWorker
         _logger.LogInformation("Client {ClientId} connected: {ResultCode}", mqttClient.Options.ClientId, connAck.ResultCode);
 
 
-        PositionTelemetryProducer telemetryPosition = new(mqttClient);
+        ItineraryTelemetryProducer telemetryPosition = new(mqttClient, CAR_ID);
 
         string fileName = "Itinerary/Services/position.json";
         string jsonString = File.ReadAllText(fileName);
         TimePositionList? timePositionList= JsonSerializer.Deserialize<TimePositionList>(jsonString);
-        if (timePositionList != null)
+        var timePositions = timePositionList?.TimePositions;
+        if (timePositions != null)
         {
-            var timePositions = timePositionList.TimePositions;
-            var lastTimePosition = timePositions.Last();
-            var speed = 250;
-            foreach (var timePosition in timePositions)
-            {
-                MqttClientPublishResult pubAck = await telemetryPosition.SendTelemetryAsync(
-                    new Point(new Position(timePosition.Latitude, timePosition.Longitude)), stoppingToken);
-
-                _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);
-
-                if (timePosition != lastTimePosition)
-                {
-                    int nextPosition = timePositionList.TimePositions.IndexOf(timePosition) + 1;
-                    _logger.LogInformation("Time to wait {time}", speed);
-                    await Task.Delay(speed, stoppingToken);
-                }
-            }
+                var positions = timePositions.Select(p => new Position(p.Longitude, p.Latitude)).ToArray();
+                MqttClientPublishResult pubAck = await telemetryPosition.SendTelemetryAsync(new LineString(positions), stoppingToken);
+                _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);   
         }
         else
         {
