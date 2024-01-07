@@ -5,4 +5,5 @@ export type Address = {
     municipality: string;
     position: {lat: number, lon: number}
   };
-  
+
+export type FetchAddressesFunction = (query: string) => Promise<Address[]>;

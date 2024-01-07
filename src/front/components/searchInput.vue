@@ -1,28 +1,32 @@
-<script lang="ts">
+<script setup lang="ts">
 import { defineComponent, defineProps, ref, watch } from 'vue'
-import type { Address } from "~/models/address";
+import type { FetchAddressesFunction, Address } from "~/models/address";
 import { useAzureMapsAPI } from "~/composables/useAzureMapsAPI"
 
-defineProps<Address>()
+const fetchAdresses = ref<(FetchAddressesFunction | null)>(null);
+  
 
-export default defineComponent({
-  props: {
+  onMounted(async () => {
+    const api = await useAzureMapsAPI()
+    fetchAdresses.value = api.fetchAdresses
+  }); 
+
+  const props = defineProps({
     label: String,
     modelValue: String,
     placeholder: String,
     position: Object
-  },
-  emits: ['update:modelValue', 'update:position'],
-  setup(props, { emit }) {
-    const input = ref(props.modelValue)
-    const addressPosition = ref(props.position)
-    const { fetchAdresses } = useAzureMapsAPI()
-    const searchResults = ref<Address[]>([])
-    let shouldSendRequest = true
+  });
+
+  const emit = defineEmits(['update:modelValue', 'update:position']);
+  const input = ref(props.modelValue)
+  const addressPosition = ref(props.position)
+  const searchResults = ref<Address[]>([])
+  let shouldSendRequest = true
 
     async function sendRequest() {
-      if(input.value != undefined)  {
-        searchResults.value = (await fetchAdresses(input.value)) ?? [];
+      if(input.value != undefined && fetchAdresses.value instanceof Function)  {
+        searchResults.value = (await fetchAdresses.value(input.value)) ?? [];
         //console.log(searchResults.value)
         }
     }
@@ -43,10 +47,6 @@ export default defineComponent({
       if(shouldSendRequest)
         sendRequest()
     })
-
-    return { input, searchResults, sendRequest, selectResult }
-  }
-})
 </script>
 
 <template>

@@ -1,23 +1,26 @@
-import { TokenCredential } from "@azure/core-auth";
+import { AzureKeyCredential, TokenCredential } from "@azure/core-auth";
 import MapsSearch, { isUnexpected } from "@azure-rest/maps-search";
+import { ResourceCredential } from "~/models/resourceCredential";
+import { FetchAddressesFunction, Address } from "~/models/address";
 
-export function useAzureMapsAPI() {
+export async function useAzureMapsAPI(): Promise<{ fetchAdresses: FetchAddressesFunction }> {
   const config = useRuntimeConfig();
-  const { getMapToken } = useAzureMaps();
-  const credential: TokenCredential = {
-    getToken: async (scopes) => {
-      const { expiresOn, token } = await getMapToken();
+  const { getMapCredential } = useAzureMaps();
 
+  const { clientId, accessToken: { token, expiresOn } } = await getMapCredential();
+
+  const tokenCredential: TokenCredential = {
+    getToken: async (scopes) => {
       return {
-        token,
+        token: token,
         expiresOnTimestamp: expiresOn,
       };
     },
-  };
+  }; 
 
-  const client = MapsSearch(credential, config.public.azureMapsClientId);
+  const client = MapsSearch(tokenCredential, clientId);
 
-  async function fetchAdresses(query: string) {
+  async function fetchAdresses(query: string): Promise<Address[]> {
     try {
       const response = await client.path("/search/fuzzy/{format}", "json").get({
         queryParameters: {
@@ -41,6 +44,7 @@ export function useAzureMapsAPI() {
       }));
     } catch (error) {
       console.error(error);
+      return [];
     }
   }
   return { fetchAdresses };
