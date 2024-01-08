@@ -9,3 +9,7 @@ GET {{AutonomousCars.Api_HostAddress}}/api/credentials/map
 Accept: application/json
 
 ###
+
+POST({{AutonomousCars.Api_HostAddress}}/
+
+### 
