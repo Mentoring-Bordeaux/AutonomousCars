@@ -23,8 +23,8 @@ watch(showSidebar, () => {
 </script>
 
 <template>
-  <div class="flex">
-    <div :class="{ 'w-9/10': showSidebar, 'w-full': !showSidebar }">
+  <div class="flex h-[calc(100vh-56px)]">
+    <div :class="{ 'w-9/10': showSidebar, 'w-screen': !showSidebar }">
       <MapBackground :key="key" />
     </div>
     <div :class="[showSidebar ? 'w-4/10' : 'ml-auto', 'bg-white', showSidebar ? 'shadow-2xl' : 'shadow-2xl']">
