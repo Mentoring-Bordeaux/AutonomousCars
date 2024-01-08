@@ -8,7 +8,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Azure.Core" Version="1.36.0" />
 		<PackageReference Include="GeoJSON.Text" Version="1.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
 		<PackageReference Include="MQTTnet" Version="4.3.1.873" />
 	</ItemGroup>
