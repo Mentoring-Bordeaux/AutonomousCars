@@ -2,6 +2,7 @@ namespace AutonomousCars.Api;
 
 using AutonomousCars.Api.Models.Options;
 using AutonomousCars.Api.Weather.Services;
+using AutonomousCars.Api.Device.Services;
 
 using Azure.Core;
 using Azure.Identity;
@@ -20,6 +21,7 @@ public class Program
         builder.Services.AddControllers();
 
         builder.Services.AddTransient<IWeatherService, WeatherService>();
+        builder.Services.AddTransient<IMqttDevices, MqttDevices>();
 
         // Options
         builder.Services.Configure<AzureMapsOptions>(builder.Configuration.GetSection("AzureMaps"));
