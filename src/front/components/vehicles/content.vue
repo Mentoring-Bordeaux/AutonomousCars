@@ -2,8 +2,7 @@
 import { ref } from 'vue';
 
 const tabs = ref(['Tous', 'Disponible', 'Indisponible']);
-// TODO: tabContents get all cars 
-const tabContents = ref(['', '', '']);
+const tabContents = ref(['', '', '']);  
 const activeTab = ref(0);
 
 function changeTab(index: number) {
@@ -27,10 +26,11 @@ function changeTab(index: number) {
         </li>
       </ul>
     </div>
-      <div v-for="(content, index) in tabContents" :key="index" v-show="activeTab === index">
-        <!-- Contenu dynamique de l'onglet -->
-        {{ content }}
-        <VehiclesCard></VehiclesCard>
+      <div v-if=useVehiclesListStore().isLoaded v-for="(_, index) in tabContents" :key="index" v-show="activeTab === index" class="h-125 overflow-y-scroll">
+        <VehiclesCardList :type="index"></VehiclesCardList>
+      </div>
+      <div v-else > 
+        <VehiclesLoader></VehiclesLoader>
       </div>
   </template>
 
