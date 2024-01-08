@@ -7,7 +7,7 @@ import type { VehicleLocation } from "~/models/VehicleLocation";
 import "azure-maps-control/dist/atlas.min.css";
 
 const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
-const carPath = "/img/car.png";
+const carPath = "/img/car_icon.png";
 
 const initialPosition = [-0.607294, 44.806267];
 
@@ -35,7 +35,7 @@ onMounted(async () => {
 	map.events.add('ready', function () {
 		var car = new atlas.HtmlMarker({
 			position: initialPosition,
-			htmlContent: '<img id="carImage" src="' + carPath + '" style="width: 50px; height: 30px; transform-origin: center center;" />'
+			htmlContent: '<div style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; background-color: white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); display: flex; align-items: center; justify-content: center;"><img id="carImage" src="' + carPath + '" style="width: 80px; height: 80px; object-fit: contain; border-radius: 50%;"/></div>'
 		})
 		map.markers.add(car)
 
@@ -71,5 +71,5 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div id="map" class="h-[calc(100vh-4rem-12px)]"></div>
+  <div id="map" class="h-[calc(100vh-56px)]"></div>
 </template>
