@@ -1,10 +1,8 @@
-import { AzureKeyCredential, TokenCredential } from "@azure/core-auth";
+import type { TokenCredential } from "@azure/core-auth";
 import MapsSearch, { isUnexpected } from "@azure-rest/maps-search";
-import { ResourceCredential } from "~/models/resourceCredential";
-import { FetchAddressesFunction, Address } from "~/models/address";
+import type { FetchAddressesFunction, Address } from "~/models/address";
 
 export async function useAzureMapsAPI(): Promise<{ fetchAdresses: FetchAddressesFunction }> {
-  const config = useRuntimeConfig();
   const { getMapCredential } = useAzureMaps();
 
   const { clientId, accessToken: { token, expiresOn } } = await getMapCredential();
