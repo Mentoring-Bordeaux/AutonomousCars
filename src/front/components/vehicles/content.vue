@@ -30,7 +30,7 @@ function changeTab(index: number) {
       <div v-for="(content, index) in tabContents" :key="index" v-show="activeTab === index">
         <!-- Contenu dynamique de l'onglet -->
         {{ content }}
-        <ListCard></ListCard>
+        <VehiclesCard></VehiclesCard>
       </div>
   </template>
 
