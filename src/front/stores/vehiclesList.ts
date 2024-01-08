@@ -1,5 +1,5 @@
-import { Vehicle } from "~/models/Vehicle";
-import { Position } from "~/models/Vehicle";
+import type { Vehicle } from "~/models/Vehicle";
+import type { Position } from "~/models/Vehicle";
 
 export const useVehiclesListStore = defineStore('vehiclesListStore', {
     state: () => ({
