@@ -71,5 +71,5 @@ onMounted(async () => {
 </script>
 
 <template>
-	<div id="map" class="h-[calc(100vh-4rem-12px)] w-screen"></div>
+  <div id="map" class="h-[calc(100vh-4rem-12px)]"></div>
 </template>
