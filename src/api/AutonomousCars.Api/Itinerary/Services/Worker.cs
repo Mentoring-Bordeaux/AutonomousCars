@@ -1,3 +1,5 @@
+using System.Xml;
+
 namespace AutonomousCars.Api.Itinerary.Services;
 
 using AutonomousCars.Api.Models;
@@ -13,6 +15,7 @@ public class Worker : BackgroundService, IWorker
 {
     private readonly ILogger<Worker> _logger;
     private readonly IConfiguration _configuration;
+    private bool _isStatusRequest;
 
     private String CAR_ID = "car01";
     public Worker(ILogger<Worker> logger, IConfiguration configuration)
@@ -21,9 +24,36 @@ public class Worker : BackgroundService, IWorker
         _configuration = configuration;
 
     }
-    public async Task ExecuteAsyncPublic(CancellationToken stoppingToken)
+    public async Task ExecuteAsyncPublic(CancellationToken stoppingToken, bool isStatusRequest)
     {
+        this._isStatusRequest = isStatusRequest;
         await ExecuteAsync(stoppingToken);
+    }
+
+    private Feature<LineString>? ComputeItineraryData()
+    {
+        string fileName = "Itinerary/Services/position.json";
+        string jsonString = File.ReadAllText(fileName);
+        TimePositionList? timePositionList= JsonSerializer.Deserialize<TimePositionList>(jsonString);
+        var timePositions = timePositionList?.TimePositions;
+        if (timePositions != null)
+        {
+            var positions = timePositions.Select(p => new Position(p.Longitude, p.Latitude)).ToArray();
+            var positionsLineString = new LineString(positions);
+            var properties = new Dictionary<string, object>();
+            properties.Add("status", "false");
+            return new Feature<LineString>(positionsLineString, properties);
+        } 
+        return null;
+    }
+    
+    private Feature<LineString> ComputeStatusData()
+    { ;
+        var positions = new[] {new Position(0, 0), new Position(0, 0)};
+        var positionsLineString = new LineString(positions);
+        var properties = new Dictionary<string, object>();
+        properties.Add("status", "true");
+        return new Feature<LineString>(positionsLineString, properties);
     }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -42,21 +72,14 @@ public class Worker : BackgroundService, IWorker
         _logger.LogInformation("Client {ClientId} connected: {ResultCode}", mqttClient.Options.ClientId, connAck.ResultCode);
 
 
-        ItineraryTelemetryProducer telemetryPosition = new(mqttClient, CAR_ID);
+        ItineraryTelemetryProducer telemetry = new(mqttClient, CAR_ID);
 
-        string fileName = "Itinerary/Services/position.json";
-        string jsonString = File.ReadAllText(fileName);
-        TimePositionList? timePositionList= JsonSerializer.Deserialize<TimePositionList>(jsonString);
-        var timePositions = timePositionList?.TimePositions;
-        if (timePositions != null)
+
+        var geospatialFeature = _isStatusRequest ? ComputeStatusData() : ComputeItineraryData();
+        if (geospatialFeature != null)
         {
-                var positions = timePositions.Select(p => new Position(p.Longitude, p.Latitude)).ToArray();
-                var positionsLineString = new LineString(positions);
-                var properties = new Dictionary<string, object>();
-                properties.Add("status", "false");
-                //properties.Add("speed", "");
-                Feature<LineString> geospatialFeature = new Feature<LineString>(positionsLineString, properties);
-                MqttClientPublishResult pubAck = await telemetryPosition.SendTelemetryAsync(geospatialFeature, stoppingToken);
+                
+                MqttClientPublishResult pubAck = await telemetry.SendTelemetryAsync(geospatialFeature, stoppingToken);
                 _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);   
         }
         else

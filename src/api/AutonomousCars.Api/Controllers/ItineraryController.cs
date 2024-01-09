@@ -16,11 +16,18 @@ public class ItineraryController : ControllerBase
         _worker = worker;
     }
 
-    [HttpGet]
+    [HttpGet("create")]
     public async Task<IActionResult> SendItinerary()
     {
-        await _worker.ExecuteAsyncPublic(CancellationToken.None);
+        await _worker.ExecuteAsyncPublic(CancellationToken.None, false);
         return Ok("Itinerary sent successfully.");
+    }
+    
+    [HttpGet("status")]
+    public async Task<IActionResult> SendStatusRequest()
+    {
+        await _worker.ExecuteAsyncPublic(CancellationToken.None, true);
+        return Ok("Status request sent successfully.");
     }
 }
 
