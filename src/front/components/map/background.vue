@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import * as atlas from "azure-maps-control";
 import * as signalR from "@microsoft/signalr";
-
 import type { Vehicle } from "~/models/Vehicle";
-
+import "/components/map/style.css";
 import "azure-maps-control/dist/atlas.min.css";
 
 const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
@@ -40,6 +39,8 @@ const vehicles: Vehicle[] = [
     }
 ];
 
+let currentPopup: atlas.Popup | null = null;
+
 onMounted(async () => {
     const { getMapCredential } = useAzureMaps();
     const { clientId, accessToken: { token } } = await getMapCredential();
@@ -61,14 +62,38 @@ onMounted(async () => {
         vehicles.forEach(vehicle => {
             const carMarker = new atlas.HtmlMarker({
                 position: vehicle.position.coordinates,
-                htmlContent: '<div style="position: relative; width: 45px; height: 45px; border-radius: 50%; overflow: hidden; background-color: #ececec; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; border: 1px solid white;">' +
-					'<img id="carImage" src="' + carPath + '" style="width: 45px; height: 45px; object-fit: contain; border-radius: 50%;"/>' +
+                htmlContent: '<div class="roundMarker">' +
+					'<img id="carImage" src="' + carPath + '" class="vehicleIcon"/>' +
 					(vehicle.available ?
-						'<div style="position: fixed; bottom: 1px; right: 2px; width: 12px; height: 12px; border-radius: 50%; background-color: green; border: 2px solid white;"></div>' :
-						'<div style="position: fixed; bottom: 1px; right: 2px; width: 12px; height: 12px; border-radius: 50%; background-color: red; border: 2px solid white;"></div>'
-					) +'</div>'
+						'<div class="availability" style="background-color: green;"></div>' :
+						'<div class="availability" style="background-color: red;"></div>') +'</div>'
 
             });
+
+            // Attach a popup to the marker.
+            const popup = new atlas.Popup({
+                content: '<div class="p-5 mx-4"><h2 class="pb-3 font-bold">Voiture : '+ vehicle.carId +'</h2>'
+                    +
+					(vehicle.available ?
+						'<div class="p-2 mx-2 bg-orange-500 font-bold text-white rounded"><a href="/?tab=create">Planifier un trajet</a></div></div>' :
+						'<div class="disabled p-2 mx-2 bg-gray-400 font-bold text-black rounded"><a href="/?tab=create">Planifier un trajet</a></div></div>') +'</div>',
+                pixelOffset: [0, -40],
+                closeButton: true
+            });
+
+            map.events.add('click', carMarker, function () {
+                if (currentPopup) {
+                    currentPopup.close();
+                }
+
+                popup.setOptions({
+                    position: carMarker.getOptions().position
+                });
+                popup.open(map);
+
+                currentPopup = popup;
+            });
+
             map.markers.add(carMarker);
 
             const connection = new signalR.HubConnectionBuilder()
@@ -78,7 +103,7 @@ onMounted(async () => {
             connection.on('newPosition', (message: Vehicle) => {
                 console.log("new value received: " + message.position.coordinates);
 
-                const oldPosition = carPosition.value;
+                const oldPosition = vehicle.position.coordinates;
                 const newPosition = message.position.coordinates;
 
                 // Calculate the angle between the old and new positions.
@@ -86,7 +111,7 @@ onMounted(async () => {
 
                 // Update car rotation and position.
                 carRotation.value = angle;
-                carPosition.value = newPosition;
+                vehicle.position.coordinates = newPosition;
 
                 // Apply rotation to the car image.
                 const carImage = document.getElementById("carImage") as HTMLImageElement;
