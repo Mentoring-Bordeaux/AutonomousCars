@@ -8,7 +8,7 @@ const enum Availability {
 }
 const props = defineProps({'type':Number});
 
-const shouldDisplayVehicle = (vehicle: Vehicle): Boolean => {
+const shouldDisplayVehicle = (vehicle: Vehicle): boolean => {
   return props.type === Availability.All 
          || (props.type === Availability.Available && vehicle.available)
          || (props.type === Availability.Unavailable && !vehicle.available);
