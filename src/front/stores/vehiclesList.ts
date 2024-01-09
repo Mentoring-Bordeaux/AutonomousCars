@@ -19,14 +19,11 @@ export const useVehiclesListStore = defineStore('vehiclesListStore', {
           const devices = await response.json();
 
           if (devices.status === 'Success') {
-            for (const deviceName of devices.deviceNames) {
-              const vehicleLocation: Vehicle = {
-                carId: deviceName, 
-                position: initialPosition,
-                available: false, 
-              };
-              this.vehiclesList.push(vehicleLocation);  
-            }
+            this.vehiclesList = devices.deviceNames.map((deviceName: string) => ({
+              carId: deviceName,
+              position: initialPosition,
+              available: false
+            }));            
             this.isLoaded = true;
           } else {
             console.error('Error of status in the API answer');
