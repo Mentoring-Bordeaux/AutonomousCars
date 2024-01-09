@@ -3,7 +3,8 @@ type Position = {
     coordinates: number[]
 }
 
-export type VehicleLocation = {
+export type Vehicle = {
     carId: String,
-    position: Position
+    position: Position,
+    available: boolean
 }
