@@ -1,7 +1,5 @@
 <script setup lang="ts">
 const props = defineProps(['vehicle']);
-const vehicle = props.vehicle;
-var color = props.vehicle.available ? "green" : "red";
 </script>
 
 <template>
@@ -12,11 +10,10 @@ var color = props.vehicle.available ? "green" : "red";
           <img src="/img/car_icon.png" alt="Voiture" class="w-full h-full object-cover" />
         </div>
       </div>
-
       <div class="p-4">
         <h2 class="text-sm font-bold mb-2">{{ vehicle.carId }}</h2>
-        <div :class="[{'bg-green-500': props.vehicle.available, 'bg-red-500': !props.vehicle.available}, 'badge text-white border-dotted border border-white rounded-full p-1 text-center text-xs']">   
-          {{ props.vehicle.available ? 'Disponible' : 'Indisponible' }}
+        <div :class="[{'bg-green-500': vehicle.available, 'bg-red-500': vehicle.available}, 'badge text-white border-dotted border border-white rounded-full p-1 text-center text-xs']">   
+          {{ vehicle.available ? 'Disponible' : 'Indisponible' }}
         </div>
       </div>
     </div>
