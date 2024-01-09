@@ -1,6 +1,8 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Emulator.Model;
+
+namespace AutonomousCars.Api.Models;
 
 public class TimePositionList
 {

@@ -1,6 +1,7 @@
-namespace Emulator.Model;
-
 using System.Text.Json.Serialization;
+
+
+namespace AutonomousCars.Api.Models;
 
 public class TimePosition
 {
@@ -9,4 +10,4 @@ public class TimePosition
     [JsonPropertyName("longitude")]
     public double Longitude { get; set; }
     public int Timestamp { get; set; }
-}
+}   
