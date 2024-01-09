@@ -1,3 +1,6 @@
+using GeoJSON.Text.Feature;
+using GeoJSON.Text.Geometry;
+
 namespace AutonomousCars.Api.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using AutonomousCars.Api.Itinerary.Services;
@@ -9,24 +12,33 @@ using System.Threading.Tasks;
 [Route("api/itinerary")]
 public class ItineraryController : ControllerBase
 {
-    private readonly IWorker _worker;
+    private readonly IItineraryService _itineraryService;
 
-    public ItineraryController(IWorker worker)
+    public ItineraryController(IItineraryService itineraryService)
     {
-        _worker = worker;
+        _itineraryService = itineraryService;
     }
 
-    [HttpGet("create")]
-    public async Task<IActionResult> SendItinerary()
+    [HttpPost("create")]
+    public async Task<IActionResult> SendItinerary(Feature<LineString> itinerary)
     {
-        await _worker.ExecuteAsyncPublic(CancellationToken.None, false);
-        return Ok("Itinerary sent successfully.");
+        if (_itineraryService.CheckItineraryFormat(itinerary))
+        {
+            var itineraryToSend = _itineraryService.ComputeItinerary(itinerary);
+            await _itineraryService.SendRequest(CancellationToken.None, itineraryToSend, false);
+            return Ok("Itinerary sent successfully.");
+        }
+        else
+        {
+            return BadRequest(new { error = "Invalid itinerary format." });
+        }
     }
     
-    [HttpGet("status")]
-    public async Task<IActionResult> SendStatusRequest()
+    [HttpPost("status")]
+    public async Task<IActionResult> SendStatusRequest(string carId)
     {
-        await _worker.ExecuteAsyncPublic(CancellationToken.None, true);
+        Feature<LineString> geospatialFeature = _itineraryService.ComputeStatusData(carId);
+        await _itineraryService.SendRequest(CancellationToken.None, geospatialFeature,true);
         return Ok("Status request sent successfully.");
     }
 }

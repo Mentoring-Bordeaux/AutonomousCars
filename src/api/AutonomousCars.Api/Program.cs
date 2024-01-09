@@ -23,7 +23,7 @@ public class Program
         builder.Services.AddControllers();
 
         builder.Services.AddTransient<IWeatherService, WeatherService>();
-        builder.Services.AddTransient<IWorker, Worker>();
+        builder.Services.AddTransient<IItineraryService, AzureMapsItineraryService>();
         builder.Services.AddTransient<IMqttDevices, MqttDevices>();
 
         // Options
