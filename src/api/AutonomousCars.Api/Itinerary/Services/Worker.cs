@@ -2,6 +2,7 @@ namespace AutonomousCars.Api.Itinerary.Services;
 
 using AutonomousCars.Api.Models;
 using GeoJSON.Text.Geometry;
+using GeoJSON.Text.Feature;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Extensions;
@@ -50,7 +51,12 @@ public class Worker : BackgroundService, IWorker
         if (timePositions != null)
         {
                 var positions = timePositions.Select(p => new Position(p.Longitude, p.Latitude)).ToArray();
-                MqttClientPublishResult pubAck = await telemetryPosition.SendTelemetryAsync(new LineString(positions), stoppingToken);
+                var positionsLineString = new LineString(positions);
+                var properties = new Dictionary<string, object>();
+                properties.Add("status", "false");
+                //properties.Add("speed", "");
+                Feature<LineString> geospatialFeature = new Feature<LineString>(positionsLineString, properties);
+                MqttClientPublishResult pubAck = await telemetryPosition.SendTelemetryAsync(geospatialFeature, stoppingToken);
                 _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);   
         }
         else

@@ -29,12 +29,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Update="Controllers\ItineraryController.cs">
-      <Link>config\ItineraryController.cs</Link>
-    </Compile>
-  </ItemGroup>
-  
-  <ItemGroup>
     <Folder Include="Model\" />
   </ItemGroup>
 
