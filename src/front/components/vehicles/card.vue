@@ -12,7 +12,7 @@ const props = defineProps(['vehicle']);
       </div>
       <div class="p-4">
         <h2 class="text-sm font-bold mb-2">{{ vehicle.carId }}</h2>
-        <div :class="[{'bg-green-500': vehicle.available, 'bg-red-500': vehicle.available}, 'badge text-white border-dotted border border-white rounded-full p-1 text-center text-xs']">   
+        <div :class="[{'bg-green-500': vehicle.available, 'bg-red-500': !vehicle.available}, 'badge text-white border-dotted border border-white rounded-full p-1 text-center text-xs']">   
           {{ vehicle.available ? 'Disponible' : 'Indisponible' }}
         </div>
       </div>
