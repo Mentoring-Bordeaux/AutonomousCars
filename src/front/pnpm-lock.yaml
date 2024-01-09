@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@azure-rest/maps-route':
+    specifier: 1.0.0-beta.2
+    version: 1.0.0-beta.2
   '@azure-rest/maps-search':
     specifier: 1.0.0-beta.3
     version: 1.0.0-beta.3
@@ -109,6 +112,21 @@ packages:
       '@azure/core-auth': 1.5.0
       '@azure/core-rest-pipeline': 1.13.0
       '@azure/core-util': 1.6.1
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@azure-rest/maps-route@1.0.0-beta.2:
+    resolution: {integrity: sha512-MVgNuO9mdKHaXWmmOqeq0hs1V7KVzKeelr+OJP7+BqEh0WXGtdmIVA92m7TQCwzLXzAWkzaw2sfIEGXS3Fzhmg==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      '@azure-rest/core-client': 1.0.0-beta.10
+      '@azure/core-auth': 1.5.0
+      '@azure/core-lro': 2.5.4
+      '@azure/core-rest-pipeline': 1.13.0
+      '@azure/logger': 1.0.4
+      '@azure/maps-common': 1.0.0-beta.2
       tslib: 2.6.2
     transitivePeerDependencies:
       - supports-color

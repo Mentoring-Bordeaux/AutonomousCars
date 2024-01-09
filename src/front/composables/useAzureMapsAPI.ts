@@ -8,9 +8,10 @@ export async function useAzureMapsAPI(): Promise<{ fetchAdresses: FetchAddresses
   const { clientId, accessToken: { token, expiresOn } } = await getMapCredential();
 
   const tokenCredential: TokenCredential = {
-    getToken: async (scopes) => {
+    // eslint-disable-next-line require-await
+    getToken: async () => {
       return {
-        token: token,
+        token,
         expiresOnTimestamp: expiresOn,
       };
     },

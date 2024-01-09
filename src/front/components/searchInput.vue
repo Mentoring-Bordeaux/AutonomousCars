@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, defineProps, ref, watch } from 'vue'
+import { defineProps, ref, watch } from 'vue'
 import type { FetchAddressesFunction, Address } from "~/models/address";
 import { useAzureMapsAPI } from "~/composables/useAzureMapsAPI"
 
@@ -25,7 +25,7 @@ const fetchAdresses = ref<(FetchAddressesFunction | null)>(null);
   let shouldSendRequest = true
 
     async function sendRequest() {
-      if(input.value != undefined && fetchAdresses.value instanceof Function)  {
+      if(input.value !== undefined && fetchAdresses.value instanceof Function)  {
         searchResults.value = (await fetchAdresses.value(input.value)) ?? [];
         //console.log(searchResults.value)
         }
