@@ -21,13 +21,13 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@unocss/nuxt", "@nuxt/ui", "vue3-carousel-nuxt"],
+  modules: ["@unocss/nuxt", "@nuxt/ui", "vue3-carousel-nuxt", '@pinia/nuxt'],
   nitro: {
     devProxy: {
       "/api": {
         target: "https://localhost:7238/api/",
         secure: false,
-      },
+      },  
     },
   },
 

@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const props = defineProps(['vehicle']);
+</script>
+
 <template>
   <div class="card border rounded overflow-hidden shadow-md mx-4 my-8">
     <div class="flex">
@@ -6,10 +10,11 @@
           <img src="/img/car_icon.png" alt="Voiture" class="w-full h-full object-cover" />
         </div>
       </div>
-
       <div class="p-4">
-        <h2 class="text-sm font-bold mb-2">Voiture a</h2>
-        <div class="badge bg-green-500 text-white border-dotted border border-white rounded-full p-1 text-center text-xs">Disponible</div>
+        <h2 class="text-sm font-bold mb-2">{{ vehicle.carId }}</h2>
+        <div :class="[{'bg-green-500': vehicle.available, 'bg-red-500': !vehicle.available}, 'badge text-white border-dotted border border-white rounded-full p-1 text-center text-xs']">   
+          {{ vehicle.available ? 'Disponible' : 'Indisponible' }}
+        </div>
       </div>
     </div>
   </div>
