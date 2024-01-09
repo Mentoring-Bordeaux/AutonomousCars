@@ -27,15 +27,13 @@ const fetchAdresses = ref<(FetchAddressesFunction | null)>(null);
     async function sendRequest() {
       if(input.value !== undefined && fetchAdresses.value instanceof Function)  {
         searchResults.value = (await fetchAdresses.value(input.value)) ?? [];
-        //console.log(searchResults.value)
         }
     }
 
     function selectResult(result: Address) {
-      input.value = result.name + ', ' + result.postalCode + ', ' +  result.municipality;
+      input.value = `${result.name !== '' ? `${result.name}`: ''} ${result.postalCode !== '' ? `, ${result.postalCode}`: ''} ${result.municipality}`;
       addressPosition.value = result.position;
       searchResults.value = []; // Vide la liste des résultats après la sélection
-      //console.log("Position sauvegardé : ", addressPosition.value);
       emit('update:modelValue', input.value);
       emit('update:position', addressPosition.value)
       shouldSendRequest = false;
@@ -50,13 +48,14 @@ const fetchAdresses = ref<(FetchAddressesFunction | null)>(null);
 </script>
 
 <template>
-    <input @input="sendRequest" :id="label" v-model="input" type="text" :placeholder="placeholder" class="p-2 border text-sm rounded bg-white">
+    <input v-model="input" :placeholder="placeholder" @input="sendRequest" :id="label" type="text" class="p-2 border text-sm rounded bg-white">
 
     <div v-if="searchResults.length > 0" class="border rounded-md bg-white">
             <div v-if="searchResults.length > 0" class="border rounded-md bg-white">
                 <div class="overflow-hidden h-[200px]">
                     <div class="flex flex-col overflow-y-scroll h-[200px]">
-                    <div v-for="result in searchResults" :key="result.id" 
+                    <div 
+                    v-for="result in searchResults" :key="result.id" 
                         class="py-2 px-3 cursor-pointer hover:bg-white text-black" 
                         @click="selectResult(result)"
                         >

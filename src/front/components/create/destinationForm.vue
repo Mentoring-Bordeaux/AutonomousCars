@@ -18,29 +18,23 @@ const departureDate = ref(localDate)
 const departure = ref('')
 const arrival = ref('')
 
-const props = defineProps<{
-  startPosition: Position, 
-  endPosition: Position
-  isInForm: Boolean
-}>()
+const emit = defineEmits({
+  submit: ({departure, arrival, startPosition, endPosition}) => {
+    if(departure !== '' && arrival !== '' && startPosition && endPosition)
+      return true; 
+    return false; 
+  }
+});
 
-
-
-const emit = defineEmits(['update:startPosition', 'update:endPosition', 'update:isInForm']);
-const startPosition = ref(props.startPosition)
-const endPosition = ref(props.endPosition)
+const startPosition = ref<Position>()
+const endPosition = ref<Position>()
 
 function handleSubmit() {
-  console.log("Position de départ : ", startPosition.value);
-  console.log("Position d'arrivée : ", endPosition.value);
-  console.log("Date de départ : ", departureDate.value);
-  console.log("Heure de départ : ", departureTime.value);
-  emit('update:startPosition', startPosition.value);
-  emit('update:endPosition', endPosition.value)
-  emit('update:isInForm', false)
+  emit('submit', {departure, arrival, startPosition, endPosition, isInForm: false})
   sendPosition();
 }
 
+// eslint-disable-next-line require-await
 async function sendPosition() {
   fetch('api/Position/position', {
     method: 'POST',
@@ -65,10 +59,10 @@ async function sendPosition() {
     </div>
   </div>
   <div class="p-4">
-    <form @submit.prevent="handleSubmit" class="grid gap-4 max-w-lg mx-auto bg-gray-100 text-black text-bold p-6 border rounded border-lightgray">
+    <form class="grid gap-4 max-w-lg mx-auto bg-gray-100 text-black text-bold p-6 border rounded border-lightgray" @submit.prevent="handleSubmit">
         <div class="grid gap-2">
           <label :for="departure" class="text-sm">Départ de : </label>
-          <SearchInput v-model="departure" :position.sync="startPosition" @update:position="startPosition = $event" placeholder="Position actuelle" />
+          <SearchInput v-model="departure" v-model:position="startPosition" placeholder="Position actuelle" @update:position="startPosition = $event" />
         </div>
 
         <div class="grid gap-2 grid-cols-2">
@@ -84,7 +78,7 @@ async function sendPosition() {
 
         <div class="grid gap-2">
           <label :for="arrival" class="text-sm">Arriver à :</label>
-          <SearchInput v-model="departure" :position.sync="endPosition" @update:position="endPosition = $event" placeholder="Saisir une adresse..." />
+          <SearchInput v-model="arrival" v-model:position="endPosition" @update:position="endPosition = $event" placeholder="Saisir une adresse..." />
         </div>
 
         <div class="grid gap-2 grid-cols-2">
