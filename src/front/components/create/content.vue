@@ -21,8 +21,6 @@ const handleSubmit = (payload: { departure: string; arrival: string; startPositi
   positions.value = {start: payload.startPosition, end: payload.endPosition};
   chosenCar.value = payload.chosenCar;
   isInForm.value = false;
-  console.log(addresses.value);
-  console.log("Dans la validation:", chosenCar.value.name);
 }
 
 </script>
