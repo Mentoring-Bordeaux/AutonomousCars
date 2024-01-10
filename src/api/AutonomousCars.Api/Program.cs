@@ -25,6 +25,7 @@ public class Program
 
         // Options
         builder.Services.Configure<AzureMapsOptions>(builder.Configuration.GetSection("AzureMaps"));
+        builder.Services.Configure<MqttNamespaceOptions>(builder.Configuration.GetSection("MqttNamespace"));
 
         // Token credential
         builder.Services.AddSingleton<TokenCredential>((serviceProvider) =>
