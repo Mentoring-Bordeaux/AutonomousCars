@@ -1,17 +1,25 @@
 <script setup lang="ts">
 import { useAzureMapsRoutes } from "~/composables/useAzureMapsRoutes"
+import { useDistanceTimeFormat } from "~/composables/useDistanceTimeFormat"
 import type { Position } from "~/models/address"
 import type { routeFeature } from "~/models/routes" 
+import type { carItem } from "~/models/dropdownCar"
 
 const props = defineProps<{
-  addresses: {start: string, end: string}
-  positions: {start: Position, end: Position}
+  addresses: {start: string, end: string};
+  positions: {start: Position, end: Position};
+  chosenCar: carItem;
 }>();
 
+console.log("Valeur de la voiture dans la destinationList : ", props.chosenCar.name);
+console.log("Valeur des addresses dans la liste : ", props.addresses.end);
 
 const fetchRoutes = ref<( (startPosition: Position, endPosition: Position) => Promise<routeFeature[] | null> | null)>();
 const routesSelection = ref<routeFeature[] | null>();
 const chosenRoute = ref<routeFeature>()
+const chosenCar = props.chosenCar;
+
+const {formatDistance, formatDuration} = useDistanceTimeFormat();
 
   onMounted(async () => {
     try{
@@ -26,50 +34,27 @@ const chosenRoute = ref<routeFeature>()
 
   }); 
 
-  async function sendRoute() {
-  fetch('api/itinerary/create', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(chosenRoute),
-})
-.then(response => response)
-.then(data => console.log(data))
-.catch((error) => console.error('Error:', error));
-}
+//   async function sendRoute() {
+//   fetch('api/itinerary/create', {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(chosenRoute),
+// })
+// .then(response => response)
+// .then(data => console.log(data))
+// .catch((error) => console.error('Error:', error));
+// }
+
 
    function handleSubmit(){
-     if(chosenRoute !== undefined)
-        console.log("Route send to the back")
+      if(chosenRoute !== undefined){
+        console.log("Route send to the back");
+      }
         // sendRoute();
    }
 
-  function formatDuration(seconds: number): string {
-    if(seconds < 60){
-      return `${seconds}s`;
-    }else if(seconds < 3600){
-      const minutes = Math.floor(seconds / 60);
-      return `${minutes} min`;
-    }else if (seconds < 86400) {
-        const hours = Math.floor(seconds / 3600);
-        const remainingMinutes = Math.floor((seconds % 3600) / 60);
-        return `${hours} h ${remainingMinutes > 0 ? `${remainingMinutes} min` : ''}`;
-    } else {
-        const days = Math.floor(seconds / 86400);
-        const remainingHours = Math.floor((seconds % 86400) / 3600);
-        return `${days} jours ${remainingHours > 0 ? ` et ${remainingHours} h` : ''}`;
-    }
-  }
-
-  function formatDistance(meters: number): string {
-    if(meters < 1000)
-      return `${meters} mètres`;
-    else{
-      const kilometers = Math.floor(meters/1000)
-      return `${kilometers} kilomètres`;
-    }
-  }
 
 
 </script>
@@ -83,8 +68,11 @@ const chosenRoute = ref<routeFeature>()
       <h1 class="text-xl text-[#E36C39] font-400 ml-4">Choisir un trajet</h1>
     </div>
   </div>
-  <div class="p-4">
-  <div class="navigation-widget max-w-lg mx-auto bg-gray-100 text-black text-bold p-6 border rounded-lg border-gray-300">
+  <div class="m-4">
+  <div class="flex items-center px-4 py-2 bg-gray-100 border rounded border-lightgray">
+    <CreateCarItem :car="chosenCar" />
+   </div> 
+  <div class="navigation-widget max-w-lg mx-auto bg-gray-100 text-black text-bold p-6 border rounded-lg mt-4 border-lightgray">
     <div class="current-location mb-5">
       <p class="text-gray-600">De {{ addresses.start }}</p>
       <p class="text-[#E36C39]">à {{ addresses.end }}</p>

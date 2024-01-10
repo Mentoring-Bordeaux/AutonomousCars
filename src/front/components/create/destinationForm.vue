@@ -1,35 +1,36 @@
 <script setup lang="ts">
 import SearchInput from "~/components/searchInput.vue";
 import type { Position } from "~/models/address"
+import type { carItem } from "~/models/dropdownCar"
 
 const now = new Date();
-const year = now.getFullYear();
-const month = now.getMonth() + 1;
-const day = now.getDate();
-const hour = now.getHours();
-const minute = now.getMinutes();
-const localDate = year + '-' + (month < 10 ? '0' + month.toString() : month) + '-' + (day < 10 ? '0' + day.toString() : day) 
-const localTime = (hour < 10 ? '0' + hour.toString() : hour) + ':' + (minute < 10 ? '0' + minute.toString() : minute);
-
-
+const optionsDate: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
+const localDate = now.toLocaleDateString('fr-FR', optionsDate).split('/').reverse().join('-');
+const optionsTime: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', hour12: false };
+const localTime = now.toLocaleTimeString('fr-FR', optionsTime);
 
 const departureTime = ref(localTime);
 const departureDate = ref(localDate);
 const startPosition = ref<Position>();
 const endPosition = ref<Position>();
+const chosenCar = ref<carItem>();
 const departure = ref('');
 const arrival = ref('');
 
 const emit = defineEmits({
-  submit: ({departure, arrival, startPosition, endPosition}) => {
-    if(departure !== '' && arrival !== '' && startPosition && endPosition)
+  submit: ({departure, arrival, startPosition, endPosition, chosenCar}) => {
+    if(departure !== '' && arrival !== '' && startPosition && endPosition && chosenCar !== undefined)
       return true; 
     return false; 
   }
 });
 
 function handleSubmit() {
-  emit('submit', {departure, arrival, startPosition, endPosition, isInForm: false});
+  emit('submit', {departure, arrival, startPosition, endPosition, chosenCar});
+}
+
+const handleChosenCar = (payload: carItem) => {
+  chosenCar.value = payload;
 }
 
 </script>
@@ -43,8 +44,10 @@ function handleSubmit() {
       <h1 class="text-xl text-[#E36C39] font-400 ml-4">Créer un nouveau trajet</h1>
     </div>
   </div>
-  <div class="p-4">
-    <form class="grid gap-4 max-w-lg mx-auto bg-gray-100 text-black text-bold p-6 border rounded border-lightgray" @submit.prevent="handleSubmit">
+  <div class="relative m-4">
+    <CreateCarList @click="handleChosenCar"/>
+
+    <form class="grid gap-4 max-w-lg mx-auto bg-gray-100 text-black text-bold p-6 border rounded mt-4 border-lightgray" @submit.prevent="handleSubmit">
         <div class="grid gap-2">
           <label :for="departure" class="text-sm">Départ de : </label>
           <SearchInput v-model="departure" v-model:position="startPosition" placeholder="Position actuelle" @update:position="startPosition = $event" />
