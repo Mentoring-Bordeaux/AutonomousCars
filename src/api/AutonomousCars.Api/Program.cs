@@ -2,9 +2,9 @@ using AutonomousCars.Api.Itinerary.Services;
 
 namespace AutonomousCars.Api;
 
-using AutonomousCars.Api.Models.Options;
-using AutonomousCars.Api.Weather.Services;
-using AutonomousCars.Api.Device.Services;
+using Models.Options;
+using Weather.Services;
+using Device.Services;
 
 using Azure.Core;
 using Azure.Identity;
@@ -30,7 +30,7 @@ public class Program
         builder.Services.Configure<AzureMapsOptions>(builder.Configuration.GetSection("AzureMaps"));
 
         // Token credential
-        builder.Services.AddSingleton<TokenCredential>((serviceProvider) =>
+        builder.Services.AddSingleton<TokenCredential>(_ =>
             builder.Environment.IsDevelopment()
                 ? new DefaultAzureCredential(new DefaultAzureCredentialOptions()
                 {

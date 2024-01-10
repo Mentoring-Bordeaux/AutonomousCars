@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutonomousCars.Emulator", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTTnet.Client.Extensions", "src\mqttclients\MQTTnet.Client.Extensions.csproj", "{2E172373-C5C9-4F46-812E-2205643C1D4F}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AutonomousCars.Utils", "src\AutonomousCars.Utils\AutonomousCars.Utils.shproj", "{A4C4A7D0-89C7-4C3B-AD29-4E8671B30782}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -1,7 +1,7 @@
 namespace AutonomousCars.Api.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
-using AutonomousCars.Api.Device.Services;
+using Device.Services;
 
 [ApiController]
 [Route("api/[controller]")]

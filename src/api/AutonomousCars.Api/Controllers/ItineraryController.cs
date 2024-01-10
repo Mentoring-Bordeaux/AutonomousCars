@@ -3,7 +3,7 @@ using GeoJSON.Text.Geometry;
 
 namespace AutonomousCars.Api.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using AutonomousCars.Api.Itinerary.Services;
+using Itinerary.Services;
 using System.Threading.Tasks;
 
 

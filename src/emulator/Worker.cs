@@ -6,6 +6,7 @@ using GeoJSON.Text.Geometry;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Extensions;
+using AutonomousCars.Utils;
 
 public class Worker : BackgroundService
 {
@@ -15,10 +16,9 @@ public class Worker : BackgroundService
     {
         _logger = logger;
         _configuration = configuration;
-
     }
 
-    private string CarId = "Undefined";
+    private string _carId = "Undefined";
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -34,7 +34,7 @@ public class Worker : BackgroundService
 
         var connAck = await mqttClient.ConnectAsync(new MqttClientOptionsBuilder().WithConnectionSettings(cs).Build(), stoppingToken);
         _logger.LogInformation("Client {ClientId} connected: {ResultCode}", mqttClient.Options.ClientId, connAck.ResultCode);
-        CarId = mqttClient.Options.ClientId;
+        _carId = mqttClient.Options.ClientId;
         
         PositionTelemetryProducer telemetryProducer = new(mqttClient);
         PositionTelemetryConsumer telemetryConsumer = new(mqttClient)
@@ -84,24 +84,20 @@ public class Worker : BackgroundService
         }
     }
 
-    private static int GetSpeed(IDictionary<string,object>? properties)
+    private static double GetSpeed(IDictionary<string,object>? properties)
     {
-        if (properties != null && properties.TryGetValue("speed", out var newCarSpeed) && int.TryParse(newCarSpeed.ToString(), out var parsedSpeed))
-        {
-            return parsedSpeed;
-        }
-
-        return Speed;
+        var carSpeed = GeoJsonUtils.GetDoubleProperty(properties, "speed");
+        return carSpeed > 0 ? carSpeed : Speed;
     }
     
     private bool IsStatusRequest(IDictionary<string,object>? properties)
     {
-        _logger.LogInformation("Status requested from {carId}", CarId);
-        return properties != null && properties.TryGetValue("status", out var isTestValue) &&
-               isTestValue.ToString()!.ToLower().Equals("true");
+        _logger.LogInformation("Status requested from {carId}", _carId);
+        var statusPropertyValue = GeoJsonUtils.GetStringProperty(properties, "status") ?? "false";
+        return statusPropertyValue.ToLower().Equals("true");
     }
     
-    private async void SendReceivedPositions(PositionTelemetryProducer telemetryProducer, ReadOnlyCollection<IPosition> itineraryList, int carSpeed,
+    private async void SendReceivedPositions(PositionTelemetryProducer telemetryProducer, ReadOnlyCollection<IPosition> itineraryList, double carSpeed,
         CancellationToken stoppingToken)
     {
         if (await _handleSemaphore.WaitAsync(TimeSpan.Zero, stoppingToken))
@@ -110,13 +106,13 @@ public class Worker : BackgroundService
             {
                 foreach (var point in itineraryList)
                 {
-                    _logger.LogInformation("{carId} to [lat: {lat}, lon: {lon}] in {time}s", CarId, point.Latitude, point.Longitude, Math.Round(carSpeed/1000f, 2));
+                    _logger.LogInformation("{carId} to [lat: {lat}, lon: {lon}] in {time}s", _carId, point.Latitude, point.Longitude, Math.Round(carSpeed/1000f, 2));
                     var position = new Position(point.Latitude, point.Longitude);
 
                     await telemetryProducer.SendTelemetryAsync(new Point(position), stoppingToken);
                     _lastLocationKnown = position;
 
-                    await Task.Delay(carSpeed, stoppingToken);
+                    await Task.Delay( (int) carSpeed, stoppingToken);
                 }
             }
             finally
@@ -129,32 +125,4 @@ public class Worker : BackgroundService
             _logger.LogInformation("Unable to emulate: Another job is currently running");
         }
     }
-    
-    /*
-    // if we need to send default positions
-    private async void SendDefaultPositions(PositionTelemetryProducer telemetryProducer, CancellationToken stoppingToken)
-    {
-        const string fileName = "position.json";
-        var jsonString = File.ReadAllText(fileName);
-        var timePositionList= JsonSerializer.Deserialize<TimePositionList>(jsonString);
-        if (timePositionList != null)
-        {
-            var timePositions = timePositionList.TimePositions;
-            foreach (var timePosition in timePositions)
-            {
-                var pubAck = await telemetryProducer.SendTelemetryAsync(
-                    new Point(new Position(timePosition.Latitude, timePosition.Longitude)), stoppingToken);
-
-                _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);
-
-                _logger.LogInformation("Time to wait {time}", Speed);
-                await Task.Delay(Speed, stoppingToken);
-            }
-        }
-        else
-        {
-            _logger.LogError("Failure of the Deserialization");
-        }
-    }
-    */
 }
