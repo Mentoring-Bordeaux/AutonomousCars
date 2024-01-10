@@ -41,7 +41,8 @@ const chosenRoute = ref<routeFeature>()
 
    function handleSubmit(){
      if(chosenRoute !== undefined)
-        sendRoute();
+        console.log("Route send to the back")
+        // sendRoute();
    }
 
   function formatDuration(seconds: number): string {
@@ -86,7 +87,7 @@ const chosenRoute = ref<routeFeature>()
   <div class="navigation-widget max-w-lg mx-auto bg-gray-100 text-black text-bold p-6 border rounded-lg border-gray-300">
     <div class="current-location mb-5">
       <p class="text-gray-600">De {{ addresses.start }}</p>
-      <p class="text-orange-500">à {{ addresses.end }}</p>
+      <p class="text-[#E36C39]">à {{ addresses.end }}</p>
     </div>
     <p class="text-semibold">Routes suggérées</p>
     <div class="suggested-routes">
@@ -109,8 +110,8 @@ const chosenRoute = ref<routeFeature>()
   
     <form @submit.prevent="handleSubmit">
       <div class="grid gap-2 grid-cols-2 mt-4">
-        <button type="reset" class="p-2 bg-white text-orange-500 border border-orange-500 rounded-lg hover:bg-gray-200">Annuler</button>
-        <button type="submit" class="p-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">Valider</button>
+        <button type="reset" class="p-2 bg-white text-[#E36C39] border border-[#E36C39] rounded-lg hover:bg-gray-200">Annuler</button>
+        <button type="submit" class="p-2 bg-[#E36C39] text-white rounded-lg hover:bg-orange-600">Valider</button>
       </div>
     </form>
   </div>

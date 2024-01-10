@@ -13,10 +13,12 @@ const localTime = (hour < 10 ? '0' + hour.toString() : hour) + ':' + (minute < 1
 
 
 
-const departureTime = ref(localTime)
-const departureDate = ref(localDate)
-const departure = ref('')
-const arrival = ref('')
+const departureTime = ref(localTime);
+const departureDate = ref(localDate);
+const startPosition = ref<Position>();
+const endPosition = ref<Position>();
+const departure = ref('');
+const arrival = ref('');
 
 const emit = defineEmits({
   submit: ({departure, arrival, startPosition, endPosition}) => {
@@ -26,27 +28,10 @@ const emit = defineEmits({
   }
 });
 
-const startPosition = ref<Position>()
-const endPosition = ref<Position>()
-
 function handleSubmit() {
-  emit('submit', {departure, arrival, startPosition, endPosition, isInForm: false})
-  sendPosition();
+  emit('submit', {departure, arrival, startPosition, endPosition, isInForm: false});
 }
 
-// eslint-disable-next-line require-await
-async function sendPosition() {
-  fetch('api/Position/position', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(startPosition.value),
-})
-.then(response => response)
-.then(data => console.log(data))
-.catch((error) => console.error('Error:', error));
-}
 </script>
 
 <template>
