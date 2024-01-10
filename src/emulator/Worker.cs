@@ -16,7 +16,6 @@ public class Worker : BackgroundService
     {
         _logger = logger;
         _configuration = configuration;
-        
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
