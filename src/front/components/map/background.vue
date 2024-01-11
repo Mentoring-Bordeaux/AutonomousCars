@@ -12,32 +12,7 @@ const initialPosition = [-0.607294, 44.806267];
 
 const carPosition = ref(initialPosition);
 const carRotation = ref(0);
-const vehicles: Vehicle[] = [
-    {
-        carId: "Car1",
-        position: {
-            type: "Point",
-            coordinates: [-0.5792, 44.8378]
-        },
-        available: true
-    },
-    {
-        carId: "Car2",
-        position: {
-            type: "Point",
-            coordinates: [-0.5664, 44.8374] 
-        },
-        available: false
-    },
-    {
-        carId: "Car3",
-        position: {
-            type: "Point",
-            coordinates: [-0.5811, 44.8305]
-        },
-        available: true
-    }
-];
+const vehicles = useVehiclesListStore().vehiclesList;
 
 let currentPopup: atlas.Popup | null = null;
 
