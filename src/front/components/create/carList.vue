@@ -10,7 +10,7 @@ const carList = ref<carItem[]>([
 ]);
 
 const isDropdownOpen = ref(false);
-const selectedCar = ref<carItem>(carList.value[0]); // Initialisez avec le label de la première action
+const selectedCar = ref<carItem>(carList.value[0]);
 
 function toggleDropdown() {
     isDropdownOpen.value = !isDropdownOpen.value;

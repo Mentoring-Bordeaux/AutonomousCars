@@ -31,8 +31,9 @@ const handleSubmit = (payload: { departure: string; arrival: string; startPositi
   </div>
   <div v-else>
     <CreateDestinationList 
-      :addresses="addresses" 
-      :positions="positions"
-      :chosen-car="chosenCar" />
+    :addresses="addresses" 
+    :positions="positions"
+    :chosen-car="chosenCar"
+    @update:is-in-form="isInForm = $event" />
   </div>
 </template>

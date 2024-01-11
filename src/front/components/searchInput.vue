@@ -48,7 +48,7 @@ const fetchAdresses = ref<(FetchAddressesFunction | null)>(null);
 </script>
 
 <template>
-    <input v-model="input" :placeholder="placeholder" @input="sendRequest" :id="label" type="text" class="p-2 border text-sm rounded bg-white">
+    <input :id="label" v-model="input" :placeholder="placeholder" type="text" class="p-2 border text-sm rounded bg-white" @input="sendRequest">
 
     <div v-if="searchResults.length > 0" class="border rounded-md bg-white">
             <div v-if="searchResults.length > 0" class="border rounded-md bg-white">

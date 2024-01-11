@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router"
 import { useAzureMapsRoutes } from "~/composables/useAzureMapsRoutes"
 import { useDistanceTimeFormat } from "~/composables/useDistanceTimeFormat"
 import type { Position } from "~/models/address"
@@ -10,50 +11,68 @@ const props = defineProps<{
   positions: {start: Position, end: Position};
   chosenCar: carItem;
 }>();
+const emit = defineEmits(['update:isInForm']);
 
-console.log("Valeur de la voiture dans la destinationList : ", props.chosenCar.name);
-console.log("Valeur des addresses dans la liste : ", props.addresses.end);
 
+const router = useRouter();
+const isLoaded = ref<Boolean>(false);
+const isError = ref<Boolean>(false); 
 const fetchRoutes = ref<( (startPosition: Position, endPosition: Position) => Promise<routeFeature[] | null> | null)>();
-const routesSelection = ref<routeFeature[] | null>();
-const chosenRoute = ref<routeFeature>()
-const chosenCar = props.chosenCar;
-
+const routesSelection = ref<routeFeature[]| null>();
+const chosenRoute = ref<routeFeature>();
+const chosenCar = ref<carItem>(props.chosenCar);
+const isInForm = ref<Boolean>(false);
 const {formatDistance, formatDuration} = useDistanceTimeFormat();
 
+
   onMounted(async () => {
-    try{
       const api = await useAzureMapsRoutes();
       fetchRoutes.value = api.fetchRoutes;
-      if(fetchRoutes.value instanceof Function){
-        routesSelection.value = await fetchRoutes.value(props.positions.start, props.positions.end);
-    }
-  }catch (error){
-    console.error("Erreur lors de la récupération des routes:", error);
-  }
-
+      await fetchRoutesFromAPI();
   }); 
 
-//   async function sendRoute() {
-//   fetch('api/itinerary/create', {
-//     method: 'POST',
-//     headers: {
-//         'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify(chosenRoute),
-// })
-// .then(response => response)
-// .then(data => console.log(data))
-// .catch((error) => console.error('Error:', error));
-// }
+  async function fetchRoutesFromAPI(){
+    isLoaded.value = false; 
+    isError.value = false;
+    try{
+      if(fetchRoutes.value instanceof Function){
+        routesSelection.value = await fetchRoutes.value(props.positions.start, props.positions.end);
+        isLoaded.value = true;
+      } 
+    }catch (error){
+      isError.value = true;
+      isLoaded.value = true;
+    }
+  }
+
+  // eslint-disable-next-line require-await
+  async function sendRoute(){
+    useFetch("api/itinerary/create", {
+        method: "POST",
+        headers: {
+          'Content-Type': "application/json"
+        }, 
+        body: JSON.stringify(chosenRoute),
+      });
+  }
 
 
-   function handleSubmit(){
-      if(chosenRoute !== undefined){
-        console.log("Route send to the back");
+  function handleSubmit(){
+    if(chosenRoute !== undefined && chosenRoute.value !== undefined){
+        chosenRoute.value.properties.carId = "car01";
+        sendRoute();
+        router.push('/');
       }
-        // sendRoute();
    }
+
+  function handleRouteSelection(route: routeFeature){
+    chosenRoute.value === route ? chosenRoute.value = undefined: chosenRoute.value = route;
+  }
+
+  function handleLinkToForm(){
+    isInForm.value = true;
+    emit('update:isInForm', isInForm.value);
+  }
 
 
 
@@ -62,10 +81,8 @@ const {formatDistance, formatDuration} = useDistanceTimeFormat();
 <template>
   <div class="bg-gray-100 p-4 shadow">
     <div class="flex items-center">
-      <nuxt-link :to="{ path: '/'}" class="text-gray-600 hover:text-gray-800 focus:outline-none">
-        <i class="i-heroicons-chevron-left"></i>
-      </nuxt-link>
-      <h1 class="text-xl text-[#E36C39] font-400 ml-4">Choisir un trajet</h1>
+        <i class="i-heroicons-chevron-left cursor-pointer" @click="handleLinkToForm"></i>
+        <h1 class="text-xl text-[#E36C39] font-400 ml-4">Choisir un trajet</h1>
     </div>
   </div>
   <div class="m-4">
@@ -78,30 +95,45 @@ const {formatDistance, formatDuration} = useDistanceTimeFormat();
       <p class="text-[#E36C39]">à {{ addresses.end }}</p>
     </div>
     <p class="text-semibold">Routes suggérées</p>
-    <div class="suggested-routes">
-      <div v-for="(route, index) in routesSelection" :key="index" class="route py-2 px-3 rounded-lg cursor-pointer hover:bg-gray-100">
-        <div 
-          class="route flex justify-between items-center rounded-lg bg-white border border-gray-200 p-3 mb-2 last:mb-0 shadow hover:shadow-md transition-shadow"
-          @click="chosenRoute = route">
-          <div class="flex-grow">
-            <div class="route-name text-lg text-bold text-[#E36C39]">{{formatDuration(route.properties.time)}}</div>
-            <div class="route-duration text-sm text-gray-600">
-              {{ formatDistance(route.properties.distance) }}
-          </div>
-          </div>
-          <div v-if="index == 0" class="route-fastest text-sm text-gray-600">
-              Le plus rapide
-          </div>
-        </div>
+    <div v-if="isLoaded == false">
+      <div class="fetch-error flex flex-col justify-center items-center mt-4">
+        <i class="i-heroicons-arrow-path text-[#E36C39] text-5xl flex items-center animate-spin"></i>
       </div>
     </div>
-  
-    <form @submit.prevent="handleSubmit">
-      <div class="grid gap-2 grid-cols-2 mt-4">
-        <button type="reset" class="p-2 bg-white text-[#E36C39] border border-[#E36C39] rounded-lg hover:bg-gray-200">Annuler</button>
-        <button type="submit" class="p-2 bg-[#E36C39] text-white rounded-lg hover:bg-orange-600">Valider</button>
+    <div v-if="isError == true">
+      <div class="fetch-error flex flex-col justify-center items-center mt-4">
+          <i class="i-heroicons-arrow-path text-[#E36C39] text-5xl flex items-center mb-4 cursor-pointer" @click="fetchRoutesFromAPI"></i>
+          <span class="text-sm text-bold">Erreur lors du chargement des données.</span>
+          <span class="text-sm text-bold">Veuillez réessayer.</span>
       </div>
-    </form>
+    </div>
+    <div v-if="isLoaded == true && isError == false">
+      <div class="suggested-routes">
+        <div v-for="(route, index) in routesSelection" :key="index" class="route py-2 px-3 rounded-lg cursor-pointer hover:bg-gray-100">
+          <div
+            :class="chosenRoute === route ? 'bg-orange-100 text-white p-2 rounded shadow-inner hover:bg-orange-200 transition-shadow border border-orange-400' : 'bg-white shadow hover:shadow-md transition-shadow border border-gray-200'"
+            class="route flex justify-between items-center rounded-lg  p-3 mb-2 last:mb-0"
+            @click="handleRouteSelection(route)">
+            <div class="flex-grow">
+              <div class="route-name text-lg text-bold text-[#E36C39]">{{formatDuration(route.properties.time)}}</div>
+              <div class="route-duration text-sm text-gray-600">
+                {{ formatDistance(route.properties.distance) }}
+            </div>
+            </div>
+            <div v-if="index == 0" class="route-fastest text-sm text-gray-600">
+                Le plus rapide
+            </div>
+          </div>
+        </div>
+        <form @submit.prevent="handleSubmit">
+          <div class="grid gap-2 grid-cols-2 mt-4">
+            <button type="reset" class="p-2 bg-white text-[#E36C39] border border-[#E36C39] rounded-lg hover:bg-gray-200">Annuler</button>
+            <button type="submit" class="p-2 bg-[#E36C39] text-white rounded-lg hover:bg-orange-600">Valider</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </div>
 </div>
 </template>

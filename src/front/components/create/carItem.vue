@@ -5,8 +5,6 @@ const props = defineProps<{
     car : carItem;
 }>()
 
-console.log("Valeur de la voiture dans carItem", props.car);
-
 </script>
 
 <template>

@@ -66,12 +66,12 @@ const handleChosenCar = (payload: carItem) => {
 
         <div class="grid gap-2">
           <label :for="arrival" class="text-sm">Arriver à :</label>
-          <SearchInput v-model="arrival" v-model:position="endPosition" @update:position="endPosition = $event" placeholder="Saisir une adresse..." />
+          <SearchInput v-model="arrival" v-model:position="endPosition" placeholder="Saisir une adresse..." @update:position="endPosition = $event" />
         </div>
 
         <div class="grid gap-2 grid-cols-2">
-          <button type="reset" class="p-2 bg-gray-300 text-gray rounded">Annuler</button>
-          <button type="submit" class="p-2 bg-orange-500 text-white rounded">Continuer</button>
+          <button type="reset" class="p-2 bg-white text-[#E36C39] border border-[#E36C39] rounded-lg hover:bg-gray-200">Annuler</button>
+          <button type="submit" class="p-2 bg-[#E36C39] text-white rounded-lg hover:bg-orange-600">Continuer</button>
         </div>
       </form>
   </div>
