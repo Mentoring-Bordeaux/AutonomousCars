@@ -9,19 +9,15 @@ const items = [
 
 const vehiclesListStore = useVehiclesListStore();
 
-const shouldDisplayVehicle = (item: { key: string }) => (vehicle: Vehicle): boolean => {
-  return (
-    item.key === 'all' ||
-    (item.key === 'available' && vehicle.available) ||
-    (item.key === 'unavailable' && !vehicle.available)
-  );
-};
-
-const filteredVehiclesList = (item: { key: any; }) => {
+function shouldDisplayVehicles(item: { key: string }) {
   if (item.key === 'all') {
-    return vehiclesListStore.vehiclesList;
+    return vehiclesListStore.vehiclesList
+  }else if (item.key === 'available'){
+    return vehiclesListStore.vehiclesList.filter((vehicle) =>  vehicle.available == true);
   }
-  return vehiclesListStore.vehiclesList.filter(shouldDisplayVehicle(item));
+  else{
+    return vehiclesListStore.vehiclesList.filter((vehicle) =>  vehicle.available == true);
+  }
 };
 </script>
 
@@ -38,7 +34,7 @@ const filteredVehiclesList = (item: { key: any; }) => {
   <UTabs :items="items" class="w-full mt-3">
     <template #item="{ item }">
       <div v-if="vehiclesListStore.isLoaded" class="space-y-3">
-        <VehiclesCardList :vehiclesList="filteredVehiclesList(item)"></VehiclesCardList>
+        <VehiclesCardList :vehiclesList="shouldDisplayVehicles(item)"></VehiclesCardList>
       </div>
       <div v-else>
         <VehiclesLoader></VehiclesLoader>
