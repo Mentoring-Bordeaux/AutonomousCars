@@ -1,6 +1,8 @@
 <script setup lang="ts">
-
-const props = defineProps(['vehiclesList']);
+import { Vehicle } from '~/models/Vehicle';
+defineProps<{
+  vehiclesList : Vehicle[]
+  }>();
 </script>
 
 <template>

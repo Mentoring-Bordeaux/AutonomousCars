@@ -9,7 +9,7 @@ const items = [
 
 const vehiclesListStore = useVehiclesListStore();
 
-function shouldDisplayVehicles(item: { key: string }) {
+function shouldDisplayVehicles(item: { key: string }) : Vehicle[] {
   if (item.key === 'all') {
     return vehiclesListStore.vehiclesList
   }else if (item.key === 'available'){
@@ -23,7 +23,7 @@ function shouldDisplayVehicles(item: { key: string }) {
 
 <template>
   <div class="bg-gray-100 p-4 shadow">
-    <div class="flex items-center">
+    <div class="flex items-center"> 
       <nuxt-link :to="{ path: '/'}" class="text-gray-600 hover:text-gray-800 focus:outline-none">
         <i class="i-heroicons-chevron-left"></i>
       </nuxt-link>
