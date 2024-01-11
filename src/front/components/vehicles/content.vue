@@ -16,7 +16,7 @@ function shouldDisplayVehicles(item: { key: string }) : Vehicle[] {
     return vehiclesListStore.vehiclesList.filter((vehicle) =>  vehicle.available == true);
   }
   else{
-    return vehiclesListStore.vehiclesList.filter((vehicle) =>  vehicle.available == true);
+    return vehiclesListStore.vehiclesList.filter((vehicle) =>  vehicle.available == false);
   }
 };
 </script>
@@ -33,15 +33,17 @@ function shouldDisplayVehicles(item: { key: string }) : Vehicle[] {
 
   <UTabs :items="items" class="w-full mt-3">
     <template #item="{ item }">
-      <div v-if="vehiclesListStore.isLoaded" class="space-y-3">
-        <VehiclesCardList :vehiclesList="shouldDisplayVehicles(item)"></VehiclesCardList>
-      </div>
-      <div v-if="vehiclesListStore.isError || vehiclesListStore.isError" class="flex justify-center p-3">
-        Le service est momentanément indisponible. Veuillez réessayer ultérieurement ;)
-      </div>
-      <div v-else>
-        <VehiclesLoader></VehiclesLoader>
-      </div>
+        <div v-if="!vehiclesListStore.isLoaded" class="h-[50vh] flex justify-center items-center">
+          <VehiclesLoader></VehiclesLoader>
+        </div>
+        <div v-else-if="vehiclesListStore.isLoaded" class="space-y-3">
+          <VehiclesCardList :vehiclesList="shouldDisplayVehicles(item)"></VehiclesCardList>
+        </div>
+        <div v-else="vehiclesListStore.isError || vehiclesListStore.isError" class="h-[50vh] flex justify-center items-center">
+          <p>
+            Le service est momentanément indisponible. Veuillez réessayer ultérieurement ;)
+          </p>
+        </div>
     </template>
   </UTabs>
 </template>

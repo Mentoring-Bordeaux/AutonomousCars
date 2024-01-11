@@ -13,7 +13,7 @@ export const useVehiclesListStore = defineStore('vehiclesListStore', {
         type: "Point",
         coordinates: [10, 0]
       };
-      await useFetch('/api/ListingDevices/', {
+      await useFetch('/api/ListingDevices/getAllDevices', {
         onRequestError: () => {
           this.isError = true;
           this.isLoaded = true;

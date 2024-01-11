@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Vehicle } from '~/models/Vehicle';
+import type { Vehicle } from '~/models/Vehicle';
 
 defineProps<{
   vehicle : Vehicle
