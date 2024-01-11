@@ -36,6 +36,9 @@ function shouldDisplayVehicles(item: { key: string }) : Vehicle[] {
       <div v-if="vehiclesListStore.isLoaded" class="space-y-3">
         <VehiclesCardList :vehiclesList="shouldDisplayVehicles(item)"></VehiclesCardList>
       </div>
+      <div v-if="vehiclesListStore.isError || vehiclesListStore.isError" class="flex justify-center p-3">
+        Le service est momentanément indisponible. Veuillez réessayer ultérieurement ;)
+      </div>
       <div v-else>
         <VehiclesLoader></VehiclesLoader>
       </div>

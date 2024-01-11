@@ -5,33 +5,36 @@ export const useVehiclesListStore = defineStore('vehiclesListStore', {
   state: () => ({
     vehiclesList: [] as Vehicle[],
     isLoaded: false,
-    isRequestError: false,
-    isResponseError: false
+    isError: false
   }),
   actions: {
     async initVehiclesDevices() {
       const initialPosition: Position = {
         type: "Point",
-        coordinates: [10, 0] 
+        coordinates: [10, 0]
       };
-
-      await useFetch('/api/ListingDevices/getAllDevices', {
-        onRequestError : () => {
-          this.isRequestError = true;
+      await useFetch('/api/ListingDevices/', {
+        onRequestError: () => {
+          this.isError = true;
+          this.isLoaded = true;
         },
         onResponse: ({ response }) => {
-          const deviceNames = response._data.deviceNames;
+          if (response.status == 200) {
+            const deviceNames = response._data.deviceNames;
 
-          this.vehiclesList = deviceNames.map((deviceName: string) => ({
-            carId: deviceName,
-            position: initialPosition,
-            available: false
-          }));            
-
+            this.vehiclesList = deviceNames.map((deviceName: string) => ({
+              carId: deviceName,
+              position: initialPosition,
+              available: false
+            }));
+          } else {
+            this.isError = true;
+          }
           this.isLoaded = true;
         },
         onResponseError: () => {
-          this.isResponseError = true;
+          this.isError = true;
+          this.isLoaded = true;
         }
       });
     }
