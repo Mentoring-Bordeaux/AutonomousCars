@@ -1,4 +1,4 @@
-import MapsRoute, { MapsRouteClient, isUnexpected, toColonDelimitedLatLonString} from "@azure-rest/maps-route";
+import MapsRoute, { type MapsRouteClient, isUnexpected, toColonDelimitedLatLonString} from "@azure-rest/maps-route";
 import type { TokenCredential } from "@azure/core-auth";
 import type { Position } from '~/models/address'
 import type { routeFeature } from "~/models/routes";
