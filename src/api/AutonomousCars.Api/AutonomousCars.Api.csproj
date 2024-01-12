@@ -7,6 +7,12 @@
     <InvariantGlobalization>true</InvariantGlobalization>
     <UserSecretsId>a85b90dd-47aa-4542-9f93-acfbdbff43a9</UserSecretsId>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="GeoJSON.Text" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="MQTTnet" Version="4.3.1.873" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.Core" Version="1.36.0" />
@@ -17,9 +23,10 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <Folder Include="Position\Services\" />
+    <ProjectReference Include="..\..\AutonomousCars.Utils\AutonomousCars.Utils.csproj" />
+    <ProjectReference Include="..\..\mqttclients\MQTTnet.Client.Extensions.csproj" />
   </ItemGroup>
 
 </Project>
