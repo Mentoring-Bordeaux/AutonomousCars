@@ -1,10 +1,10 @@
 type Position = {
-    type: String,
+    type: string,
     coordinates: number[]
 }
 
 export type Vehicle = {
-    carId: String,
+    carId: string,
     position: Position,
     available: boolean
 }

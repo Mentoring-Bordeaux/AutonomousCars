@@ -1,3 +1,5 @@
+using AutonomousCars.Api.Models.Options;
+
 namespace AutonomousCars.Api.Device.Services;
 
 using System;
@@ -6,19 +8,15 @@ using Azure.Core;
 using Azure.Identity;
 using Azure.ResourceManager;
 using Azure.ResourceManager.EventGrid;
-
 public class MqttDevices : IMqttDevices
 {
-    public async Task<List<String>> GetDeviceNames()
+    public async Task<List<String>> GetDeviceNames(string subscriptionId, string resourceGroupName, string namespaceName)
     {
         TokenCredential cred = new DefaultAzureCredential();
         ArmClient client = new ArmClient(cred);
         
         
-        string subscriptionId = Environment.GetEnvironmentVariable("SUBSCRIPTION_ID_AUTONOMOUSCARS_MQTT");
-        string resourceGroupName = Environment.GetEnvironmentVariable("RESOURCE_GROUP_NAME_AUTONOMOUSCARS_MQTT");
-        string namespaceName = Environment.GetEnvironmentVariable("NAMESPACE_NAME_AUTONOMOUSCARS_MQTT");
-            ResourceIdentifier eventGridNamespaceResourceId = EventGridNamespaceResource.CreateResourceIdentifier(subscriptionId, resourceGroupName, namespaceName);
+        ResourceIdentifier eventGridNamespaceResourceId = EventGridNamespaceResource.CreateResourceIdentifier(subscriptionId, resourceGroupName, namespaceName);
         EventGridNamespaceResource eventGridNamespace = client.GetEventGridNamespaceResource(eventGridNamespaceResourceId);
         
         EventGridNamespaceClientCollection collection = eventGridNamespace.GetEventGridNamespaceClients();
