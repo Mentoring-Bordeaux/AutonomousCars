@@ -2,17 +2,42 @@
 import * as atlas from "azure-maps-control";
 import * as signalR from "@microsoft/signalr";
 import type { Vehicle } from "~/models/Vehicle";
+import  Car from "~/img/car_icon.png";
 import "/components/map/style.css";
 import "azure-maps-control/dist/atlas.min.css";
 
 const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
-const carPath = "/img/car_icon.png";
 
 const initialPosition = [-0.607294, 44.806267];
 
 const carPosition = ref(initialPosition);
 const carRotation = ref(0);
-const vehicles = useVehiclesListStore().vehiclesList;
+const vehicles: Vehicle[] = [
+    {
+        carId: "Car1",
+        position: {
+            type: "Point",
+            coordinates: [-0.5792, 44.8378]
+        },
+        available: true
+    },
+    {
+        carId: "Car2",
+        position: {
+            type: "Point",
+            coordinates: [-0.5664, 44.8374] 
+        },
+        available: false
+    },
+    {
+        carId: "Car3",
+        position: {
+            type: "Point",
+            coordinates: [-0.5811, 44.8305]
+        },
+        available: true
+    }
+];
 
 let currentPopup: atlas.Popup | null = null;
 
@@ -38,7 +63,7 @@ onMounted(async () => {
             const carMarker = new atlas.HtmlMarker({
                 position: vehicle.position.coordinates,
                 htmlContent: '<div class="roundMarker">' +
-					'<img id="carImage" src="' + carPath + '" class="vehicleIcon"/>' +
+					'<img id="carImage" src="' + Car + '" class="vehicleIcon"/>' +
 					(vehicle.available ?
 						'<div class="availability" style="background-color: green;"></div>' :
 						'<div class="availability" style="background-color: red;"></div>') +'</div>'
