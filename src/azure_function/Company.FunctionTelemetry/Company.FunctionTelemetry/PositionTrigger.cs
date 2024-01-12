@@ -1,12 +1,12 @@
 // Default URL for triggering event grid function in the local environment.
 // http://localhost:7071/runtime/webhooks/EventGrid?functionName={functionname}
+namespace Company.FunctionTelemetry;
 
 using Microsoft.Azure.Functions.Worker;
 using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
-namespace Company.FunctionTelemetry;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
