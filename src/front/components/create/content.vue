@@ -14,13 +14,15 @@ const positions = ref<{
 
 const chosenCar = ref<carItem>({name: '', icon: ''});
 
-const isInForm = ref<Boolean>(true);
+const isInForm = ref<boolean>(true);
 
 const handleSubmit = (payload: { departure: string; arrival: string; startPosition: Position; endPosition: Position; chosenCar: carItem }) => {
   addresses.value = {start: payload.departure, end: payload.arrival};
   positions.value = {start: payload.startPosition, end: payload.endPosition};
   chosenCar.value = payload.chosenCar;
   isInForm.value = false;
+
+
 }
 
 </script>

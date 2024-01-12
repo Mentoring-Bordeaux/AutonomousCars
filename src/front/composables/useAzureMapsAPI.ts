@@ -5,17 +5,17 @@ import type { FetchAddressesFunction, Address } from "~/models/address";
 export async function useAzureMapsAPI(): Promise<{ fetchAdresses: FetchAddressesFunction }> {
   const { getMapCredential } = useAzureMaps();
 
-  const { clientId, accessToken: { token, expiresOn } } = await getMapCredential();
-
-  const tokenCredential: TokenCredential = {
-    // eslint-disable-next-line require-await
-    getToken: async () => {
-      return {
-        token,
-        expiresOnTimestamp: expiresOn,
-      };
-    },
-  }; 
+  const { clientId } = await getMapCredential();
+  
+    const tokenCredential: TokenCredential = {
+        getToken: async () => {
+        const { accessToken : {token, expiresOn} } = await getMapCredential();
+        return {
+          token,
+          expiresOnTimestamp: expiresOn,
+        };
+      },
+    };
 
   const client = MapsSearch(tokenCredential, clientId);
 

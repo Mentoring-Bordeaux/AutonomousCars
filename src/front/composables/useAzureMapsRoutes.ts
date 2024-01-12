@@ -7,11 +7,12 @@ export async function useAzureMapsRoutes(): Promise<{ fetchRoutes: (startPositio
 
     const { getMapCredential } = useAzureMaps();
 
-    const { clientId, accessToken: { token, expiresOn } } = await getMapCredential();
+    
+    const { clientId } = await getMapCredential();
   
     const tokenCredential: TokenCredential = {
-      // eslint-disable-next-line require-await
-      getToken: async () => {
+        getToken: async () => {
+        const { accessToken : {token, expiresOn} } = await getMapCredential();
         return {
           token,
           expiresOnTimestamp: expiresOn,
@@ -47,7 +48,7 @@ export async function useAzureMapsRoutes(): Promise<{ fetchRoutes: (startPositio
                     "coordinates": legs[0].points.map(point => [point.longitude, point.latitude])
                 },
                 "properties": {
-                    "distance": legs[0].summary.lengthInMeters, // Converti en kilomètres
+                    "distance": legs[0].summary.lengthInMeters, 
                     "time": legs[0].summary.travelTimeInSeconds,
                     "carId": "noId" // Vous pouvez ajuster cette valeur comme nécessaire
                 }

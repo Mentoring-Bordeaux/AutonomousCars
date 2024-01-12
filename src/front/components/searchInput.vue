@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps, ref, watch } from 'vue'
 import type { FetchAddressesFunction, Address } from "~/models/address";
 import { useAzureMapsAPI } from "~/composables/useAzureMapsAPI"
 

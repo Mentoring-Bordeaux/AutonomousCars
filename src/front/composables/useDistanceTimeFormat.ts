@@ -1,20 +1,16 @@
+import { Duration } from 'luxon';
 
 export function useDistanceTimeFormat(){
 
     function formatDuration(seconds: number): string {
         if(seconds < 60){
-          return `${seconds}s`;
+          return Duration.fromObject({second: seconds}).toFormat("s' secondes'");
         }else if(seconds < 3600){
-          const minutes = Math.floor(seconds / 60);
-          return `${minutes} min`;
+          return Duration.fromObject({second: seconds}).toFormat("m' min'");
         }else if (seconds < 86400) {
-            const hours = Math.floor(seconds / 3600);
-            const remainingMinutes = Math.floor((seconds % 3600) / 60);
-            return `${hours} h ${remainingMinutes > 0 ? `${remainingMinutes} min` : ''}`;
+          return Duration.fromObject({second: seconds}).toFormat("hh' h 'm' min'");
         } else {
-            const days = Math.floor(seconds / 86400);
-            const remainingHours = Math.floor((seconds % 86400) / 3600);
-            return `${days} jours ${remainingHours > 0 ? ` et ${remainingHours} h` : ''}`;
+          return Duration.fromObject({second: seconds}).toFormat("j' jours et 'h' h'");
         }
       }
     
