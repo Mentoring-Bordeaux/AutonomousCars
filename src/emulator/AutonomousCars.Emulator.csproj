@@ -21,6 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\AutonomousCars.Utils\AutonomousCars.Utils.csproj" />
 	  <ProjectReference Include="..\mqttclients\MQTTnet.Client.Extensions.csproj" />
 	</ItemGroup>
 

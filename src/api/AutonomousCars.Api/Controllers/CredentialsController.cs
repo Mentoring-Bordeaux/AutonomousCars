@@ -1,9 +1,8 @@
 ﻿namespace AutonomousCars.Api.Controllers;
 
-using AutonomousCars.Api.Models;
-using AutonomousCars.Api.Models.Exceptions;
-using AutonomousCars.Api.Models.Options;
-
+using Models;
+using Models.Exceptions;
+using Models.Options;
 using Azure.Core;
 
 using Microsoft.AspNetCore.Mvc;
@@ -15,17 +14,16 @@ public class CredentialsController(IOptions<AzureMapsOptions> azureMapsOptions, 
 {
     private readonly AzureMapsOptions _azureMapsOptions = azureMapsOptions.Value;
 
-    private readonly TokenCredential _tokenCredential = tokenCredential;
+    private static readonly string[] AtlasScopes = {"https://atlas.microsoft.com/.default"}; 
 
     [HttpGet("map")]
     public async Task<IActionResult> GetMapCredential()
     {
-        var credential = new ResourceCredential()
+        var credential = new ResourceCredential
         {
             ClientId = _azureMapsOptions.ClientId ?? throw new MissingSettingException($"{nameof(AzureMapsOptions)}.{nameof(AzureMapsOptions.ClientId)}"),
-            AccessToken = await _tokenCredential.GetTokenAsync(new TokenRequestContext(["https://atlas.microsoft.com/.default"]), CancellationToken.None),
+            AccessToken = await tokenCredential.GetTokenAsync(new TokenRequestContext(scopes: AtlasScopes), CancellationToken.None)
         };
-
         return Ok(credential);
     }
 }

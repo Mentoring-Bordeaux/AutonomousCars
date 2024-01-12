@@ -1,6 +1,6 @@
 ﻿namespace AutonomousCars.Api.Controllers;
 
-using AutonomousCars.Api.Weather.Services;
+using Weather.Services;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]

@@ -4,8 +4,10 @@ namespace AutonomousCars.Api.Controllers;
 using AutonomousCars.Api.Models.Exceptions;
 
 using Microsoft.AspNetCore.Mvc;
+
 using AutonomousCars.Api.Device.Services;
 using Microsoft.Extensions.Options;
+
 
 [ApiController]
 [Route("api/[controller]")]
