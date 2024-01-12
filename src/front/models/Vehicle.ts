@@ -1,4 +1,4 @@
-type Position = {
+export type Position = {
     type: string,
     coordinates: number[]
 }
