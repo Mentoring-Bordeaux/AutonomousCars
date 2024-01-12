@@ -1,11 +1,11 @@
 <script setup>
 import { ref, watch, toRef } from 'vue';
 import create from '~/components/create/content.vue';
-import list from '~/components/list/content.vue';
+import vehicles from '~/components/vehicles/content.vue';
 import update from '~/components/update/content.vue';
 
 const showSidebar = ref(true);
-const tabs = { create, list, update };
+const tabs = { create, vehicles, update };
 const key = ref(0);
 
 const route = useRoute();
@@ -32,7 +32,7 @@ watch(showSidebar, () => {
         <i :class="showSidebar ? 'i-heroicons-chevron-right' : 'i-heroicons-chevron-left'"></i>
       </button>
       <div v-if="!isTab">
-        <SidebarItem icon="i-heroicons-list-bullet-solid" title="Les véhicules" :queryParams="{ tab: 'list' }" :sideBar=showSidebar />
+        <SidebarItem icon="i-heroicons-list-bullet-solid" title="Les véhicules" :queryParams="{ tab: 'vehicles' }" :sideBar=showSidebar />
         <SidebarItem icon="i-heroicons-plus-solid" title="Créer un trajet" :queryParams="{ tab: 'create' }" :sideBar=showSidebar />
         <SidebarItem icon="i-heroicons-pencil-square-solid" title="Modifier un trajet" :queryParams="{ tab: 'update' }" :sideBar=showSidebar />
       </div>
