@@ -52,14 +52,14 @@ const {formatDistance, formatDuration} = useDistanceTimeFormat();
         headers: {
           'Content-Type': "application/json"
         }, 
-        body: JSON.stringify(chosenRoute),
+        body: chosenRoute.value,
       });
   }
 
 
   function handleSubmit(){
-    if(chosenRoute !== undefined && chosenRoute.value !== undefined){
-        chosenRoute.value.properties.carId = "car01";
+    if(chosenRoute !== undefined && chosenRoute.value !== undefined && chosenCar.value.vehicle !== null){
+        chosenRoute.value.properties.carId = chosenCar.value.vehicle.carId;
         sendRoute();
         router.push('/');
       }

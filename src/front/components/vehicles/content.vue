@@ -13,10 +13,10 @@ function shouldDisplayVehicles(item: { key: string }) : Vehicle[] {
   if (item.key === 'all') {
     return vehiclesListStore.vehiclesList
   }else if (item.key === 'available'){
-    return vehiclesListStore.vehiclesList.filter((vehicle) =>  vehicle.available == true);
+    return vehiclesListStore.vehiclesList.filter((vehicle) =>  vehicle.available);
   }
   else{
-    return vehiclesListStore.vehiclesList.filter((vehicle) =>  vehicle.available == false);
+    return vehiclesListStore.vehiclesList.filter((vehicle) =>  !vehicle.available);
   }
 };
 </script>

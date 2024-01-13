@@ -8,7 +8,7 @@ export function useDistanceTimeFormat(){
         }else if(seconds < 3600){
           return Duration.fromObject({second: seconds}).toFormat("m' min'");
         }else if (seconds < 86400) {
-          return Duration.fromObject({second: seconds}).toFormat("hh' h 'm' min'");
+          return Duration.fromObject({second: seconds}).toFormat("h' h 'm' min'");
         } else {
           return Duration.fromObject({second: seconds}).toFormat("j' jours et 'h' h'");
         }

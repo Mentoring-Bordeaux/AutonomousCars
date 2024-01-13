@@ -17,15 +17,18 @@ const chosenCar = ref<carItem>();
 const departure = ref('');
 const arrival = ref('');
 
-const emit = defineEmits({
-  submit: ({departure, arrival, startPosition, endPosition, chosenCar}) => {
-    if(departure !== '' && arrival !== '' && startPosition && endPosition && chosenCar !== undefined)
+const emit = defineEmits(['submit']);
+
+function isFormValid(){
+  if(departure.value !== '' && arrival.value !== '' && 
+    startPosition !== undefined && endPosition !== undefined && 
+    chosenCar !== undefined)
       return true; 
-    return false; 
-  }
-});
+  return false; 
+}
 
 function handleSubmit() {
+if(isFormValid())
   emit('submit', {departure, arrival, startPosition, endPosition, chosenCar});
 }
 
