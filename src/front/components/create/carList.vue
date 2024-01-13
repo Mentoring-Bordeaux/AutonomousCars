@@ -25,15 +25,16 @@ function toggleDropdown() {
 }
 
 function populateCarList(){
-    if(carList.value.length === 0){
-        const availableCar: Vehicle[]  = vehiclesListStore.vehiclesList.filter((vehicule) => vehicule.available);
-        if(availableCar.length !== 0){
-            availableCar.forEach( car => carList.value.push({ 
-                name: carName[Math.floor((Math.random()*carName.length))], 
-                icon: 'img/car_icon.png', 
-                vehicle: car }));
-            areAvailableCar.value = true;
-        }
+    const availableCar: Vehicle[]  = vehiclesListStore.vehiclesList.filter((vehicule) => !vehicule.available);
+    if(availableCar.length !== 0){
+        const newCarList: carItem[] = availableCar.map(car => ({
+            name: carName[Math.floor(Math.random() * carName.length)],
+            icon: 'img/car_icon.png',
+            vehicle: car
+        }));
+
+        carList.value.push(...newCarList);
+        areAvailableCar.value = true;
     }
 }
 
@@ -67,7 +68,7 @@ function selectCar(car: carItem) {
             <i class="i-heroicons-arrow-path text-[#E36C39] text-5xl mr-12 flex items-center cursor-pointer animate-spin"></i>
             <span class="flex-1 text-md text-gray-700">Chargement des données...</span>
         </div>
-        <div v-else-if="vehiclesListStore.isError" class="flex justify-center items-center px-4 py-2 h-12">
+        <div v-else-if="vehiclesListStore.isError" class="flex justify-center items-center px-4 py-2">
             <i class="i-heroicons-arrow-path text-[#E36C39] text-5xl mr-12 flex items-center"></i>
             <span class="flex-1 text-md text-gray-700">Erreur lors du chargement...</span>
         </div>

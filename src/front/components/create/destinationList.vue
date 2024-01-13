@@ -12,7 +12,7 @@ const props = defineProps<{
   chosenCar: carItem;
 }>();
 const emit = defineEmits(['update:isInForm']);
-
+const {formatDistance, formatDuration} = useDistanceTimeFormat();
 
 const router = useRouter();
 const isLoaded = ref<Boolean>(false);
@@ -22,7 +22,7 @@ const routesSelection = ref<routeFeature[]| null>();
 const chosenRoute = ref<routeFeature>();
 const chosenCar = ref<carItem>(props.chosenCar);
 const isInForm = ref<Boolean>(false);
-const {formatDistance, formatDuration} = useDistanceTimeFormat();
+
 
 
   onMounted(async () => {
