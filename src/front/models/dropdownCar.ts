@@ -1,4 +1,4 @@
-import { Vehicle } from "~/models/Vehicle"
+import type { Vehicle } from "~/models/Vehicle"
 
 export type carItem = {
     icon: string
