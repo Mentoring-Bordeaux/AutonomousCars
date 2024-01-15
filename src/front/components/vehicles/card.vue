@@ -15,8 +15,8 @@ defineProps<{
         </div>
       </div>
       <div class="p-4">
-        <h2 class="text-sm font-bold mb-2">{{ vehicle.carId }}</h2>
-        <div :class="[{'bg-green-500': vehicle.available, 'bg-red-500': !vehicle.available}, 'badge text-white border-dotted border border-white rounded-full p-1 text-center text-xs']">   
+        <h2 class="text-sm font-bold mb-2">{{ vehicle.carName }}</h2>
+        <div :class="[{'bg-green-500': vehicle.available, 'bg-red-500': !vehicle.available}, 'badge text-white border-dotted border border-white rounded-full p-1 text-center text-xs w-[100px]']">   
           {{ vehicle.available ? 'Disponible' : 'Indisponible' }}
         </div>
       </div>

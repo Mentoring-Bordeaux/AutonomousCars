@@ -5,6 +5,7 @@ export type Position = {
 
 export type Vehicle = {
     carId: string,
+    carName: string,
     position: Position,
     available: boolean
 }

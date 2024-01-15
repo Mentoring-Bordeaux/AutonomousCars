@@ -4,7 +4,6 @@ import type { Vehicle } from '~/models/Vehicle';
 
 const vehiclesListStore = useVehiclesListStore();
 const carList = ref<carItem[]>([])
-const carName: string[] = ['Model S - Tesla', 'Model 3 - Tesla', 'Model X - Tesla', 'Model Y - Tesla', 'Model S Plaid - Tesla'];
 const isDropdownOpen = ref<boolean>(false);
 const areAvailableCar = ref<boolean>(false);
 const selectedCar = ref<carItem>();
@@ -25,10 +24,9 @@ function toggleDropdown() {
 }
 
 function populateCarList(){
-    const availableCar: Vehicle[]  = vehiclesListStore.vehiclesList.filter((vehicule) => !vehicule.available);
+    const availableCar: Vehicle[]  = vehiclesListStore.vehiclesList.filter((vehicule) => vehicule.available);
     if(availableCar.length !== 0){
         const newCarList: carItem[] = availableCar.map(car => ({
-            name: carName[Math.floor(Math.random() * carName.length)],
             icon: 'img/car_icon.png',
             vehicle: car
         }));

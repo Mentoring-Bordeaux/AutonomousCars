@@ -19,11 +19,13 @@ export const useVehiclesListStore = defineStore('vehiclesListStore', {
           this.isLoaded = true;
         },
         onResponse: ({ response }) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             const deviceNames = response._data.deviceNames;
+            const carNameList: string[] = ['Model S - Tesla', 'Model 3 - Tesla', 'Model X - Tesla', 'Model Y - Tesla', 'Model S Plaid - Tesla'];
 
             this.vehiclesList = deviceNames.map((deviceName: string) => ({
               carId: deviceName,
+              carName: `${carNameList[Math.floor(Math.random() * carNameList.length)]} [${deviceName}]`,
               position: initialPosition,
               available: false
             }));
