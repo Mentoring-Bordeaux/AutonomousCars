@@ -3,7 +3,7 @@ import { useRouter } from "vue-router"
 import { useAzureMapsRoutes } from "~/composables/useAzureMapsRoutes"
 import { useDistanceTimeFormat } from "~/composables/useDistanceTimeFormat"
 import type { Position } from "~/models/address"
-import type { routeFeature } from "~/models/routes" 
+import type { Routes } from "~/models/routes" 
 import type { carItem } from "~/models/dropdownCar"
 
 const props = defineProps<{
@@ -15,11 +15,12 @@ const emit = defineEmits(['update:isInForm']);
 
 
 const router = useRouter();
+const routesStore = useRoutesListStore();
 const isLoaded = ref<Boolean>(false);
 const isError = ref<Boolean>(false); 
-const fetchRoutes = ref<( (startPosition: Position, endPosition: Position) => Promise<routeFeature[] | null> | null)>();
-const routesSelection = ref<routeFeature[]| null>();
-const chosenRoute = ref<routeFeature>();
+const fetchRoutes = ref<( (startPosition: Position, endPosition: Position) => Promise<Routes[] | null> | null)>();
+const routesSelection = ref<Routes[]| null>();
+const chosenRoute = ref<Routes>();
 const chosenCar = ref<carItem>(props.chosenCar);
 const isInForm = ref<Boolean>(false);
 const {formatDistance, formatDuration} = useDistanceTimeFormat();
@@ -52,21 +53,22 @@ const {formatDistance, formatDuration} = useDistanceTimeFormat();
         headers: {
           'Content-Type': "application/json"
         }, 
-        body: JSON.stringify(chosenRoute),
+        body: chosenRoute.value?.routeFeature,
       });
   }
 
 
   function handleSubmit(){
     if(chosenRoute !== undefined && chosenRoute.value !== undefined){
-        chosenRoute.value.properties.carId = "car01";
+        chosenRoute.value.routeFeature.properties.carId = "car01";
         sendRoute();
         router.push('/');
       }
    }
 
-  function handleRouteSelection(route: routeFeature){
+  function handleRouteSelection(route: Routes){
     chosenRoute.value === route ? chosenRoute.value = undefined: chosenRoute.value = route;
+    routesStore.toggleClick(route.id);
   }
 
   function handleLinkToForm(){
@@ -115,9 +117,9 @@ const {formatDistance, formatDuration} = useDistanceTimeFormat();
             class="route flex justify-between items-center rounded-lg  p-3 mb-2 last:mb-0"
             @click="handleRouteSelection(route)">
             <div class="flex-grow">
-              <div class="route-name text-lg text-bold text-[#E36C39]">{{formatDuration(route.properties.time)}}</div>
+              <div class="route-name text-lg text-bold text-[#E36C39]">{{formatDuration(route.routeFeature.properties.time)}}</div>
               <div class="route-duration text-sm text-gray-600">
-                {{ formatDistance(route.properties.distance) }}
+                {{ formatDistance(route.routeFeature.properties.distance) }}
             </div>
             </div>
             <div v-if="index == 0" class="route-fastest text-sm text-gray-600">

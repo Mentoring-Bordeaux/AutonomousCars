@@ -2,7 +2,7 @@
 import * as atlas from "azure-maps-control";
 import * as signalR from "@microsoft/signalr";
 import type { Vehicle } from "~/models/Vehicle";
-import "/components/map/style.css";
+import "~/components/map/style.css";
 import "azure-maps-control/dist/atlas.min.css";
 
 const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
@@ -28,7 +28,7 @@ onMounted(async () => {
         },
     });
 
-    //Wait until the map resources are ready.
+    // Wait until the map resources are ready.
     map.events.add('ready', function () {
             const connection = new signalR.HubConnectionBuilder()
             .withUrl(apiBaseUrl + '/api')
@@ -39,12 +39,12 @@ onMounted(async () => {
                 console.log("["+ message.carId +"] new value received: " + message.position.coordinates);
                 
                 const vehicles: Vehicle[] = useVehiclesListStore().vehiclesList;
-                const vehicle = vehicles.find((vehicle) => vehicle.carId == message.carId);
+                const vehicle = vehicles.find((vehicle) => vehicle.carId === message.carId);
          
                 if(!vehicle) return;
                 vehicle.available = true;
 
-                let carMarker = map.markers.getMarkers().find((marker) => marker.getOptions().text == message.carId)
+                let carMarker = map.markers.getMarkers().find((marker) => marker.getOptions().text === message.carId)
                 if(carMarker){
                     carMarker.setOptions({position: message.position.coordinates});
                     return;
