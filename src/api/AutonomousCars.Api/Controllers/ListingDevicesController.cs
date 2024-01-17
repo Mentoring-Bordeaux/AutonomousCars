@@ -25,15 +25,26 @@ public class ListingDevicesController : Controller
     [HttpGet("getAllDevices")]
     public async Task<IActionResult> GetAllDevices()
     {
-        string subscriptionId = _mqttNamespaceOptions.SubscriptionId ?? throw new MissingSettingException($"{nameof(MqttNamespaceOptions)}.{nameof(MqttNamespaceOptions.SubscriptionId)}");
-        string resourceGroupName = _mqttNamespaceOptions.ResourceGroupName ?? throw new MissingSettingException($"{nameof(MqttNamespaceOptions)}.{nameof(MqttNamespaceOptions.ResourceGroupName)}");
-        string namespaceName =  _mqttNamespaceOptions.NamespaceName ?? throw new MissingSettingException($"{nameof(MqttNamespaceOptions)}.{nameof(MqttNamespaceOptions.NamespaceName)}");
+        MqttNamespaceOptions? mqttNamespaceOptions = MqttSettings.MqttNamespaceOptions;
 
-        var response = new
+        if (mqttNamespaceOptions != null)
         {
-            Status = "Success",
-            DeviceNames = await _mqttDevices.GetDeviceNames(subscriptionId, resourceGroupName, namespaceName)
-        };
-        return Ok(response);
+            var response = new
+            {
+                Status = "Success",
+                DeviceNames = await _mqttDevices.GetDeviceNames(mqttNamespaceOptions)
+            };
+            return Ok(response);
+        }
+        else
+        {
+            var errorResponse = new
+            {
+                Status = "Error",
+                Message = "Issue of configuration.",
+            };
+            return BadRequest(errorResponse);
+        }
+
     }
 }

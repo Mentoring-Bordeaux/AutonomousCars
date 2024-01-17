@@ -1,11 +1,13 @@
 namespace AutonomousCars.Api.Itinerary.Services;
 
+using AutonomousCars.Api.Models.Options;
 using GeoJSON.Text.Geometry;
 using GeoJSON.Text.Feature;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Extensions;
 using Utils;
+
 
 public class AzureMapsItineraryService : IItineraryService
 {
@@ -63,33 +65,40 @@ public class AzureMapsItineraryService : IItineraryService
         };
         return new Feature<LineString>(positionsLineString, properties);
     }
-    
     public async Task SendRequest(CancellationToken stoppingToken,  Feature<LineString> geospatialFeature, bool isStatusRequest)
     {
-        var cs = MqttConnectionSettings.CreateFromEnvVars(_configuration.GetValue<string>("envFile"));
-        _logger.LogInformation("Connecting to {cs}", cs);
-
-        var mqttClient = new MqttFactory().CreateMqttClient(MqttNetTraceLogger.CreateTraceLogger());
-        mqttClient.DisconnectedAsync += e =>
+        
+        var cs = MqttSettings.MqttConnectionSettings;
+        if (cs != null)
         {
-            _logger.LogInformation("Mqtt client disconnected with reason: {e}", e.Reason);
-            return Task.CompletedTask;
-        };
+            _logger.LogInformation("Connecting to {cs}", cs);
 
-        var connAck = await mqttClient.ConnectAsync(new MqttClientOptionsBuilder().WithConnectionSettings(cs).Build(), stoppingToken);
-        _logger.LogInformation("Client {ClientId} connected: {ResultCode}", mqttClient.Options.ClientId, connAck.ResultCode);
+            var mqttClient = new MqttFactory().CreateMqttClient(MqttNetTraceLogger.CreateTraceLogger());
+            mqttClient.DisconnectedAsync += e =>
+            {
+                _logger.LogInformation("Mqtt client disconnected with reason: {e}", e.Reason);
+                return Task.CompletedTask;
+            };
 
-        var properties = geospatialFeature.Properties;
-        var carId = GeoJsonUtils.GetStringProperty(properties, IdPropName);
-        if (carId != null)
-        {
-            ItineraryTelemetryProducer telemetry = new(mqttClient, carId);
-            MqttClientPublishResult pubAck = await telemetry.SendTelemetryAsync(geospatialFeature, stoppingToken);
-            _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);
-        } else
-        {
-            _logger.LogError("Failure of the Deserialization");
+            var connAck = await mqttClient.ConnectAsync(new MqttClientOptionsBuilder().WithConnectionSettings(cs).Build(), stoppingToken);
+            _logger.LogInformation("Client {ClientId} connected: {ResultCode}", mqttClient.Options.ClientId, connAck.ResultCode);
+
+            var properties = geospatialFeature.Properties;
+            var carId = GeoJsonUtils.GetStringProperty(properties, IdPropName);
+            if (carId != null)
+            {
+                ItineraryTelemetryProducer telemetry = new(mqttClient, carId);
+                MqttClientPublishResult pubAck = await telemetry.SendTelemetryAsync(geospatialFeature, stoppingToken);
+                _logger.LogInformation("Message published with PUBACK {code} and mid {mid}", pubAck.ReasonCode, pubAck.PacketIdentifier);
+            } else
+            {
+                _logger.LogError("Failure of the Deserialization");
+            }
+            await mqttClient.DisconnectAsync();
         }
-        await mqttClient.DisconnectAsync();
+        else
+        {
+            _logger.LogError("Error to open the connexion");
+        }
     }
 }   

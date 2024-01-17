@@ -2,7 +2,14 @@ namespace AutonomousCars.Api.Models.Options;
 
 public class MqttNamespaceOptions
 {
-    public required string SubscriptionId { get; set; }
-    public required string ResourceGroupName { get; set; }
-    public required string NamespaceName { get; set; }
+    public string SubscriptionId { get; }
+    public string ResourceGroupName { get; }
+    public string Namespace { get; }
+
+    public MqttNamespaceOptions(string subscriptionId, string resourceGroupName, string namespaceName)
+    {
+        SubscriptionId = subscriptionId;
+        ResourceGroupName = resourceGroupName;
+        Namespace = namespaceName;
+    }
 }
