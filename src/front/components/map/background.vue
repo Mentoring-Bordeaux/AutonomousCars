@@ -101,11 +101,9 @@ onMounted(async () => {
             const addedRoutes = curr.filter(x => !old.includes(x));
             console.log('Route added in the store');
             const startPoint = new atlas.data.Feature(new atlas.data.Point(addedRoutes[0].coordinates[0]), {
-                title: "Redmond",
                 icon: "pin-blue"
             });
             const endPoint = new atlas.data.Feature(new atlas.data.Point(addedRoutes[0].coordinates[addedRoutes[0].coordinates.length - 1]), {
-                title: "Seattle",
                 icon: "pin-round-blue"
             });
             dataSource.add([startPoint, endPoint]);
@@ -123,25 +121,36 @@ onMounted(async () => {
                     filter: ["any", ["==", ["geometry-type"], "Point"], ["==", ["geometry-type"], "MultiPoint"]] // Only render Point or MultiPoints in this layer.
                 })
             );
-            const myRoutes = [] as atlas.data.Feature<atlas.data.LineString, Array<[number, number]>>[];
+            // const myRoutes = [] as atlas.data.Feature<atlas.data.LineString, Array<[number, number]>>[];
             addedRoutes.forEach(element => {
-                myRoutes.push(new atlas.data.Feature(new atlas.data.LineString(element.coordinates)));
+                dataSource.add(new atlas.data.Feature(new atlas.data.LineString(element.coordinates), null, `${element.id}-line`));
             });
-            dataSource.add(myRoutes);
+            // dataSource.add(myRoutes);
+            const colours = ['#035290', '#6B0303', '#A50ED9']
             addedRoutes.forEach(element => {
                 map.layers.add(new atlas.layer.LineLayer(
-                    dataSource, element.id, {
-                        strokeColor: '#035290', // '#2272B9',
+                    dataSource, `${element.id}-line`, {
+                        strokeColor: colours[parseInt(element.id) - 1], // '#2272B9',
                         strokeWidth: 5,
                         lineJoin: 'round',
                         lineCap: 'round',
-                        strokeOpacity: 0.5,
                     })
-                );       
-            });  
+                );    
+            });
+
+            map.setCamera({
+                bounds: atlas.data.BoundingBox.fromLatLngs(addedRoutes[0].coordinates),
+                padding: 40
+            });
         }
-        else if(curr.length < old.length)
+        else if(curr.length < old.length){
+            const removedRoutes = curr.filter(x => !curr.includes(x));
+            removedRoutes.forEach(route => {
+                map.layers.remove(`${route.id}-line`);
+            });
+            dataSource.clear();
             console.log('Route deleted in the store');
+        }
         else {
             console.log('Route modified');
         } 

@@ -74,6 +74,7 @@ const {formatDistance, formatDuration} = useDistanceTimeFormat();
 
   function handleLinkToForm(){
     isInForm.value = true;
+    routesStore.removeAllRoute();
     emit('update:isInForm', isInForm.value);
   }
 
