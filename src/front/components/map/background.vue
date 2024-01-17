@@ -4,7 +4,6 @@ import * as signalR from "@microsoft/signalr";
 import type { Vehicle } from "~/models/Vehicle";
 import "~/components/map/style.css";
 import "azure-maps-control/dist/atlas.min.css";
-import { Vue2 } from "nuxt/dist/app/compat/vue-demi";
 
 const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
 
@@ -92,9 +91,9 @@ onMounted(async () => {
     });
 
     map.events.add('ready', function() {
+        routesStore.removeAllRoute();
         const dataSource = new atlas.source.DataSource();
         map.sources.add(dataSource);
-        routesStore.removeAllRoute();
 
         watch(() => routesStore.routes, (curr, old) => {
         if(curr.length > old.length){
