@@ -14,6 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutonomousCars.Emulator", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTTnet.Client.Extensions", "src\mqttclients\MQTTnet.Client.Extensions.csproj", "{2E172373-C5C9-4F46-812E-2205643C1D4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.FunctionTelemetry", "src\azure_function\Company.FunctionTelemetry\Company.FunctionTelemetry\Company.FunctionTelemetry.csproj", "{2CBA1FA3-19B9-4ABC-AF8B-8F2231AE676E}"
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutonomousCars.Utils", "src\AutonomousCars.Utils\AutonomousCars.Utils.csproj", "{B01DE515-3C43-47CC-8A44-E61BE74E101E}"
 EndProject
 Global
