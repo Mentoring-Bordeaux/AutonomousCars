@@ -62,6 +62,7 @@ const {formatDistance, formatDuration} = useDistanceTimeFormat();
     if(chosenRoute !== undefined && chosenRoute.value !== undefined){
         chosenRoute.value.routeFeature.properties.carId = "car01";
         sendRoute();
+        routesStore.removeAllRoute();
         router.push('/');
       }
    }

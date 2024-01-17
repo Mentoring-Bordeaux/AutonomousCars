@@ -4,6 +4,7 @@ import * as signalR from "@microsoft/signalr";
 import type { Vehicle } from "~/models/Vehicle";
 import "~/components/map/style.css";
 import "azure-maps-control/dist/atlas.min.css";
+import { Vue2 } from "nuxt/dist/app/compat/vue-demi";
 
 const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
 
@@ -13,6 +14,7 @@ const carPath = "/img/car_icon.png";
 let currentPopup: atlas.Popup | null = null;
 
 onMounted(async () => {
+    const routesStore = useRoutesListStore();
     const { getMapCredential } = useAzureMaps();
     const { clientId, accessToken: { token } } = await getMapCredential();
 
@@ -27,6 +29,7 @@ onMounted(async () => {
             getToken: (resolve) => resolve(token),
         },
     });
+    
 
     // Wait until the map resources are ready.
     map.events.add('ready', function () {
@@ -85,8 +88,69 @@ onMounted(async () => {
             });
             connection.start()
             .catch(console.error);
-        });
+
     });
+
+    map.events.add('ready', function() {
+        const dataSource = new atlas.source.DataSource();
+        map.sources.add(dataSource);
+        routesStore.removeAllRoute();
+
+        watch(() => routesStore.routes, (curr, old) => {
+        if(curr.length > old.length){
+            const addedRoutes = curr.filter(x => !old.includes(x));
+            console.log('Route added in the store');
+            const startPoint = new atlas.data.Feature(new atlas.data.Point(addedRoutes[0].coordinates[0]), {
+                title: "Redmond",
+                icon: "pin-blue"
+            });
+            const endPoint = new atlas.data.Feature(new atlas.data.Point(addedRoutes[0].coordinates[addedRoutes[0].coordinates.length - 1]), {
+                title: "Seattle",
+                icon: "pin-round-blue"
+            });
+            dataSource.add([startPoint, endPoint]);
+            map.layers.add(
+                new atlas.layer.SymbolLayer(dataSource, undefined, {
+                    iconOptions: {
+                        image: ["get", "icon"],
+                        allowOverlap: true,
+                        ignorePlacement: true
+                    },
+                    textOptions: {
+                        textField: ["get", "title"],
+                        offset: [0, 1.2]
+                    },
+                    filter: ["any", ["==", ["geometry-type"], "Point"], ["==", ["geometry-type"], "MultiPoint"]] // Only render Point or MultiPoints in this layer.
+                })
+            );
+            const myRoutes = [] as atlas.data.Feature<atlas.data.LineString, Array<[number, number]>>[];
+            addedRoutes.forEach(element => {
+                myRoutes.push(new atlas.data.Feature(new atlas.data.LineString(element.coordinates)));
+            });
+            dataSource.add(myRoutes);
+            addedRoutes.forEach(element => {
+                map.layers.add(new atlas.layer.LineLayer(
+                    dataSource, element.id, {
+                        strokeColor: '#035290', // '#2272B9',
+                        strokeWidth: 5,
+                        lineJoin: 'round',
+                        lineCap: 'round',
+                        strokeOpacity: 0.5,
+                    })
+                );       
+            });  
+        }
+        else if(curr.length < old.length)
+            console.log('Route deleted in the store');
+        else {
+            console.log('Route modified');
+        } 
+            
+    }, { deep: true });
+    });
+    
+});
+
 </script>
 
 <template>

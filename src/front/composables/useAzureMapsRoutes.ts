@@ -3,6 +3,12 @@ import type { TokenCredential } from "@azure/core-auth";
 import type { Position } from '~/models/address'
 import type { Routes } from "~/models/routes";
 
+type routeStoreItem = {
+    id: string
+    coordinates: Array<[number, number]>;
+    click: boolean
+}
+
 export async function useAzureMapsRoutes(): Promise<{ fetchRoutes: (startPosition: Position, endPosition: Position) => Promise<Routes[]>}>{
 
     const { getMapCredential } = useAzureMaps();
@@ -50,16 +56,18 @@ export async function useAzureMapsRoutes(): Promise<{ fetchRoutes: (startPositio
                 "properties": {
                     "distance": legs[0].summary.lengthInMeters, 
                     "time": legs[0].summary.travelTimeInSeconds,
-                    "carId": "noId" // Vous pouvez ajuster cette valeur comme nécessaire
+                    "carId": "noId"
                 }
             }
         }));
 
-        routes.forEach(route => routesStore.addRoute({
+        const tempRoutes = [] as  routeStoreItem[];
+        routes.forEach(route => tempRoutes.push({
             "id": route.id, 
             "coordinates": route.routeFeature.geometry.coordinates, 
             "click": false,
         }));
+        routesStore.addMultipleRoutes(tempRoutes);
 
         return routes;
 

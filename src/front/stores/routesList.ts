@@ -9,13 +9,20 @@ export const useRoutesListStore = defineStore('routesListStore', {
         routes: [] as routeStoreItem[],
     }), 
     actions: {
-        addRoute(route: routeStoreItem){
-            this.routes.push(route)
+        addOneRoute(route: routeStoreItem){
+            this.routes.push(route);
             console.log(`Route nº${route.id} added in the store`);
+        }, 
+        addMultipleRoutes(routes: routeStoreItem[]){
+            this.routes = routes;
+            console.log(`Multiple routesadded in the store`);
         }, 
         removeRoute(id: string){
             this.routes = this.routes.filter(item => item.id !== id);
             console.log(`Route nº${id} deleted in the store`);
+        },
+        removeAllRoute(){
+            this.routes = [];
         },
         toggleClick(id: string) {
             const unselectedRoute = this.routes.find(item => item.click === true);
