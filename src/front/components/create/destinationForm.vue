@@ -19,10 +19,15 @@ const arrival = ref('');
 
 const emit = defineEmits(['submit']);
 
+function getLocalPosition(){
+  if(startPosition === undefined){
+    departure.value = 'De votre position actuelle'
+    startPosition.value = chosenCar.value?.vehicle?.marker.getOptions().position
+  }
+}
+
 function isFormValid(){
-  if(departure.value !== '' && arrival.value !== '' && 
-    startPosition !== undefined && endPosition !== undefined && 
-    chosenCar !== undefined)
+  if(arrival.value !== '' && endPosition !== undefined && chosenCar !== undefined)
       return true; 
   return false; 
 }
