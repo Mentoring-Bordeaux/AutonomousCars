@@ -1,11 +1,16 @@
+using AutonomousCars.Api.Models.Exceptions;
+
 namespace AutonomousCars.Api.Models.Options;
 
 using MQTTnet.Client.Extensions;
 using System;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Text;
 
 public static class MqttSettings
 {
@@ -37,43 +42,47 @@ public static class MqttSettings
             var keyVaultSecret = response?.Value;
             if (keyVaultSecret != null)
             {
-                ExtractPrivateKeyAndCertificate(keyVaultSecret.Value);
+                X509Certificate2? x509Certificate2 = ExtractPrivateKeyAndCertificate(keyVaultSecret.Value);
+                if (x509Certificate2 == null)
+                {
+                    throw new CertificationException("Failure to extract certificate from Azure Key Vault");
+                }
+
+                MqttConnectionSettings = MqttConnectionSettings.CreateFromValues(
+                        backMqttHostNameSecret.Value.Value,
+                        backMqttUsernameSecret.Value.Value,
+                        backClientIdSecret.Value.Value,
+                        bool.Parse(backMqttCleanSessionSecret.Value.Value),
+                        bool.Parse(backMqttUseTlsSecret.Value.Value),
+                        int.Parse(backMqttTcpPortSecret.Value.Value),
+                        x509Certificate2)
+                    ;
             }
-
-            string directoryPath = AppDomain.CurrentDomain.BaseDirectory;
-            string privateKeyPath = Path.Combine(directoryPath, "back.key");
-            string certificatePath = Path.Combine(directoryPath, "back.pem");
-
-            MqttConnectionSettings = MqttConnectionSettings.CreateFromValues(
-                backMqttHostNameSecret.Value.Value,
-                backMqttUsernameSecret.Value.Value,
-                backClientIdSecret.Value.Value,
-                certificatePath,
-                privateKeyPath,
-                bool.Parse(backMqttCleanSessionSecret.Value.Value),
-                bool.Parse(backMqttUseTlsSecret.Value.Value),
-                int.Parse(backMqttTcpPortSecret.Value.Value));
         }
     }
     
-    private static void ExtractPrivateKeyAndCertificate(string input)
+    private static X509Certificate2? ExtractPrivateKeyAndCertificate(string input)
     {
         Regex privateKeyRegex = new Regex(@"(-----BEGIN PRIVATE KEY-----.*?-----END PRIVATE KEY-----)", RegexOptions.Singleline);
         Regex certificateRegex = new Regex(@"(-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----)", RegexOptions.Singleline);
 
         Match privateKeyMatch = privateKeyRegex.Match(input);
-        string directoryPath = AppDomain.CurrentDomain.BaseDirectory;
-        if (privateKeyMatch.Success)
-        {
-            string privateKeyWithHeader = privateKeyMatch.Groups[1].Value.Trim();
-            File.WriteAllText(directoryPath+"back.key", privateKeyWithHeader);
-        }
-        
         Match certificateMatch = certificateRegex.Match(input);
-        if (certificateMatch.Success)
+        if (!privateKeyMatch.Success && !certificateMatch.Success)
         {
-            string certificateWithHeader = certificateMatch.Groups[1].Value.Trim();
-            File.WriteAllText(directoryPath+"back.pem", certificateWithHeader);
+            return null;
         }
+        string privateKeyWithHeader = privateKeyMatch.Groups[1].Value.Trim();
+        string certificateWithHeader = certificateMatch.Groups[1].Value.Trim();
+
+        byte[] privateKeyBytes = Encoding.UTF8.GetBytes(privateKeyWithHeader);
+        byte[] certificateBytes = Encoding.UTF8.GetBytes(certificateWithHeader);
+   
+        var certificateSpan = Encoding.UTF8.GetString(certificateBytes).AsSpan();
+        var privateKeySpan = Encoding.UTF8.GetString(privateKeyBytes).AsSpan();
+
+        X509Certificate2 cert = X509Certificate2.CreateFromPem(certificateSpan, privateKeySpan);
+
+        return cert;
     }
 }

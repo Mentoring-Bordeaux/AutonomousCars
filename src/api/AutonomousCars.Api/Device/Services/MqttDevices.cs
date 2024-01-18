@@ -27,7 +27,7 @@ public class MqttDevices : IMqttDevices
         {
             EventGridNamespaceClientData resourceData = item.Data;
             resourceData.Attributes.TryGetValue("type", out var typeValue);
-            if ("\"vehicle\"".Equals(typeValue?.ToString()))
+            if ("\"vehicle\"".Equals(typeValue?.ToString()))                
             {
                 deviceNames.Add(resourceData.Name);
             }
