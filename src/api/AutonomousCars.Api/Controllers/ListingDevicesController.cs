@@ -14,12 +14,10 @@ using Microsoft.Extensions.Options;
 public class ListingDevicesController : Controller
 {
     private readonly IMqttDevices _mqttDevices;
-    private readonly MqttNamespaceOptions _mqttNamespaceOptions;
     
-    public ListingDevicesController(IMqttDevices mqttDevices, IOptions<MqttNamespaceOptions> mqttNamespaceOptions)
+    public ListingDevicesController(IMqttDevices mqttDevices)
     {
         _mqttDevices = mqttDevices;
-        _mqttNamespaceOptions = mqttNamespaceOptions.Value;
     }
     
     [HttpGet("getAllDevices")]
