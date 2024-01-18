@@ -25,7 +25,6 @@ public class Program
 
         builder.Services.AddTransient<IWeatherService, WeatherService>();
         builder.Services.AddTransient<IItineraryService, AzureMapsItineraryService>();
-        builder.Services.AddTransient<IMqttDevices, MqttDevices>();
 
         // Options
         builder.Services.Configure<AzureMapsOptions>(builder.Configuration.GetSection("AzureMaps"));
