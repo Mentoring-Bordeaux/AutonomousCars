@@ -26,7 +26,6 @@ export const useVehiclesListStore = defineStore('vehiclesListStore', {
             this.vehiclesList = deviceNames.map((deviceName: string) : Vehicle => ({
               carId: deviceName,
               carName: `${carNameList[Math.floor(Math.random() * carNameList.length)]} [${deviceName}]`,
-              position: initialPosition,
               marker: new atlas.HtmlMarker({
                 text: deviceName,
                 position: [0, 0],
