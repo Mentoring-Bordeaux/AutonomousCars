@@ -2,13 +2,11 @@
 import * as atlas from "azure-maps-control";
 import * as signalR from "@microsoft/signalr";
 import type { Vehicle } from "~/models/Vehicle";
-import "/components/map/style.css";
 import "azure-maps-control/dist/atlas.min.css";
 
 const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
 
 const initialPosition = [-0.607294, 44.806267];
-const carPath = "/img/car_icon.png";
 
 let currentPopup: atlas.Popup | null = null;
 
@@ -34,43 +32,28 @@ onMounted(async () => {
             .withUrl(apiBaseUrl + '/api')
             .configureLogging(signalR.LogLevel.Information)
             .build();
-            connection.on('newPosition', (message: Vehicle) => {
-
-                console.log("["+ message.carId +"] new value received: " + message.position.coordinates);
+            connection.on('newPosition', (message) => {
                 
-                const vehicles: Vehicle[] = useVehiclesListStore().vehiclesList;
+                const vehicles = useVehiclesListStore().vehiclesList;
                 const vehicle = vehicles.find((vehicle) => vehicle.carId == message.carId);
-         
+        
                 if(!vehicle) return;
                 vehicle.available = true;
 
-                let carMarker = map.markers.getMarkers().find((marker) => marker.getOptions().text == message.carId)
-                if(carMarker){
-                    carMarker.setOptions({position: message.position.coordinates});
-                    return;
-                }
-                carMarker = new atlas.HtmlMarker({
-                    text: message.carId,
-                    position: message.position.coordinates,
-                    htmlContent: '<div class="roundMarker">' +
-                        '<img id="carImage" src="' + carPath + '" class="vehicleIcon"/>' +
-                        (vehicle.available ?
-                            '<div class="availability" style="background-color: green;"></div>' :
-                            '<div class="availability" style="background-color: red;"></div>') +'</div>'
-                });
-
+                let marker = vehicle.marker;
+                marker.setOptions({position: message.position.coordinates.reverse()});
                 // Attach a popup to the marker.
                 const popup = new atlas.Popup({
                     content: '<div class="p-5 mx-4"><h2 class="pb-3 font-bold">Voiture : '+ vehicle.carId +'</h2>'
                         +
                         (vehicle.available ?
                             '<div class="p-2 mx-2 bg-orange-500 font-bold text-white rounded"><a href="/?tab=create">Planifier un trajet</a></div></div>' :
-                            '<div class="disabled p-2 mx-2 bg-gray-400 font-bold text-black rounded"><a href="/?tab=create">Planifier un trajet</a></div></div>') +'</div>',
+                            '<div class="pointer-events-none opacity-50 p-2 mx-2 bg-gray-400 font-bold text-black rounded"><a href="/?tab=create">Planifier un trajet</a></div></div>') +'</div>',
                     pixelOffset: [0, -40],
                     closeButton: true
                 });
 
-                map.events.add('click', carMarker, function (e) {
+                map.events.add('click', marker, function (e) {
                     if (currentPopup) {
                         currentPopup.close();
                     }
@@ -80,8 +63,8 @@ onMounted(async () => {
                     popup.open(map);
                     currentPopup = popup;
                 });
+                map.markers.add(marker);
 
-                map.markers.add(carMarker);
             });
             connection.start()
             .catch(console.error);
