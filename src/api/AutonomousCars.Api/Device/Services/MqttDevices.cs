@@ -10,13 +10,13 @@ using Azure.ResourceManager;
 using Azure.ResourceManager.EventGrid;
 public class MqttDevices : IMqttDevices
 {
-    public async Task<List<String>> GetDeviceNames(string subscriptionId, string resourceGroupName, string namespaceName)
+    public async Task<List<String>> GetDeviceNames(MqttNamespaceOptions mqttNamespaceOptions)
     {
         TokenCredential cred = new DefaultAzureCredential();
         ArmClient client = new ArmClient(cred);
+
         
-        
-        ResourceIdentifier eventGridNamespaceResourceId = EventGridNamespaceResource.CreateResourceIdentifier(subscriptionId, resourceGroupName, namespaceName);
+        ResourceIdentifier eventGridNamespaceResourceId = EventGridNamespaceResource.CreateResourceIdentifier(mqttNamespaceOptions.SubscriptionId, mqttNamespaceOptions.ResourceGroupName, mqttNamespaceOptions.Namespace);
         EventGridNamespaceResource eventGridNamespace = client.GetEventGridNamespaceResource(eventGridNamespaceResourceId);
         
         EventGridNamespaceClientCollection collection = eventGridNamespace.GetEventGridNamespaceClients();
@@ -29,7 +29,6 @@ public class MqttDevices : IMqttDevices
             resourceData.Attributes.TryGetValue("type", out var typeValue);
             if ("\"vehicle\"".Equals(typeValue?.ToString()))
             {
-                Console.WriteLine($"Succeeded on id: {resourceData.Name}");
                 deviceNames.Add(resourceData.Name);
             }
         }

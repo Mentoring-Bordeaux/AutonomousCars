@@ -1,3 +1,4 @@
+using AutonomousCars.Api.Models.Itinerary;
 using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
 
@@ -25,7 +26,7 @@ public class ItineraryController : ControllerBase
         if (_itineraryService.CheckItineraryFormat(itinerary))
         {
             var itineraryToSend = _itineraryService.ComputeItinerary(itinerary);
-            await _itineraryService.SendRequest(CancellationToken.None, itineraryToSend, false);
+            await _itineraryService.SendRequest(CancellationToken.None, new List<Feature<LineString>>{itineraryToSend}, false);
             return Ok("Itinerary sent successfully.");
         }
         else
@@ -35,9 +36,9 @@ public class ItineraryController : ControllerBase
     }
     
     [HttpPost("status")]
-    public async Task<IActionResult> SendStatusRequest(string carId)
+    public async Task<IActionResult> SendStatusRequest(StatusRequestData statusRequestData)
     {
-        Feature<LineString> geospatialFeature = _itineraryService.ComputeStatusData(carId);
+        List<Feature<LineString>> geospatialFeature = _itineraryService.ComputeStatusData(statusRequestData);
         await _itineraryService.SendRequest(CancellationToken.None, geospatialFeature,true);
         return Ok("Status request sent successfully.");
     }
