@@ -19,12 +19,12 @@ const arrival = ref('');
 
 const emit = defineEmits(['submit']);
 
-function getLocalPosition(){
-  if(startPosition === undefined){
-    departure.value = 'De votre position actuelle'
-    startPosition.value = chosenCar.value?.vehicle?.marker.getOptions().position
-  }
-}
+// function getLocalPosition(){
+//   if(startPosition === undefined){
+//     departure.value = 'De votre position actuelle'
+//     startPosition.value = chosenCar.value?.vehicle?.marker.getOptions().position
+//   }
+// }
 
 function isFormValid(){
   if(arrival.value !== '' && endPosition !== undefined && chosenCar !== undefined)

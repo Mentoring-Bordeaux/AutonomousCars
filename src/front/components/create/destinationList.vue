@@ -60,7 +60,7 @@ const isInForm = ref<Boolean>(false);
 
   function handleSubmit(){
     if(chosenRoute !== undefined && chosenRoute.value !== undefined && chosenCar.value.vehicle !== null){
-        chosenRoute.value.properties.carId = chosenCar.value.vehicle.carId;
+        chosenRoute.value.routeFeature.properties.carId = chosenCar.value.vehicle.carId;
         sendRoute();
         routesStore.removeAllRoute();
         router.push('/');
