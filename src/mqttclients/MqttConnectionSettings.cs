@@ -49,6 +49,26 @@ public class MqttConnectionSettings
 
     public static MqttConnectionSettings FromConnectionString(string cs) => ParseConnectionString(cs);
 
+    public static MqttConnectionSettings CreateFromValues(string hostname, string username, string clientId, string certFile, string keyFile, bool cleanSession, bool useTLS, int tcpPort)
+    {
+        return new MqttConnectionSettings(hostname)
+        {
+            ClientId = clientId,
+            CertFile = certFile,
+            KeyFile = keyFile,
+            Username = username,
+            Password = "",
+            KeepAliveInSeconds =  Default_KeepAliveInSeconds,
+            CleanSession = cleanSession,
+            TcpPort = tcpPort,
+            UseTls = useTLS,
+            CaFile = "",
+            DisableCrl = false,
+            KeyFilePassword = "",
+
+        };
+    }
+    
     public static MqttConnectionSettings CreateFromEnvVars(string? envFile = "")
     {
         if (string.IsNullOrEmpty(envFile))

@@ -1,10 +1,8 @@
-export type Position = {
-    type: string,
-    coordinates: number[]
-}
+import * as atlas from "azure-maps-control";
 
 export type Vehicle = {
     carId: string,
-    position: Position,
+    carName: string,
+    marker: atlas.HtmlMarker,
     available: boolean
 }

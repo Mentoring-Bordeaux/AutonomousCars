@@ -12,7 +12,7 @@ const props = defineProps<{
   chosenCar: carItem;
 }>();
 const emit = defineEmits(['update:isInForm']);
-
+const {formatDistance, formatDuration} = useDistanceTimeFormat();
 
 const router = useRouter();
 const routesStore = useRoutesListStore();
@@ -23,7 +23,7 @@ const routesSelection = ref<Routes[]| null>();
 const chosenRoute = ref<Routes>();
 const chosenCar = ref<carItem>(props.chosenCar);
 const isInForm = ref<Boolean>(false);
-const {formatDistance, formatDuration} = useDistanceTimeFormat();
+
 
 
   onMounted(async () => {
@@ -59,8 +59,8 @@ const {formatDistance, formatDuration} = useDistanceTimeFormat();
 
 
   function handleSubmit(){
-    if(chosenRoute !== undefined && chosenRoute.value !== undefined){
-        chosenRoute.value.routeFeature.properties.carId = "car01";
+    if(chosenRoute !== undefined && chosenRoute.value !== undefined && chosenCar.value.vehicle !== null){
+        chosenRoute.value.properties.carId = chosenCar.value.vehicle.carId;
         sendRoute();
         routesStore.removeAllRoute();
         router.push('/');
