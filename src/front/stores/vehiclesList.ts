@@ -21,7 +21,7 @@ export const useVehiclesListStore = defineStore('vehiclesListStore', {
             const deviceNames = response._data.deviceNames;
             const carNameList: string[] = ['Model S - Tesla', 'Model 3 - Tesla', 'Model X - Tesla', 'Model Y - Tesla', 'Model S Plaid - Tesla'];
 
-            this.getStatusFromVehicle(deviceNames);
+            // this.getStatusFromVehicle(deviceNames);
 
             this.vehiclesList = deviceNames.map((deviceName: string) : Vehicle => ({
               carId: deviceName,
@@ -50,16 +50,16 @@ export const useVehiclesListStore = defineStore('vehiclesListStore', {
         }
       });
     },
-    async getStatusFromVehicle(identifiers: String[]) {
-      await $fetch('/api/itinerary/status', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          CarIdentifiers: identifiers
-        }),
-      });
-    }
+    // async getStatusFromVehicle(identifiers: String[]) {
+    //   await $fetch('/api/itinerary/status', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       CarIdentifiers: identifiers
+    //     }),
+    //   });
+    // }
   }
 });
