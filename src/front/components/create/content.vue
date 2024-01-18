@@ -12,8 +12,7 @@ const positions = ref<{
   end: Position
 }>({start: {lat: NaN, lon: NaN}, end: {lat: NaN, lon: NaN}});
 
-const chosenCar = ref<carItem>({name: '', icon: ''});
-
+const chosenCar = ref<carItem>({name: '', icon: '', vehicle: null});
 const isInForm = ref<boolean>(true);
 
 const handleSubmit = (payload: { departure: string; arrival: string; startPosition: Position; endPosition: Position; chosenCar: carItem }) => {
@@ -21,8 +20,6 @@ const handleSubmit = (payload: { departure: string; arrival: string; startPositi
   positions.value = {start: payload.startPosition, end: payload.endPosition};
   chosenCar.value = payload.chosenCar;
   isInForm.value = false;
-
-
 }
 
 </script>
