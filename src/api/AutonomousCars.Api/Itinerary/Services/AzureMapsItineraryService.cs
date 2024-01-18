@@ -2,6 +2,7 @@ using AutonomousCars.Api.Models.Itinerary;
 
 namespace AutonomousCars.Api.Itinerary.Services;
 
+using AutonomousCars.Api.Models.Options;
 using GeoJSON.Text.Geometry;
 using GeoJSON.Text.Feature;
 using MQTTnet;
@@ -9,6 +10,7 @@ using MQTTnet.Client;
 using MQTTnet.Client.Extensions;
 using Utils;
 using System.Collections;
+
 
 public class AzureMapsItineraryService : IItineraryService
 {
@@ -71,10 +73,15 @@ public class AzureMapsItineraryService : IItineraryService
         }
         return statusRequests;
     }
-    
+
     public async Task SendRequest(CancellationToken stoppingToken,  List<Feature<LineString>> geospatialFeatures, bool isStatusRequest)
     {
-        var cs = MqttConnectionSettings.CreateFromEnvVars(_configuration.GetValue<string>("envFile"));
+        
+        var cs = MqttSettings.MqttConnectionSettings;
+        if (cs == null){
+            _logger.LogError("Error to open the connexion");
+        }
+        
         _logger.LogInformation("Connecting to {cs}", cs);
 
         var mqttClient = new MqttFactory().CreateMqttClient(MqttNetTraceLogger.CreateTraceLogger());
@@ -84,7 +91,7 @@ public class AzureMapsItineraryService : IItineraryService
             return Task.CompletedTask;
         };
 
-        var connAck = await mqttClient.ConnectAsync(new MqttClientOptionsBuilder().WithConnectionSettings(cs).Build(), stoppingToken);
+        var connAck = await mqttClient.ConnectAsync(new MqttClientOptionsBuilder().WithConnectionSettings(cs!).Build(), stoppingToken);
         _logger.LogInformation("Client {ClientId} connected: {ResultCode}", mqttClient.Options.ClientId, connAck.ResultCode);
 
         foreach (var geospatialFeature in geospatialFeatures)
