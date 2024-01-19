@@ -26,6 +26,7 @@
     "nuxt": "^3.8.0",
     "prettier": "^3.1.0",
     "typescript": "latest",
+    "unocss": "^0.58.3",
     "vitest": "^0.34.6",
     "vue": "^3.3.7",
     "vue-router": "^4.2.5"
@@ -41,7 +42,6 @@
     "azure-maps-control": "^3.0.2",
     "luxon": "^3.4.4",
     "pinia": "^2.1.7",
-    "unocss": "^0.58.3",
     "vue3-carousel": "^0.3.1",
     "vue3-carousel-nuxt": "^1.1.0"
   }
