@@ -3,7 +3,11 @@ useVehiclesListStore().initVehiclesDevices()
 </script>
 
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <div>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+
+      <UNotifications class="w-100"/>
+  </div>
 </template>

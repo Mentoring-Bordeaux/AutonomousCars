@@ -11,7 +11,7 @@ const localTime = now.toLocaleTimeString('fr-FR', optionsTime);
 
 const departureTime = ref(localTime);
 const departureDate = ref(localDate);
-const startPosition = ref<Position>();
+const startPosition = ref<Position | undefined>();
 const endPosition = ref<Position>();
 const chosenCar = ref<carItem>();
 const departure = ref('');
@@ -19,16 +19,23 @@ const arrival = ref('');
 
 const emit = defineEmits(['submit']);
 
-// function getLocalPosition(){
-//   if(startPosition === undefined){
-//     departure.value = 'De votre position actuelle'
-//     startPosition.value = chosenCar.value?.vehicle?.marker.getOptions().position
-//   }
-// }
+function setCarLocalPositionToStartPosition(){
+  if(startPosition.value === undefined){
+    departure.value = 'votre position actuelle'
+    if(chosenCar.value !== undefined && chosenCar.value.vehicle !== undefined){
+      const carPosition = chosenCar.value.vehicle.marker.getOptions().position
+      if(carPosition != null){
+        startPosition.value = {lat: carPosition[0], lon: carPosition[1]};
+      }
+    }
+  }
+}
 
 function isFormValid(){
-  if(arrival.value !== '' && endPosition !== undefined && chosenCar !== undefined)
+  if(arrival.value !== '' && endPosition !== undefined && chosenCar !== undefined){
+      setCarLocalPositionToStartPosition()
       return true; 
+  }
   return false; 
 }
 

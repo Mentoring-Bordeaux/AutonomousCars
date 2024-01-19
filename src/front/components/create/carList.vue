@@ -24,7 +24,7 @@ function toggleDropdown() {
 }
 
 function populateCarList(){
-    const availableCar: Vehicle[]  = vehiclesListStore.vehiclesList.filter((vehicule) => vehicule.available);
+    const availableCar: Vehicle[]  = vehiclesListStore.vehiclesList.filter((vehicule) => !vehicule.available);
     if(availableCar.length !== 0){
         const newCarList: carItem[] = availableCar.map(car => ({
             icon: 'img/car_icon.png',

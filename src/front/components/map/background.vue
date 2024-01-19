@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import * as atlas from "azure-maps-control";
 import * as signalR from "@microsoft/signalr";
+import { useMapItineraries } from "~/composables/useMapItineraries"
 import type { Vehicle } from "~/models/Vehicle";
 import "azure-maps-control/dist/atlas.min.css";
+import type { routeStoreItem } from "~/models/routeStoreItem";
 
 const apiBaseUrl = "https://func-autonomouscars.azurewebsites.net";
 
@@ -37,7 +39,7 @@ onMounted(async () => {
             connection.on('newPosition', (message) => {
                 
                 const vehicles = useVehiclesListStore().vehiclesList;
-                const vehicle = vehicles.find((vehicle) => vehicle.carId == message.carId);
+                const vehicle = vehicles.find((vehicle) => vehicle.carId === message.carId);
         
                 if(!vehicle) return;
                 vehicle.available = true;
@@ -74,65 +76,36 @@ onMounted(async () => {
 
     });
 
+    const { addPointsOnMap, addRouteOnMap, removeSuggestedRoutes } = useMapItineraries();
+
     map.events.add('ready', function() {
-        routesStore.removeAllRoute();
-        const dataSource = new atlas.source.DataSource();
-        map.sources.add(dataSource);
+        const dataSourceSuggestedRoute = new atlas.source.DataSource();
+        const dataSourceUsedRoute = new atlas.source.DataSource();
+        map.sources.add(dataSourceSuggestedRoute);
+        map.sources.add(dataSourceUsedRoute);
 
-        watch(() => routesStore.routes, (curr, old) => {
-        if(curr.length > old.length){
-            const addedRoutes = curr.filter(x => !old.includes(x));
-            console.log('Route added in the store');
-            const startPoint = new atlas.data.Feature(new atlas.data.Point(addedRoutes[0].coordinates[0]), {
-                icon: "pin-blue"
-            });
-            const endPoint = new atlas.data.Feature(new atlas.data.Point(addedRoutes[0].coordinates[addedRoutes[0].coordinates.length - 1]), {
-                icon: "pin-round-blue"
-            });
-            dataSource.add([startPoint, endPoint]);
-            map.layers.add(
-                new atlas.layer.SymbolLayer(dataSource, undefined, {
-                    iconOptions: {
-                        image: ["get", "icon"],
-                        allowOverlap: true,
-                        ignorePlacement: true
-                    },
-                    textOptions: {
-                        textField: ["get", "title"],
-                        offset: [0, 1.2]
-                    },
-                    filter: ["any", ["==", ["geometry-type"], "Point"], ["==", ["geometry-type"], "MultiPoint"]] // Only render Point or MultiPoints in this layer.
-                })
-            );
-            // const myRoutes = [] as atlas.data.Feature<atlas.data.LineString, Array<[number, number]>>[];
-            addedRoutes.forEach(element => {
-                dataSource.add(new atlas.data.Feature(new atlas.data.LineString(element.coordinates), null, `${element.id}-line`));
-            });
-            // dataSource.add(myRoutes);
-            const colours = ['#035290', '#6B0303', '#A50ED9']
-            addedRoutes.forEach(element => {
-                map.layers.add(new atlas.layer.LineLayer(
-                    dataSource, `${element.id}-line`, {
-                        strokeColor: colours[parseInt(element.id) - 1], // '#2272B9',
-                        strokeWidth: 5,
-                        lineJoin: 'round',
-                        lineCap: 'round',
-                    })
-                );    
-            });
-
-            map.setCamera({
-                bounds: atlas.data.BoundingBox.fromLatLngs(addedRoutes[0].coordinates),
-                padding: 40
-            });
+        
+        watch(() => routesStore.routes, (curr: routeStoreItem[], old: routeStoreItem[]) => {
+            if(curr.length > old.length){
+                const addedRoutes: routeStoreItem[] = curr.filter(x => !old.includes(x));
+                const suggestedRoutes = addedRoutes.filter((route) => route.status === "suggested");                
+                const usedRoutes = addedRoutes.filter((route) => route.status === "used");
+                if(suggestedRoutes.length !== 0)        
+                    addPointsOnMap(map, suggestedRoutes, dataSourceSuggestedRoute)
+                    suggestedRoutes.forEach(route => { addRouteOnMap(map, route, dataSourceSuggestedRoute); });        
+                if(usedRoutes.length !== 0)
+                    addPointsOnMap(map, usedRoutes, dataSourceUsedRoute)
+                    usedRoutes.forEach(route => { addRouteOnMap(map, route, dataSourceUsedRoute); });
+                map.setCamera({
+                    bounds: atlas.data.BoundingBox.fromLatLngs(addedRoutes[0].coordinates),
+                    padding: 40
+                });
+                console.log('Route added on the map');
         }
         else if(curr.length < old.length){
-            const removedRoutes = curr.filter(x => !curr.includes(x));
-            removedRoutes.forEach(route => {
-                map.layers.remove(`${route.id}-line`);
-            });
-            dataSource.clear();
-            console.log('Route deleted in the store');
+            const removedRoutes: routeStoreItem[] = old.filter(x => !curr.includes(x));
+            removeSuggestedRoutes(map, removedRoutes, dataSourceSuggestedRoute)
+            console.log('Route deleted on the map');
         }
         else {
             console.log('Route modified');

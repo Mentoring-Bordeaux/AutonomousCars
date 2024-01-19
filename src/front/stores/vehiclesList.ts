@@ -28,7 +28,7 @@ export const useVehiclesListStore = defineStore('vehiclesListStore', {
               carName: `${carNameList[Math.floor(Math.random() * carNameList.length)]} [${deviceName}]`,
               marker: new atlas.HtmlMarker({
                 text: deviceName,
-                position: [0, 0],
+                position: [44.812721, -0.590740],
                 htmlContent: `
                   <div class="relative w-11 h-11 rounded-full overflow-hidden bg-gray-200 shadow-md flex items-center justify-center border border-white">
                     <img id="carImage" src="${carPath}" class="w-11 h-11 object-contain rounded-full" />
