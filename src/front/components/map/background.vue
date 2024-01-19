@@ -41,7 +41,7 @@ onMounted(async () => {
                 vehicle.available = true;
 
                 let marker = vehicle.marker;
-                marker.setOptions({position: message.position.coordinates.reverse()});
+                marker.setOptions({position: message.position.coordinates});
                 // Attach a popup to the marker.
                 const popup = new atlas.Popup({
                     content: '<div class="p-5 mx-4"><h2 class="pb-3 font-bold">Voiture : '+ vehicle.carId +'</h2>'
