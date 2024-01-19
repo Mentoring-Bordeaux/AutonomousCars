@@ -1,6 +1,6 @@
 name: Run deployment with OIDC
 on:
-  workflow_dispatch:  
+  workflow_dispatch: 
   workflow_run:
     workflows: [continuous]
     types:
@@ -9,7 +9,6 @@ on:
       - 'main'
   schedule:
     - cron: '0 7 * * *'
-
 env:
   AZURE_WEBAPP_NAME:  ${{ vars.AZURE_WEBAPP_NAME }}
   AZURE_WEBAPP_PACKAGE_PATH: './api'
