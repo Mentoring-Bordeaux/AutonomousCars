@@ -1,12 +1,10 @@
 using AutonomousCars.Api.Models.Options;
 
 namespace AutonomousCars.Api.Controllers;
-using AutonomousCars.Api.Models.Exceptions;
 
 using Microsoft.AspNetCore.Mvc;
 
-using AutonomousCars.Api.Device.Services;
-using Microsoft.Extensions.Options;
+using Device.Services;
 
 
 [ApiController]
@@ -23,7 +21,7 @@ public class ListingDevicesController : Controller
     [HttpGet("getAllDevices")]
     public async Task<IActionResult> GetAllDevices()
     {
-        MqttNamespaceOptions? mqttNamespaceOptions = MqttSettings.MqttNamespaceOptions;
+        var mqttNamespaceOptions = MqttSettings.MqttNamespaceOptions;
 
         if (mqttNamespaceOptions != null)
         {

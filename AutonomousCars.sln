@@ -15,6 +15,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTTnet.Client.Extensions", "src\mqttclients\MQTTnet.Client.Extensions.csproj", "{2E172373-C5C9-4F46-812E-2205643C1D4F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company.FunctionTelemetry", "src\azure_function\Company.FunctionTelemetry\Company.FunctionTelemetry\Company.FunctionTelemetry.csproj", "{2CBA1FA3-19B9-4ABC-AF8B-8F2231AE676E}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutonomousCars.Utils", "src\AutonomousCars.Utils\AutonomousCars.Utils.csproj", "{B01DE515-3C43-47CC-8A44-E61BE74E101E}"
 EndProject
 Global
@@ -29,10 +30,6 @@ Global
 		{2D7C99D7-8E1A-4696-B52B-FB04DD5001F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D7C99D7-8E1A-4696-B52B-FB04DD5001F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D7C99D7-8E1A-4696-B52B-FB04DD5001F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CFA9A1C5-8377-4838-AEC1-B4FACD9CA688}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CFA9A1C5-8377-4838-AEC1-B4FACD9CA688}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CFA9A1C5-8377-4838-AEC1-B4FACD9CA688}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CFA9A1C5-8377-4838-AEC1-B4FACD9CA688}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D46CAC98-68AA-437D-97C3-CBC8A0F222E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D46CAC98-68AA-437D-97C3-CBC8A0F222E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D46CAC98-68AA-437D-97C3-CBC8A0F222E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +42,8 @@ Global
 		{B01DE515-3C43-47CC-8A44-E61BE74E101E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B01DE515-3C43-47CC-8A44-E61BE74E101E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B01DE515-3C43-47CC-8A44-E61BE74E101E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CBA1FA3-19B9-4ABC-AF8B-8F2231AE676E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CBA1FA3-19B9-4ABC-AF8B-8F2231AE676E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

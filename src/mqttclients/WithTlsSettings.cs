@@ -18,10 +18,14 @@ public static partial class MqttNetExtensions
                 tlsParams.WithCertificateValidationHandler(ea => X509ChainValidator.ValidateChain(ea, cs.CaFile!));
             }
 
-            if (!string.IsNullOrEmpty(cs.CertFile) && !string.IsNullOrEmpty(cs.KeyFile))
+            if (cs.Certificate != null)
             {
                 List<X509Certificate2> certs = new();
-                X509Certificate2 cert = X509ClientCertificateLocator.Load(cs.CertFile, cs.KeyFile, cs.KeyFilePassword!);
+                X509Certificate2? cert = cs.Certificate;
+                if (cert == null)
+                {
+                    throw new SecurityException("Certificate Null Reference");
+                }
                 if (!cert.HasPrivateKey)
                 {
                     throw new SecurityException("Provided Cert Has not Private Key");
