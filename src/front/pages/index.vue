@@ -4,9 +4,12 @@ import create from '~/components/create/content.vue';
 import vehicles from '~/components/vehicles/content.vue';
 import update from '~/components/update/content.vue';
 
+definePageMeta({
+  colorMode: 'light',
+})
+
 const showSidebar = ref(true);
 const tabs = { create, vehicles, update };
-const key = ref(0);
 
 const route = useRoute();
 const tab = toRef(() => route.query.tab);
@@ -17,18 +20,7 @@ const toggleSidebar = () => {
   showSidebar.value = !showSidebar.value;
 };
 
-watch(showSidebar, () => {
-  key.value += 1;
-});
-</script>
-
-<script>
-export default {
-  colorMode: 'light',
-}
-definePageMeta({
-  colorMode: 'light',
-})
+const key = computed(() => showSidebar.value ? 1 : 0);
 </script>
 <template>
   <div class="flex h-[calc(100vh-56px)]">
