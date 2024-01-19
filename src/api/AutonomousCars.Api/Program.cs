@@ -1,14 +1,14 @@
-using AutonomousCars.Api.Itinerary.Services;
-using AutonomousCars.Api.Models.Exceptions;
-
 namespace AutonomousCars.Api;
 
+using Itinerary.Services;
 using Models.Options;
 using Weather.Services;
 using Device.Services;
 
 using Azure.Core;
 using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+
 
 public class Program
 {
@@ -27,10 +27,6 @@ public class Program
         builder.Services.AddTransient<IItineraryService, AzureMapsItineraryService>();
         builder.Services.AddTransient<IMqttDevices, MqttDevices>();
 
-        // Options
-        builder.Services.Configure<AzureMapsOptions>(builder.Configuration.GetSection("AzureMaps"));
-        builder.Services.Configure<MqttNamespaceOptions>(builder.Configuration.GetSection("KeyVault"));
-
         // Token credential
         builder.Services.AddSingleton<TokenCredential>(_ =>
             builder.Environment.IsDevelopment()
@@ -40,17 +36,10 @@ public class Program
                 })
                 : new ManagedIdentityCredential());
 
-        var keyVaultOptions = builder.Configuration.GetSection("KeyVault").Get<KeyVaultOptions>();
-        
-        if (keyVaultOptions != null)
-        {
-           await MqttSettings.InitMqttSettings(keyVaultOptions);
-        }
-        else
-        {
-            throw new MissingSettingException($"{nameof(keyVaultOptions)}.{nameof(keyVaultOptions.KeyVaultName)}");
-        }
-        ;
+        var kvUri = new Uri("https://kv-autonomouscars.vault.azure.net");
+        var secretClient = new SecretClient(kvUri, new DefaultAzureCredential());
+
+        await MqttSettings.InitMqttSettings(secretClient);
         
         var app = builder.Build();
 
