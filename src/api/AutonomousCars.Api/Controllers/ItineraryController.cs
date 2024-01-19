@@ -1,8 +1,8 @@
+namespace AutonomousCars.Api.Controllers;
 using AutonomousCars.Api.Models.Itinerary;
 using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
 
-namespace AutonomousCars.Api.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Itinerary.Services;
 using System.Threading.Tasks;
