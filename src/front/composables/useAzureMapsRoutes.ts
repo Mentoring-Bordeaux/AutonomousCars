@@ -1,7 +1,7 @@
 import MapsRoute, { type MapsRouteClient, isUnexpected, toColonDelimitedLatLonString} from "@azure-rest/maps-route";
 import type { TokenCredential } from "@azure/core-auth";
 import type { Position } from '~/models/address'
-import { carItem } from "~/models/dropdownCar";
+import type { carItem } from "~/models/dropdownCar";
 import type { Routes } from "~/models/routes";
 import type { routeStoreItem } from "~/models/routeStoreItem";
 
