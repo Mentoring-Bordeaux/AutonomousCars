@@ -58,8 +58,8 @@ function selectCar(car: carItem) {
             <div 
                 v-for="(car, index) in carList" :key="index" 
                 class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                @click="selectCar(car)">
-                    <CreateCarItem :car="car" />
+                @click="selectCar(car as carItem)">
+                    <CreateCarItem :car="(car as carItem)" />
             </div>
         </div>
         <div v-else-if="!vehiclesListStore.isLoaded" class="flex justify-center items-center px-4 py-2">

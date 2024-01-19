@@ -2,7 +2,6 @@
 import * as atlas from "azure-maps-control";
 import * as signalR from "@microsoft/signalr";
 import { useMapItineraries } from "~/composables/useMapItineraries"
-import type { Vehicle } from "~/models/Vehicle";
 import "azure-maps-control/dist/atlas.min.css";
 import type { routeStoreItem } from "~/models/routeStoreItem";
 
@@ -14,10 +13,9 @@ let currentPopup: atlas.Popup | null = null;
 
 onMounted(async () => {
     const routesStore = useRoutesListStore();
+    const { addRoutes, removeRoutes } = useMapItineraries();
     const { getMapCredential } = useAzureMaps();
     const { clientId, accessToken: { token } } = await getMapCredential();
-    const toast = useToast();
-    toast.add({title:"Toast de test"});
 
     const map = new atlas.Map("map", {
         view: "Auto",
@@ -45,7 +43,7 @@ onMounted(async () => {
                 if(!vehicle) return;
                 vehicle.available = true;
 
-                let marker = vehicle.marker;
+                const marker: atlas.HtmlMarker = vehicle.marker as atlas.HtmlMarker;
                 marker.setOptions({position: message.position.coordinates.reverse()});
 
                 // Attach a popup to the marker.
@@ -77,8 +75,6 @@ onMounted(async () => {
 
     });
 
-    const { addPointsOnMap, addRouteOnMap, removeSuggestedRoutes, removeUsedRoutes } = useMapItineraries();
-
     map.events.add('ready', function() {
         const dataSourceSuggestedRoute = new atlas.source.DataSource();
         const dataSourceUsedRoute = new atlas.source.DataSource();
@@ -89,29 +85,15 @@ onMounted(async () => {
         watch(() => routesStore.routes, (curr: routeStoreItem[], old: routeStoreItem[]) => {
             if(curr.length > old.length){
                 const addedRoutes: routeStoreItem[] = curr.filter(x => !old.includes(x));
-                const suggestedRoutes = addedRoutes.filter((route) => route.status === "suggested");                
-                const usedRoutes = addedRoutes.filter((route) => route.status === "used");
-                if(suggestedRoutes.length !== 0)        
-                    addPointsOnMap(map, suggestedRoutes, dataSourceSuggestedRoute)
-                    suggestedRoutes.forEach(route => { addRouteOnMap(map, route, dataSourceSuggestedRoute); });        
-                if(usedRoutes.length !== 0)
-                    addPointsOnMap(map, usedRoutes, dataSourceUsedRoute)
-                    usedRoutes.forEach(route => { addRouteOnMap(map, route, dataSourceUsedRoute); });
+                addRoutes(map, addedRoutes, dataSourceSuggestedRoute, dataSourceUsedRoute);
                 map.setCamera({
                     bounds: atlas.data.BoundingBox.fromLatLngs(addedRoutes[0].coordinates),
                     padding: 40
                 });
-                console.log('Route added on the map');
         }
         else if(curr.length < old.length){
             const removedRoutes: routeStoreItem[] = old.filter(x => !curr.includes(x));
-            const suggestedRoutes = removedRoutes.filter((route) => route.status === "suggested");
-            const usedRoutes = removedRoutes.filter((route) => route.status === "used");
-            if(suggestedRoutes.length !== 0)
-                removeSuggestedRoutes(map, suggestedRoutes, dataSourceSuggestedRoute);
-            if(usedRoutes.length !== 0)
-                removeUsedRoutes(map, usedRoutes, dataSourceUsedRoute);
-            console.log('Route deleted on the map');
+            removeRoutes(map, removedRoutes, dataSourceSuggestedRoute, dataSourceUsedRoute);
         }
         else {
             console.log('Route modified');

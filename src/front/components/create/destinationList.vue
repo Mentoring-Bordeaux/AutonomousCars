@@ -41,7 +41,7 @@ const isInForm = ref<Boolean>(false);
 		isError.value = false;
 		try{
 			if(fetchRoutes.value instanceof Function){
-				routesSelection.value = await fetchRoutes.value(props.positions.start, props.positions.end, chosenCar.value);
+				routesSelection.value = await fetchRoutes.value(props.positions.start, props.positions.end, chosenCar.value as carItem);
 				isLoaded.value = true;
 			} 
 		}catch (error){
@@ -50,15 +50,7 @@ const isInForm = ref<Boolean>(false);
 		}
 	}
 
-	// eslint-disable-next-line require-await
 	async function sendRoute(){
-	//   useFetch("api/itinerary/create", {
-	//       method: "POST",
-	//       headers: {
-	//         'Content-Type': "application/json"
-	//       }, 
-	//       body: chosenRoute.value?.routeFeature,
-	//     });
 		const toast = useToast();
 		await $fetch("api/itinerary/create", {
 			method: "POST",
@@ -68,23 +60,16 @@ const isInForm = ref<Boolean>(false);
 	        body: chosenRoute.value?.routeFeature,
 			onResponse: ({ response }) => {
 				if(response.status === 200){
-					toast.add({title:"Votre itinéraire à été crée !"});
+					toast.add({title:"Votre itinéraire a été crée !"});
 					if(selectedRouteStoreItem.value !== undefined)
 						routesStore.addOneRoute(selectedRouteStoreItem.value);
 						setTimeout(() => {
-							console.log("Je déclanche le timeout pour supprimé les routes")
-							routesStore.removeUsedRoutes();
-							toast.add({title:"Votre itinéraire est terminé !"})
-						}, 5000);
+							if(selectedRouteStoreItem.value !== undefined)
+								routesStore.removeRoute(selectedRouteStoreItem.value.id);
+							toast.add({title:"Votre itinéraire est terminé !"});
+						}, chosenRoute.value ? chosenRoute.value.routeFeature.properties.time*1000 : 2000);
 				} else  {
 					toast.add({title:"Votre itinéraire n'a pas pu être crée !"});
-					if(selectedRouteStoreItem.value !== undefined)
-						routesStore.addOneRoute(selectedRouteStoreItem.value);
-					setTimeout(() => {
-						console.log("Je déclanche le timeout pour supprimé les routes")
-						routesStore.removeUsedRoutes();
-						toast.add({title:"Votre itinéraire est terminé !"})
-					}, 5000);
 				}
 			}, 
 		});

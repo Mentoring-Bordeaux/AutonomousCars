@@ -5,25 +5,19 @@ export const useRoutesListStore = defineStore('routesListStore', {
         routes: [] as routeStoreItem[],
     }), 
     actions: {
-        deepCopy(){
-            return this.routes.map((element) => ({...element})) as routeStoreItem[];
-        },
         addOneRoute(route: routeStoreItem){
             const tmpRoutes = [...this.routes];
             tmpRoutes.push(route);
             this.routes = [...tmpRoutes]
-            console.log(`Routes added in the store`);
         }, 
         addMultipleRoutes(routes: routeStoreItem[]){
             const tmpRoutes = [...this.routes]
             tmpRoutes.push(...routes);
             this.routes = [...tmpRoutes];
-            console.log(`Multiple routes added in the store`);
         }, 
         removeRoute(id: string){
             const tmpRoutes = this.routes.filter(item => item.id !== id);
             this.routes = [...tmpRoutes];
-            console.log(`Route nº${id} deleted in the store`);
         },
         removeAllRoute(){
             this.routes = [];
