@@ -32,6 +32,10 @@ export const useRoutesListStore = defineStore('routesListStore', {
             const tmpRoutes = this.routes.filter((suggestedRoutes) => suggestedRoutes.status !== "suggested");
             this.routes = [...tmpRoutes];
         },
+        removeUsedRoutes(){
+            const tmpRoutes = this.routes.filter((suggestedRoutes) => suggestedRoutes.status !== "used");
+            this.routes = [...tmpRoutes];
+        },
         getRouteById(id: string){
             const route = this.routes.find((route) => id === route.id);
             if(route)

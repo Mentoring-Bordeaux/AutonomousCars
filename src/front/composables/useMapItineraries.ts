@@ -40,12 +40,20 @@ export function useMapItineraries() {
     }
 
     function removeSuggestedRoutes(map: atlas.Map, routes: routeStoreItem[], dataSource: atlas.source.DataSource){
-        const suggestedRoutes = routes.filter((route) => route.status === "suggested");
-        suggestedRoutes.forEach((route) => {
+        routes.forEach((route) => {
             map.layers.remove(route.id);
         });
         dataSource.clear();
     }
 
-    return { addPointsOnMap, addRouteOnMap, removeSuggestedRoutes }
+    function removeUsedRoutes(map: atlas.Map, routes: routeStoreItem[], dataSource: atlas.source.DataSource){
+        routes.forEach((route) => {
+            map.layers.remove(route.id);
+            dataSource.remove(route.id);
+            map.layers.remove(`points_${route.id}`);
+            dataSource.remove(`points_${route.id}`);
+        });
+    }
+
+    return { addPointsOnMap, addRouteOnMap, removeSuggestedRoutes, removeUsedRoutes }
 }

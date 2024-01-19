@@ -71,16 +71,22 @@ const isInForm = ref<Boolean>(false);
 					toast.add({title:"Votre itinéraire à été crée !"});
 					if(selectedRouteStoreItem.value !== undefined)
 						routesStore.addOneRoute(selectedRouteStoreItem.value);
+						setTimeout(() => {
+							console.log("Je déclanche le timeout pour supprimé les routes")
+							routesStore.removeUsedRoutes();
+							toast.add({title:"Votre itinéraire est terminé !"})
+						}, 5000);
 				} else  {
 					toast.add({title:"Votre itinéraire n'a pas pu être crée !"});
 					if(selectedRouteStoreItem.value !== undefined)
 						routesStore.addOneRoute(selectedRouteStoreItem.value);
+					setTimeout(() => {
+						console.log("Je déclanche le timeout pour supprimé les routes")
+						routesStore.removeUsedRoutes();
+						toast.add({title:"Votre itinéraire est terminé !"})
+					}, 5000);
 				}
 			}, 
-			onResponseError: () => {
-				toast.add({title:"Votre itinéraire n'a pas pu être crée !"});
-			}
-
 		});
 	}
 

@@ -16,6 +16,8 @@ onMounted(async () => {
     const routesStore = useRoutesListStore();
     const { getMapCredential } = useAzureMaps();
     const { clientId, accessToken: { token } } = await getMapCredential();
+    const toast = useToast();
+    toast.add({title:"Toast de test"});
 
     const map = new atlas.Map("map", {
         view: "Auto",
@@ -28,7 +30,6 @@ onMounted(async () => {
             getToken: (resolve) => resolve(token),
         },
     });
-    
 
     // Wait until the map resources are ready.
     map.events.add('ready', function () {
@@ -40,7 +41,7 @@ onMounted(async () => {
                 
                 const vehicles = useVehiclesListStore().vehiclesList;
                 const vehicle = vehicles.find((vehicle) => vehicle.carId === message.carId);
-        
+                
                 if(!vehicle) return;
                 vehicle.available = true;
 
@@ -76,7 +77,7 @@ onMounted(async () => {
 
     });
 
-    const { addPointsOnMap, addRouteOnMap, removeSuggestedRoutes } = useMapItineraries();
+    const { addPointsOnMap, addRouteOnMap, removeSuggestedRoutes, removeUsedRoutes } = useMapItineraries();
 
     map.events.add('ready', function() {
         const dataSourceSuggestedRoute = new atlas.source.DataSource();
@@ -104,7 +105,12 @@ onMounted(async () => {
         }
         else if(curr.length < old.length){
             const removedRoutes: routeStoreItem[] = old.filter(x => !curr.includes(x));
-            removeSuggestedRoutes(map, removedRoutes, dataSourceSuggestedRoute)
+            const suggestedRoutes = removedRoutes.filter((route) => route.status === "suggested");
+            const usedRoutes = removedRoutes.filter((route) => route.status === "used");
+            if(suggestedRoutes.length !== 0)
+                removeSuggestedRoutes(map, suggestedRoutes, dataSourceSuggestedRoute);
+            if(usedRoutes.length !== 0)
+                removeUsedRoutes(map, usedRoutes, dataSourceUsedRoute);
             console.log('Route deleted on the map');
         }
         else {
