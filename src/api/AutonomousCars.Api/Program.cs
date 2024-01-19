@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Azure;
+
 namespace AutonomousCars.Api;
 
 using Itinerary.Services;
@@ -26,7 +28,18 @@ public class Program
         builder.Services.AddTransient<IWeatherService, WeatherService>();
         builder.Services.AddTransient<IItineraryService, AzureMapsItineraryService>();
         builder.Services.AddTransient<IMqttDevices, MqttDevices>();
-
+        builder.Services.AddSingleton<MqttSettings>();
+        
+        builder.Services.Configure<MqttConfiguration>(builder.Configuration.GetSection("MqttNamespace"));
+        
+        var vaultUri = new Uri($"https://{builder.Configuration["KeyVaultName"]}.vault.azure.net");
+        builder.Services.AddAzureClients(clientBuilder =>
+        {
+            clientBuilder.AddSecretClient(vaultUri);
+            clientBuilder.UseCredential(new DefaultAzureCredential());
+        });
+        builder.Configuration.AddAzureKeyVault(vaultUri, new DefaultAzureCredential());
+        
         // Token credential
         builder.Services.AddSingleton<TokenCredential>(_ =>
             builder.Environment.IsDevelopment()
@@ -36,11 +49,6 @@ public class Program
                 })
                 : new ManagedIdentityCredential());
 
-        var kvUri = new Uri("https://kv-autonomouscars.vault.azure.net");
-        var secretClient = new SecretClient(kvUri, new DefaultAzureCredential());
-
-        await MqttSettings.InitMqttSettings(secretClient);
-        
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
@@ -51,7 +59,8 @@ public class Program
 
         app.MapControllers();
         app.UseHttpsRedirection();
-
+        var mqttSettings =  app.Services.GetService<MqttSettings>();
+        if (mqttSettings != null) await mqttSettings.InitMqttSettings();
         app.Run();
     }
 }

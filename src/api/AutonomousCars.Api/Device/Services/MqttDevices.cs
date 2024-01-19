@@ -1,4 +1,5 @@
 using AutonomousCars.Api.Models.Options;
+using Microsoft.Extensions.Options;
 
 namespace AutonomousCars.Api.Device.Services;
 
@@ -7,22 +8,22 @@ using Azure.Core;
 using Azure.Identity;
 using Azure.ResourceManager;
 using Azure.ResourceManager.EventGrid;
-using Azure.Security.KeyVault.Secrets;
 
 public class MqttDevices : IMqttDevices
 {
-    public async Task<List<string>> GetDeviceNames(MqttNamespaceOptions mqttNamespaceOptions)
+    private readonly MqttConfiguration _mqttConfiguration;
+
+    public MqttDevices(IOptions<MqttConfiguration> mqttConfiguration)
+    {
+        _mqttConfiguration = mqttConfiguration.Value;
+    }
+    public async Task<List<string>> GetDeviceNames()
     {
         TokenCredential cred = new DefaultAzureCredential();
         var client = new ArmClient(cred);
 
-        var kvUri = new Uri("https://kv-autonomouscars.vault.azure.net");
-        var secretClient = new SecretClient(kvUri, new DefaultAzureCredential());
-        var namespaceName = await secretClient.GetSecretAsync("MqttNamespaceName");
-        var resourceGroupName = await secretClient.GetSecretAsync("MqttNamespaceResourceGroupName");
-        var subscriptionId = await secretClient.GetSecretAsync("MqttNamespaceSubscriptionId");
-
-        var eventGridNamespaceResourceId = EventGridNamespaceResource.CreateResourceIdentifier(subscriptionId.Value.Value, resourceGroupName.Value.Value, namespaceName.Value.Value);
+        var eventGridNamespaceResourceId = EventGridNamespaceResource.CreateResourceIdentifier(
+            _mqttConfiguration.SubscriptionId, _mqttConfiguration.ResourceGroupName, _mqttConfiguration.EventGridNamespace);
         var eventGridNamespace = client.GetEventGridNamespaceResource(eventGridNamespaceResourceId);
         
         var collection = eventGridNamespace.GetEventGridNamespaceClients();

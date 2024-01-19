@@ -1,4 +1,3 @@
-using AutonomousCars.Api.Models.Options;
 
 namespace AutonomousCars.Api.Controllers;
 
@@ -12,7 +11,7 @@ using Device.Services;
 public class ListingDevicesController : Controller
 {
     private readonly IMqttDevices _mqttDevices;
-    
+
     public ListingDevicesController(IMqttDevices mqttDevices)
     {
         _mqttDevices = mqttDevices;
@@ -21,26 +20,11 @@ public class ListingDevicesController : Controller
     [HttpGet("getAllDevices")]
     public async Task<IActionResult> GetAllDevices()
     {
-        var mqttNamespaceOptions = MqttSettings.MqttNamespaceOptions;
-
-        if (mqttNamespaceOptions != null)
+        var response = new
         {
-            var response = new
-            {
-                Status = "Success",
-                DeviceNames = await _mqttDevices.GetDeviceNames(mqttNamespaceOptions)
-            };
-            return Ok(response);
-        }
-        else
-        {
-            var errorResponse = new
-            {
-                Status = "Error",
-                Message = "Issue of configuration.",
-            };
-            return BadRequest(errorResponse);
-        }
-
+            Status = "Success",
+            DeviceNames = await _mqttDevices.GetDeviceNames()
+        };
+        return Ok(response);
     }
 }

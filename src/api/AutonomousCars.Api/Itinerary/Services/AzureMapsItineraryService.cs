@@ -15,18 +15,18 @@ using System.Collections;
 public class AzureMapsItineraryService : IItineraryService
 {
     private readonly ILogger<AzureMapsItineraryService> _logger;
-    private readonly IConfiguration _configuration;
-    
+    private readonly MqttSettings _mqttSettings;
+
     private const string IdPropName = "carId";
     private const string TimePropName = "time";
     private const string DistancePropName = "distance";
     private const string SpeedPropName = "speed";
     private const string StatusPropName = "status";
     
-    public AzureMapsItineraryService(ILogger<AzureMapsItineraryService> logger, IConfiguration configuration)
+    public AzureMapsItineraryService(ILogger<AzureMapsItineraryService> logger, MqttSettings mqttSettings)
     {
         _logger = logger;
-        _configuration = configuration;
+        _mqttSettings = mqttSettings;
     }
     
     public bool CheckItineraryFormat(Feature<LineString> geospatialFeature)
@@ -60,7 +60,7 @@ public class AzureMapsItineraryService : IItineraryService
     public List<Feature<LineString>> ComputeStatusData(StatusRequestData statusRequestData)
     {
         List<Feature<LineString>> statusRequests = new List<Feature<LineString>>();
-        foreach (var carId in statusRequestData.CarIdentifiers)
+        foreach (var carId in statusRequestData.CarIdentifiers ?? Array.Empty<string>())
         {
             var positions = new[] {new Position(0, 0), new Position(0, 0)};
             var positionsLineString = new LineString(positions);
@@ -77,7 +77,7 @@ public class AzureMapsItineraryService : IItineraryService
     public async Task SendRequest(CancellationToken stoppingToken,  List<Feature<LineString>> geospatialFeatures, bool isStatusRequest)
     {
         
-        var cs = MqttSettings.MqttConnectionSettings;
+        var cs = _mqttSettings.MqttConnectionSettings;
         if (cs == null){
             _logger.LogError("Error to open the connexion");
         }

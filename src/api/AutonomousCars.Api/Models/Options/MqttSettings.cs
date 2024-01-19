@@ -1,7 +1,7 @@
-using AutonomousCars.Api.Models.Exceptions;
-
 namespace AutonomousCars.Api.Models.Options;
 
+using Exceptions;
+using Microsoft.Extensions.Options;
 using MQTTnet.Client.Extensions;
 using System;
 using Azure.Security.KeyVault.Secrets;
@@ -9,26 +9,21 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Text;
 
-public static class MqttSettings
+public class MqttSettings
 {
-    public static MqttConnectionSettings? MqttConnectionSettings;
+    private readonly SecretClient _secretClient;
+    private readonly MqttConfiguration _mqttConfiguration;
 
-    public static MqttNamespaceOptions? MqttNamespaceOptions { get; set; }
-    
-    public static async Task InitMqttSettings(SecretClient kvClient)
+    public MqttSettings(IOptions<MqttConfiguration> mqttConfiguration, SecretClient secretClient)
     {
-        var backClientIdSecret = await kvClient.GetSecretAsync("BackClientId");
-        var backMqttUsernameSecret = await kvClient.GetSecretAsync("BackMqttUsername");
-        var backMqttCleanSessionSecret = await kvClient.GetSecretAsync("BackMqttCleanSession");
-        var backMqttUseTlsSecret = await kvClient.GetSecretAsync("BackMqttUseTLS");
-        var backMqttTcpPortSecret = await kvClient.GetSecretAsync("BackMqttTcpPort");
-        var backMqttHostNameSecret = await kvClient.GetSecretAsync("BackMqttHostName");
-        var backSubscriptionIdSecret = await kvClient.GetSecretAsync("BackSubscriptionId");
-        var backResourceGroupNameSecret = await kvClient.GetSecretAsync("BackResourceGroupName");
-        var backNamespaceSecret = await kvClient.GetSecretAsync("BackNamespace");
-        MqttNamespaceOptions = new MqttNamespaceOptions(backSubscriptionIdSecret.Value.Value, backResourceGroupNameSecret.Value.Value, backNamespaceSecret.Value.Value);
-        
-        var response = await kvClient.GetSecretAsync("Back");
+        _secretClient = secretClient;
+        _mqttConfiguration = mqttConfiguration.Value;
+    }
+    public MqttConnectionSettings? MqttConnectionSettings;
+
+    public async Task InitMqttSettings()
+    {
+        var response = await _secretClient.GetSecretAsync("Back");
         var keyVaultSecret = response?.Value;
         if (keyVaultSecret != null)
         {
@@ -39,12 +34,12 @@ public static class MqttSettings
             }
 
             MqttConnectionSettings = MqttConnectionSettings.CreateFromValues(
-                    backMqttHostNameSecret.Value.Value,
-                    backMqttUsernameSecret.Value.Value,
-                    backClientIdSecret.Value.Value,
-                    bool.Parse(backMqttCleanSessionSecret.Value.Value),
-                    bool.Parse(backMqttUseTlsSecret.Value.Value),
-                    int.Parse(backMqttTcpPortSecret.Value.Value),
+                    _mqttConfiguration.Hostname,
+                    _mqttConfiguration.Username,
+                    _mqttConfiguration.ClientId,
+                    _mqttConfiguration.CleanSession,
+                    _mqttConfiguration.UseTLS,
+                    _mqttConfiguration.TcpPort,
                     x509Certificate2)
                 ;
         }
