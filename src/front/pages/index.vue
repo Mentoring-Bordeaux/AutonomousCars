@@ -22,6 +22,14 @@ watch(showSidebar, () => {
 });
 </script>
 
+<script>
+export default {
+  colorMode: 'light',
+}
+definePageMeta({
+  colorMode: 'light',
+})
+</script>
 <template>
   <div class="flex h-[calc(100vh-56px)]">
     <div :class="{ 'w-9/10': showSidebar, 'w-screen': !showSidebar }">
