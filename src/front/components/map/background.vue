@@ -16,6 +16,7 @@ onMounted(async () => {
     const { addRoutes, removeRoutes } = useMapItineraries();
     const { getMapCredential } = useAzureMaps();
     const { clientId, accessToken: { token } } = await getMapCredential();
+    const toast = useToast();
 
     const map = new atlas.Map("map", {
         view: "Auto",
@@ -44,7 +45,15 @@ onMounted(async () => {
                 vehicle.available = true;
 
                 const marker: atlas.HtmlMarker = vehicle.marker as atlas.HtmlMarker;
-                marker.setOptions({position: message.position.coordinates.reverse()});
+                marker.setOptions({position: message.position.coordinates});
+
+                const endPosition = routesStore.getEndPosition(message.carId)
+                if(endPosition != null && message.position.coordinates[0] === endPosition[0] 
+                    && message.position.coordinates[1] === endPosition[1]){
+                        routesStore.removeRoute(message.carId);
+                        toast.add({title:"Itinéraire terminé"});
+
+                }
 
                 // Attach a popup to the marker.
                 const popup = new atlas.Popup({

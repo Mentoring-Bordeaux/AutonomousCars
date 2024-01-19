@@ -2,11 +2,11 @@
 import { useRouter } from "vue-router"
 import { useAzureMapsRoutes } from "~/composables/useAzureMapsRoutes"
 import { useDistanceTimeFormat } from "~/composables/useDistanceTimeFormat"
+import { useRoutesListStore } from "~/stores/routesList"
 import type { Position } from "~/models/address"
 import type { Routes } from "~/models/routes" 
 import type { carItem } from "~/models/dropdownCar"
 import type { routeStoreItem } from "~/models/routeStoreItem";
-import { useRoutesListStore } from "~/stores/routesList"
 
 const props = defineProps<{
 	addresses: {start: string, end: string};
@@ -24,7 +24,7 @@ const fetchRoutes = ref<( (startPosition: Position, endPosition: Position, chose
 const routesSelection = ref<Routes[]| null>();
 const chosenRoute = ref<Routes>();
 const selectedRouteStoreItem = ref<routeStoreItem>();
-const chosenCar = ref<carItem>(props.chosenCar);
+const chosenCar = ref<carItem>(props.chosenCar as carItem);
 const isInForm = ref<Boolean>(false);
 
 
@@ -63,11 +63,11 @@ const isInForm = ref<Boolean>(false);
 					toast.add({title:"Votre itinéraire a été crée !"});
 					if(selectedRouteStoreItem.value !== undefined)
 						routesStore.addOneRoute(selectedRouteStoreItem.value);
-						setTimeout(() => {
-							if(selectedRouteStoreItem.value !== undefined)
-								routesStore.removeRoute(selectedRouteStoreItem.value.id);
-							toast.add({title:"Votre itinéraire est terminé !"});
-						}, chosenRoute.value ? chosenRoute.value.routeFeature.properties.time*1000 : 2000);
+						// setTimeout(() => {
+						// 	if(selectedRouteStoreItem.value !== undefined)
+						// 		routesStore.removeRoute(selectedRouteStoreItem.value.id);
+						// 	toast.add({title:"Votre itinéraire est terminé !"});
+						// }, chosenRoute.value ? chosenRoute.value.routeFeature.properties.time*1000 : 2000);
 				} else  {
 					toast.add({title:"Votre itinéraire n'a pas pu être crée !"});
 				}

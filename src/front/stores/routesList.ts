@@ -5,6 +5,13 @@ export const useRoutesListStore = defineStore('routesListStore', {
         routes: [] as routeStoreItem[],
     }), 
     actions: {
+        getEndPosition(id: string){
+           const route = this.routes.find((route) => id === route.id);
+           if(route){
+                return route.coordinates[route.coordinates.length-1];
+           }
+           return null; 
+        },
         addOneRoute(route: routeStoreItem){
             const tmpRoutes = [...this.routes];
             tmpRoutes.push(route);

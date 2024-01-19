@@ -25,14 +25,14 @@ function setCarLocalPositionToStartPosition(){
     if(chosenCar.value !== undefined && chosenCar.value.vehicle !== undefined){
       const carPosition = chosenCar.value.vehicle.marker.getOptions().position
       if(carPosition != null){
-        startPosition.value = {lat: carPosition[0], lon: carPosition[1]};
+        startPosition.value = {lat: carPosition[1], lon: carPosition[0]};
       }
     }
   }
 }
 
 function isFormValid(){
-  if(arrival.value !== '' && endPosition !== undefined && chosenCar !== undefined){
+  if(arrival.value !== '' && endPosition !== undefined && chosenCar !== undefined  && chosenCar.value !== undefined){
       setCarLocalPositionToStartPosition()
       return true; 
   }
