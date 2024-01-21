@@ -47,10 +47,10 @@ export function useMapItineraries() {
         });
     }
 
-    function addRouteLayer(map: atlas.Map, route: routeStoreItem, dataSource: atlas.source.DataSource){
+    function addRouteLayer(map: atlas.Map, routeId: string, dataSource: atlas.source.DataSource){
         map.layers.add(new atlas.layer.LineLayer(
-            dataSource, route.id, {
-                strokeColor: ['case', ['==', ['get', 'click'], true], '#0863BD', '#B1D6FA'], // ['to-color', ['at', ['get', 'resultIndex'], ['literal', routeColors]]],// '#035290', // '#2272B9',
+            dataSource, routeId, {
+                strokeColor: ['case', ['==', ['get', 'click'], true], '#0863BD', '#B1D6FA'],
                 strokeWidth: 7,
                 lineJoin: 'round',
                 lineCap: 'round',
@@ -60,7 +60,7 @@ export function useMapItineraries() {
 
     function addRouteOnMap(map: atlas.Map, route: routeStoreItem, dataSource: atlas.source.DataSource){
         dataSource.add(new atlas.data.Feature(new atlas.data.LineString(route.coordinates), {click: false}, route.id));
-        addRouteLayer(map, route, dataSource);
+        addRouteLayer(map, route.id, dataSource);
     }
 
     function addRoutes(map: atlas.Map, addedRoutes: routeStoreItem[],  
@@ -90,6 +90,8 @@ export function useMapItineraries() {
             dataSource.remove(route.id);
             map.layers.remove(`points_${route.id}`);
             dataSource.remove(`points_${route.id}`);
+            map.layers.remove(`${route.id}_update`);
+            dataSource.remove(`${route.id}_update`);
         });
     }
 
@@ -116,11 +118,16 @@ export function useMapItineraries() {
             dataSource.add(new atlas.data.Feature(new atlas.data.LineString(route.coordinates), {click: route.click}, route.id));
             if(route.click === true){
                 map.layers.move(route.id);
-                // addRouteLayer(map, route, dataSource);
             }
-        }));
-        
+        }));   
     }
 
-    return { addRoutes, removeRoutes, changeRouteColor}
+    function updateRoute(map: atlas.Map, coordinates: Array<[number, number]>, routeId: string, dataSource: atlas.source.DataSource){
+        dataSource.remove(`${routeId}_update`);
+        dataSource.add(new atlas.data.Feature(new atlas.data.LineString(coordinates), {click: true}, `${routeId}_update`));
+        if(!map.layers.getLayerById(`${routeId}_update`))
+            addRouteLayer(map, `${routeId}_update`, dataSource);
+    }
+
+    return { addRoutes, removeRoutes, changeRouteColor, updateRoute};
 }

@@ -43,6 +43,19 @@ export const useRoutesListStore = defineStore('routesListStore', {
                 return {...route} as routeStoreItem; 
             return null; 
         },
+        getRouteCoordinates(id: string, position: [number, number]){
+            const route = this.routes.find((route) => id === route.id);
+            if(route){
+                const posIndex = route.coordinates.findIndex(c => 
+                    c[0] === position[0] && c[1] === position[1]
+                );
+                if(posIndex !== -1){
+                    return route.coordinates.slice(0, posIndex + 1);
+                }
+                return null; 
+            }
+            return null;
+        },
         changeAndGetSelectedRoute(routeId: string, carId: string){
             const route = {... this.routes.find((route) => routeId === route.id)};
             if(route){

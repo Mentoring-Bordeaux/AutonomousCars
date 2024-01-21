@@ -13,7 +13,7 @@ let currentPopup: atlas.Popup | null = null;
 
 onMounted(async () => {
     const routesStore = useRoutesListStore();
-    const { addRoutes, removeRoutes, changeRouteColor } = useMapItineraries();
+    const { addRoutes, removeRoutes, changeRouteColor, updateRoute } = useMapItineraries();
     const { getMapCredential } = useAzureMaps();
     const { clientId, accessToken: { token } } = await getMapCredential();
     const toast = useToast();
@@ -32,6 +32,10 @@ onMounted(async () => {
 
     // Wait until the map resources are ready.
     map.events.add('ready', function () {
+            const dataSourceSuggestedRoute = new atlas.source.DataSource();
+            const dataSourceUsedRoute = new atlas.source.DataSource();
+            map.sources.add(dataSourceSuggestedRoute);
+            map.sources.add(dataSourceUsedRoute);
             const connection = new signalR.HubConnectionBuilder()
             .withUrl(apiBaseUrl + '/api')
             .configureLogging(signalR.LogLevel.Information)
@@ -41,11 +45,16 @@ onMounted(async () => {
                 const vehicles = useVehiclesListStore().vehiclesList;
                 const vehicle = vehicles.find((vehicle) => vehicle.carId === message.carId);
                 
+                
                 if(!vehicle) return;
                 vehicle.available = true;
 
                 const marker: atlas.HtmlMarker = vehicle.marker as atlas.HtmlMarker;
                 marker.setOptions({position: message.position.coordinates});
+
+                const coveredPoints = routesStore.getRouteCoordinates(message.carId, message.position.coordinates);
+                if(coveredPoints !== null)
+                    updateRoute(map, coveredPoints, message.carId, dataSourceUsedRoute);
 
                 const endPosition = routesStore.getEndPosition(message.carId)
                 if(endPosition != null && message.position.coordinates[0] === endPosition[0] 
@@ -82,14 +91,6 @@ onMounted(async () => {
             connection.start()
             .catch(console.error);
 
-    });
-
-    map.events.add('ready', function() {
-        const dataSourceSuggestedRoute = new atlas.source.DataSource();
-        const dataSourceUsedRoute = new atlas.source.DataSource();
-        map.sources.add(dataSourceSuggestedRoute);
-        map.sources.add(dataSourceUsedRoute);
-
         
         watch(() => routesStore.routes, (curr: routeStoreItem[], old: routeStoreItem[]) => {
             if(curr.length > old.length){
@@ -99,18 +100,17 @@ onMounted(async () => {
                     bounds: atlas.data.BoundingBox.fromLatLngs(addedRoutes[0].coordinates),
                     padding: 40
                 });
-        }
-        else if(curr.length < old.length){
-            const removedRoutes: routeStoreItem[] = old.filter(x => !curr.includes(x));
-            removeRoutes(map, removedRoutes, dataSourceSuggestedRoute, dataSourceUsedRoute);
-        }
-        else {
-            console.log('Route modified');
-            changeRouteColor(map, curr, dataSourceSuggestedRoute);
+            }
+            else if(curr.length < old.length){
+                const removedRoutes: routeStoreItem[] = old.filter(x => !curr.includes(x));
+                removeRoutes(map, removedRoutes, dataSourceSuggestedRoute, dataSourceUsedRoute);
+            }
+            else {
+                console.log('Route modified');
+                changeRouteColor(map, curr, dataSourceSuggestedRoute);   
+         } 
             
-        } 
-            
-    }, { deep: true });
+        }, { deep: true });
     });
     
 });
