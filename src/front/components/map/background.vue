@@ -36,6 +36,9 @@ onMounted(async () => {
             const dataSourceUsedRoute = new atlas.source.DataSource();
             map.sources.add(dataSourceSuggestedRoute);
             map.sources.add(dataSourceUsedRoute);
+
+            addRoutes(map, routesStore.routes, dataSourceSuggestedRoute, dataSourceUsedRoute);
+
             const connection = new signalR.HubConnectionBuilder()
             .withUrl(apiBaseUrl + '/api')
             .configureLogging(signalR.LogLevel.Information)
@@ -52,15 +55,17 @@ onMounted(async () => {
                 const marker: atlas.HtmlMarker = vehicle.marker as atlas.HtmlMarker;
                 marker.setOptions({position: message.position.coordinates});
 
+                // Update color route during the journey
                 const coveredPoints = routesStore.getRouteCoordinates(message.carId, message.position.coordinates);
                 if(coveredPoints !== null)
                     updateRoute(map, coveredPoints, message.carId, dataSourceUsedRoute);
 
+                // Watch the end of a journey in order to remove the layers
                 const endPosition = routesStore.getEndPosition(message.carId)
                 if(endPosition != null && message.position.coordinates[0] === endPosition[0] 
                     && message.position.coordinates[1] === endPosition[1]){
                         routesStore.removeRoute(message.carId);
-                        toast.add({title:"Itinéraire terminé"});
+                        toast.add({title:"Votre itinéraire est terminé"});
 
                 }
 
@@ -107,7 +112,8 @@ onMounted(async () => {
             }
             else {
                 console.log('Route modified');
-                changeRouteColor(map, curr, dataSourceSuggestedRoute);   
+                const suggestedRoutes = curr.filter(route => route.status === "suggested");
+                changeRouteColor(map, suggestedRoutes, dataSourceSuggestedRoute);   
          } 
             
         }, { deep: true });
