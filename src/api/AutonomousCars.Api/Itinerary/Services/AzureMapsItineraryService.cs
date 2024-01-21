@@ -42,18 +42,18 @@ public class AzureMapsItineraryService : IItineraryService
         return carIdValid && timeValid && distanceValid && coordinatesValid;
     }
 
-    private static double ComputeSpeed(double time, double distance)
+    private static double ComputeSpeed(double time, double nbPoints)
     {
-        return distance / time;
+        return  time / nbPoints;
     }
     
     public Feature<LineString> ComputeItinerary(Feature<LineString> itinerary)
     {
         IDictionary<string, object>? properties = itinerary.Properties;
+        var nbPoints = itinerary.Geometry.Coordinates.Count;
         properties.Add(StatusPropName, "false");
         var time = GeoJsonUtils.GetDoubleProperty(properties, TimePropName);
-        var distance = GeoJsonUtils.GetDoubleProperty(properties, DistancePropName);
-        properties.Add(SpeedPropName, ComputeSpeed(time, distance));
+        properties.Add(SpeedPropName, ComputeSpeed(time, nbPoints));
         return itinerary;
     }   
     
