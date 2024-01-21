@@ -47,16 +47,20 @@ export function useMapItineraries() {
         });
     }
 
-    function addRouteOnMap(map: atlas.Map, route: routeStoreItem, dataSource: atlas.source.DataSource){
-        dataSource.add(new atlas.data.Feature(new atlas.data.LineString(route.coordinates), null, route.id));
+    function addRouteLayer(map: atlas.Map, route: routeStoreItem, dataSource: atlas.source.DataSource){
         map.layers.add(new atlas.layer.LineLayer(
             dataSource, route.id, {
-                strokeColor: '#035290', // '#2272B9',
-                strokeWidth: 5,
+                strokeColor: ['case', ['==', ['get', 'click'], true], '#0863BD', '#B1D6FA'], // ['to-color', ['at', ['get', 'resultIndex'], ['literal', routeColors]]],// '#035290', // '#2272B9',
+                strokeWidth: 7,
                 lineJoin: 'round',
                 lineCap: 'round',
             })
-        ); 
+        );
+    }
+
+    function addRouteOnMap(map: atlas.Map, route: routeStoreItem, dataSource: atlas.source.DataSource){
+        dataSource.add(new atlas.data.Feature(new atlas.data.LineString(route.coordinates), {click: false}, route.id));
+        addRouteLayer(map, route, dataSource);
     }
 
     function addRoutes(map: atlas.Map, addedRoutes: routeStoreItem[],  
@@ -100,5 +104,23 @@ export function useMapItineraries() {
         
     }
 
-    return { addRoutes, removeRoutes }
+    function changeRouteColor(map: atlas.Map, routes: routeStoreItem[], dataSource: atlas.source.DataSource){
+        const routesTmp = [...routes]
+        routesTmp.sort((a, b) => {
+            if (a.click === b.click)
+                return 0;
+            return a.click ? 1 : -1;
+        });
+        routesTmp.forEach(((route) => {     
+            dataSource.remove(route.id);
+            dataSource.add(new atlas.data.Feature(new atlas.data.LineString(route.coordinates), {click: route.click}, route.id));
+            if(route.click === true){
+                map.layers.move(route.id);
+                // addRouteLayer(map, route, dataSource);
+            }
+        }));
+        
+    }
+
+    return { addRoutes, removeRoutes, changeRouteColor}
 }

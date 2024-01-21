@@ -13,7 +13,7 @@ let currentPopup: atlas.Popup | null = null;
 
 onMounted(async () => {
     const routesStore = useRoutesListStore();
-    const { addRoutes, removeRoutes } = useMapItineraries();
+    const { addRoutes, removeRoutes, changeRouteColor } = useMapItineraries();
     const { getMapCredential } = useAzureMaps();
     const { clientId, accessToken: { token } } = await getMapCredential();
     const toast = useToast();
@@ -106,6 +106,8 @@ onMounted(async () => {
         }
         else {
             console.log('Route modified');
+            changeRouteColor(map, curr, dataSourceSuggestedRoute);
+            
         } 
             
     }, { deep: true });

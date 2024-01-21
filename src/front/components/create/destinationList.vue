@@ -63,12 +63,7 @@ const isInForm = ref<Boolean>(false);
 					toast.add({title:"Votre itinéraire a été crée !"});
 					if(selectedRouteStoreItem.value !== undefined)
 						routesStore.addOneRoute(selectedRouteStoreItem.value);
-						// setTimeout(() => {
-						// 	if(selectedRouteStoreItem.value !== undefined)
-						// 		routesStore.removeRoute(selectedRouteStoreItem.value.id);
-						// 	toast.add({title:"Votre itinéraire est terminé !"});
-						// }, chosenRoute.value ? chosenRoute.value.routeFeature.properties.time*1000 : 2000);
-				} else  {
+					} else  {
 					toast.add({title:"Votre itinéraire n'a pas pu être crée !"});
 				}
 			}, 
