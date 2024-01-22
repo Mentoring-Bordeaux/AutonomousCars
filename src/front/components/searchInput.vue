@@ -30,7 +30,7 @@ const fetchAdresses = ref<(FetchAddressesFunction | null)>(null);
     }
 
     function selectResult(result: Address) {
-      input.value = `${result.name !== '' ? `${result.name}`: ''}${result.postalCode !== '' ? `, ${result.postalCode}`: ''}${result.municipality}`;
+      input.value = `${result.name !== '' ? `${result.name}`: ''}${result.postalCode !== '' ? `, ${result.postalCode}, `: ''}${result.municipality !== '' ? `${result.municipality}`: ''}`;
       addressPosition.value = result.position;
       searchResults.value = []; // Vide la liste des résultats après la sélection
       emit('update:modelValue', input.value);
@@ -58,11 +58,11 @@ const fetchAdresses = ref<(FetchAddressesFunction | null)>(null);
             @click="selectResult(result)"
           >
             <div>
-              <span v-if="result.name">{{ result.name }}</span>
+              <span v-if="result.name">{{result.name}}</span>
               <div v-if="result.postalCode || result.municipality">
-                <span v-if="result.postalCode">{{ result.postalCode }}</span>
+                <span v-if="result.postalCode">{{result.postalCode}}</span>
                 <span v-if="result.postalCode && result.municipality">&nbsp;</span>
-                <span v-if="result.municipality">{{ result.municipality }}</span>
+                <span v-if="result.municipality">{{result.municipality}}</span>
               </div>
             </div>
           </div>
