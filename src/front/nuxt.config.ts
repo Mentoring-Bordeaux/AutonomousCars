@@ -4,7 +4,7 @@ const certificateName = process.env.npm_package_name;
 const certificateFolder = process.env.APPDATA
   ? `${process.env.APPDATA}/ASP.NET/https`
   : `${process.env.HOME}/.aspnet/https`;
-
+  
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devServer: {
@@ -36,4 +36,5 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
   },
+
 });

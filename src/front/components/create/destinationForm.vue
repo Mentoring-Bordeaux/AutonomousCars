@@ -11,7 +11,7 @@ const localTime = now.toLocaleTimeString('fr-FR', optionsTime);
 
 const departureTime = ref(localTime);
 const departureDate = ref(localDate);
-const startPosition = ref<Position>();
+const startPosition = ref<Position | undefined>();
 const endPosition = ref<Position>();
 const chosenCar = ref<carItem>();
 const departure = ref('');
@@ -19,11 +19,23 @@ const arrival = ref('');
 
 const emit = defineEmits(['submit']);
 
+function setCarLocalPositionToStartPosition(){
+  if(startPosition.value === undefined){
+    departure.value = 'votre position actuelle'
+    if(chosenCar.value !== undefined && chosenCar.value.vehicle !== undefined){
+      const carPosition = chosenCar.value.vehicle.marker.getOptions().position
+      if(carPosition != null){
+        startPosition.value = {lat: carPosition[1], lon: carPosition[0]};
+      }
+    }
+  }
+}
+
 function isFormValid(){
-  if(departure.value !== '' && arrival.value !== '' && 
-    startPosition !== undefined && endPosition !== undefined && 
-    chosenCar !== undefined)
+  if(arrival.value !== '' && endPosition !== undefined && chosenCar !== undefined  && chosenCar.value !== undefined){
+      setCarLocalPositionToStartPosition()
       return true; 
+  }
   return false; 
 }
 
@@ -50,10 +62,10 @@ const handleChosenCar = (payload: carItem) => {
   <div class="relative m-4">
     <CreateCarList @click="handleChosenCar"/>
 
-    <form class="grid gap-4 max-w-lg mx-auto bg-gray-100 text-black text-bold p-6 border rounded mt-4 border-lightgray" @submit.prevent="handleSubmit">
+    <form class="grid relative gap-4 max-w-lg mx-auto bg-gray-100 text-black text-bold p-6 border rounded mt-4 border-lightgray" @submit.prevent="handleSubmit">
         <div class="grid gap-2">
           <label :for="departure" class="text-sm">Départ de : </label>
-          <SearchInput v-model="departure" v-model:position="startPosition" placeholder="Position actuelle" @update:position="startPosition = $event" />
+          <SearchInput v-model="departure" v-model:position="startPosition" placeholder="Position actuelle" @update:position="startPosition = $event"/>
         </div>
 
         <div class="grid gap-2 grid-cols-2">

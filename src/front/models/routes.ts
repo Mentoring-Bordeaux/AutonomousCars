@@ -15,4 +15,9 @@ export type routeFeature = {
     geometry: routeGeometry;
     properties: routeProperties;
   }
+
+export type Routes = {
+    id: string;
+    routeFeature: routeFeature;
+}
   

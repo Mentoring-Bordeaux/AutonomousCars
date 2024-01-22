@@ -112,7 +112,7 @@ public class Worker : BackgroundService
                     await telemetryProducer.SendTelemetryAsync(new Point(position), stoppingToken);
                     _lastLocationKnown = position;
 
-                    await Task.Delay( (int) carSpeed, stoppingToken);
+                    await Task.Delay( (int) carSpeed*1000, stoppingToken);
                 }
             }
             finally
