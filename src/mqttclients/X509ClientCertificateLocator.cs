@@ -19,6 +19,6 @@ public class X509ClientCertificateLocator
         Trace.TraceInformation($"Loaded Cert: {cert.SubjectName.Name} {cert.Thumbprint} issued by {cert.Issuer}, not after: {cert.GetExpirationDateString()}");
 
         // https://github.com/dotnet/runtime/issues/45680#issuecomment-739912495
-        return new X509Certificate2(cert.Export(X509ContentType.Pkcs12)); ;
+        return new X509Certificate2(cert.Export(X509ContentType.Pkcs12)); 
     }
 }

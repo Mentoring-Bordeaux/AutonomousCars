@@ -1,6 +1,4 @@
-import { defineConfig } from 'unocss'
-import presetWind from '@unocss/preset-wind'
-import presetWebFonts from '@unocss/preset-web-fonts'
+import { defineConfig, presetWind, presetWebFonts} from 'unocss'
 
 export default defineConfig({
     presets: [
@@ -32,4 +30,5 @@ export default defineConfig({
         ['body-medium', {'font-family': 'Inter', 'font-size': '14px',}],
         ['body-small', {'font-family': 'Inter', 'font-size': '12px',}],
     ]
-})
+  }
+)

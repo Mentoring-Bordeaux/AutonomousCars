@@ -17,11 +17,24 @@ public static partial class MqttNetExtensions
             {
                 tlsParams.WithCertificateValidationHandler(ea => X509ChainValidator.ValidateChain(ea, cs.CaFile!));
             }
-
+            
+            List<X509Certificate2> certs = new();
             if (!string.IsNullOrEmpty(cs.CertFile) && !string.IsNullOrEmpty(cs.KeyFile))
             {
-                List<X509Certificate2> certs = new();
                 X509Certificate2 cert = X509ClientCertificateLocator.Load(cs.CertFile, cs.KeyFile, cs.KeyFilePassword!);
+                if (!cert.HasPrivateKey)
+                {
+                    throw new SecurityException("Provided Cert Has not Private Key");
+                }
+                certs.Add(cert);
+                tlsParams.WithClientCertificates(certs);
+            }else if (cs.Certificate != null)
+            {
+                X509Certificate2? cert = cs.Certificate;
+                if (cert == null)
+                {
+                    throw new SecurityException("Certificate Null Reference");
+                }
                 if (!cert.HasPrivateKey)
                 {
                     throw new SecurityException("Provided Cert Has not Private Key");
@@ -35,4 +48,3 @@ public static partial class MqttNetExtensions
         return builder;
     }
 }
-

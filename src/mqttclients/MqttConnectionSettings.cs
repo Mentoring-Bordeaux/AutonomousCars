@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text;
+using System.Security.Cryptography.X509Certificates;
 
 namespace MQTTnet.Client.Extensions;
 
@@ -22,6 +23,8 @@ public class MqttConnectionSettings
     public string? CertFile { get; set; }
     public string? KeyFile { get; set; }
     public string? KeyFilePassword { get; set; }
+    
+    public X509Certificate2? Certificate { get; set; }
 
     public AuthType Auth
     {
@@ -49,13 +52,11 @@ public class MqttConnectionSettings
 
     public static MqttConnectionSettings FromConnectionString(string cs) => ParseConnectionString(cs);
 
-    public static MqttConnectionSettings CreateFromValues(string hostname, string username, string clientId, string certFile, string keyFile, bool cleanSession, bool useTLS, int tcpPort)
+    public static MqttConnectionSettings CreateFromValues(string hostname, string username, string clientId, bool cleanSession, bool useTLS, int tcpPort, X509Certificate2 cert)
     {
         return new MqttConnectionSettings(hostname)
         {
             ClientId = clientId,
-            CertFile = certFile,
-            KeyFile = keyFile,
             Username = username,
             Password = "",
             KeepAliveInSeconds =  Default_KeepAliveInSeconds,
@@ -65,7 +66,7 @@ public class MqttConnectionSettings
             CaFile = "",
             DisableCrl = false,
             KeyFilePassword = "",
-
+            Certificate = cert
         };
     }
     

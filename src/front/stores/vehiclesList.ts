@@ -1,8 +1,8 @@
 import type { Vehicle } from "~/models/Vehicle";
 import * as atlas from "azure-maps-control";
-
 const carPath = "/img/car_icon.png";
 
+// @unocss-include
 export const useVehiclesListStore = defineStore('vehiclesListStore', {
   state: () => ({
     vehiclesList: [] as Vehicle[],
@@ -30,10 +30,11 @@ export const useVehiclesListStore = defineStore('vehiclesListStore', {
                 text: deviceName,
                 position: [0, 0],
                 htmlContent: `
-                  <div class="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200 shadow-md flex items-center justify-center border border-white">
-                    <img id="carImage" src="${carPath}" class="w-10 h-10 object-contain rounded-full" />
-                    <div class="bg-green fixed bottom-0 right-2 w-3 h-3 rounded-full border-2 border-white"></div>
-                  </div>
+
+                <div class="relative w-11 h-11 rounded-full overflow-hidden bg-gray-200 shadow-md flex items-center justify-center border border-white">
+                <img id="carImage" src="${carPath}" class="w-11 h-11 object-contain rounded-full" />
+                <div class="bg-green fixed bottom-0 right-2 w-3 h-3 rounded-full border-2 border-white"></div>
+              </div>
                 `
               }),
               available: false
